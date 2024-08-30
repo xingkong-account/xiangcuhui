@@ -1,0 +1,66 @@
+package com.service;
+
+import com.bean.Video;
+import com.mapper.VideoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class VideoService {
+
+    @Autowired
+    private VideoMapper videoMapper;
+
+    public void uploadVideo(Video video) {
+        videoMapper.insertVideo(video);
+    }
+
+    public void reviewVideo(Integer id, String status, String reviewer) {
+        Video video = videoMapper.getVideoById(id);
+        if (video != null) {
+            video.setStatus(status);
+            video.setReviewer(reviewer);
+            video.setReviewed_at(java.time.LocalDateTime.now());
+            videoMapper.updateVideo(video);
+        }
+    }
+
+    public Video getVideoById(Integer id) {
+        return videoMapper.getVideoById(id);
+    }
+
+    public List<Video> getAllVideos() {
+        return videoMapper.getAllVideos();
+    }
+
+    public List<Video> getPendingVideos() {
+        return videoMapper.getVideosByStatus("待审核");
+    }
+
+    public void deleteVideo(Integer id) {
+        videoMapper.deleteVideo(id);
+    }
+
+    // 待审核的视频列表
+    public List<Video> getUnReviewedVideos(){
+        return videoMapper.getAllUnReviewVideos();
+    }
+
+    // 插入视频信息
+    public Video insert(Video video){
+        video.setCreated_at(LocalDateTime.now());
+        videoMapper.insertVideo(video);
+        return video;
+    }
+
+    public void approveVideo(Integer id){
+        videoMapper.reviewVideo(id, "已审核", LocalDateTime.now());
+    }
+
+    public void rejectVideo(Integer id){
+        videoMapper.reviewVideo(id, "已拒绝", LocalDateTime.now());
+    }
+}

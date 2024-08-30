@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${ip}:3306/xiangcuhui?characterEncoding=utf-8&useSSL=false&useUnicode=true&serverTimezone=UTC
+    username: root
+    password: '407454xl..'
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5GB
+      max-request-size: 5GB
+  resources:
+    static-locations: file:D:/WorkSpace/VueProjects/xiangcuhui/files/
+
+mybatis:
+  mapper-locations: classpath:mybatis/*.xml
+server:
+  port: 8081
+ip:
+  localhost
