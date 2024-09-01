@@ -52,7 +52,7 @@ export default {
         // 获取已审核的视频列表
         async fetchVideos() {
             try {
-                const response = await axios.get('http://localhost:8081/api/videos/all');
+                const response = await axios.get(this.$baseUrl + '/api/videos/all');
                 this.videos = response.data;
             } catch (error) {
                 this.$message.error('获取已审核视频失败: ' + error.message);
@@ -72,7 +72,7 @@ export default {
         },
         async deleteVideo(video) {
             try {
-                await axios.delete(`http://localhost:8081/api/videos/${video.id}`);
+                await axios.delete(this.$baseUrl + `/api/videos/${video.id}`);
                 this.$message.success('视频删除成功');
                 this.fetchVideos();
             } catch (error) {

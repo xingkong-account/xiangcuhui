@@ -198,8 +198,8 @@ export default {
         async fetchArticles() {
             try {
                 const [latestResponse, popularResponse] = await Promise.all([
-                    axios.get('http://localhost:8081/api/articles/latest'),
-                    axios.get('http://localhost:8081/api/articles/popular')
+                    axios.get(this.$baseUrl + '/api/articles/latest'),
+                    axios.get(this.$baseUrl + '/api/articles/popular')
                 ]);
                 this.latestArticles = latestResponse.data;
                 this.popularArticles = popularResponse.data;
@@ -230,7 +230,7 @@ export default {
             this.$router.push('/login');
         },
         fetchArticleTitles() {
-            axios.get('http://localhost:8081/api/articles/articleList', {
+            axios.get(this.$baseUrl +'/api/articles/articleList', {
                 params: {
                     pageNum: this.currentPage,
                     pageSize: this.pageSize

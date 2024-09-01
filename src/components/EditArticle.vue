@@ -53,7 +53,7 @@ export default {
     methods: {
         fetchArticle() {
             const id = this.$route.params.id;
-            this.$axios.get(`http://localhost:8081/api/articles/${id}`)
+            this.$axios.get(this.$baseUrl + `/api/articles/${id}`)
                 .then(response => {
                     this.article = response.data;
                     this.editor.txt.html(this.article.content); // 预加载内容
@@ -67,7 +67,7 @@ export default {
 
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    this.$axios.put(`http://localhost:8081/api/articles/${this.article.id}`, this.article)
+                    this.$axios.put(this.$baseUrl + `/api/articles/${this.article.id}`, this.article)
                         .then(() => {
                             this.$message.success('文章更新成功');
                             this.$router.push('/articles');
@@ -91,7 +91,7 @@ export default {
             this.editor.highlight = hljs;
 
             // 配置图片上传
-            this.editor.config.uploadImgServer = 'http://localhost:8081/api/articles/uploadImage';
+            this.editor.config.uploadImgServer = this.$baseUrl + '/api/articles/uploadImage';
             this.editor.config.uploadFileName = 'file';
             this.editor.config.uploadImgParams = {
                 type: "img"
@@ -111,7 +111,7 @@ export default {
             };
 
             // 配置视频上传
-            this.editor.config.uploadVideoServer = "http://localhost:8081/api/articles/uploadImage"; // 修正了URL
+            this.editor.config.uploadVideoServer = this.$baseUrl + "/api/articles/uploadImage"; // 修正了URL
             this.editor.config.uploadVideoName = "file";
             this.editor.config.uploadVideoParams = {
                 type: "video"

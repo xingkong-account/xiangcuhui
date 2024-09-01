@@ -11,7 +11,7 @@
                 <el-upload
                     class="upload-demo thumbnail-upload"
                     drag
-                    action="http://localhost:8081/api/upload"
+                    :action="$baseUrl + '/api/upload'"
                     list-type="picture"
                     :show-file-list="false"
                     :before-upload="beforeThumbnailUpload"
@@ -30,7 +30,7 @@
                 <el-upload
                     class="upload-demo"
                     drag
-                    action="http://localhost:8081/api/videos/upload"
+                    :action="$baseUrl + '/api/videos/upload'"
                     :data="uploadData"
                     :before-upload="beforeVideoUpload"
                     :on-success="handleVideoSuccess"
@@ -115,7 +115,7 @@ export default {
             this.$refs.videoForm.validate((valid) => {
                 if (valid) {
                     console.log('视频表单数据:', this.videoForm);
-                    this.$axios.post('http://localhost:8081/api/videos/add', this.videoForm)
+                    this.$axios.post(this.$baseUrl + '/api/videos/add', this.videoForm)
                         .then(() => {
                             this.$message.success('视频信息提交成功!');
                             this.goBack();

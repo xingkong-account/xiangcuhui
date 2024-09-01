@@ -86,7 +86,7 @@ export default {
         submitForm() {
             this.$refs.submitForm.validate((valid) => {
                 if (valid) {
-                    axios.post('http://localhost:8081/api/login', {
+                    axios.post(this.$baseUrl + '/api/login', {
                         name: this.user.name,
                         password: this.user.password,
                         code: this.user.code
@@ -131,7 +131,7 @@ export default {
         },
         checkUserRole() {
             const username = sessionStorage.getItem('username');
-            return axios.get('http://localhost:8081/api/user/role', { params: { username } })
+            return axios.get(this.$baseUrl + '/api/user/role', { params: { username } })
                 .then(response => response.data)
                 .catch(error => {
                     console.error('获取用户角色失败:', error);

@@ -34,7 +34,7 @@ export default {
     methods: {
         async fetchArticles() {
             try {
-                const response = await axios.get('http://localhost:8081/api/articles', { params: { category: this.category } });
+                const response = await axios.get(this.$baseUrl + '/api/articles', { params: { category: this.category } });
                 this.articles = response.data;
                 if (this.articles.length > 0) {
                     this.$message.success('加载成功！');

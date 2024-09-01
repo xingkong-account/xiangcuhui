@@ -89,7 +89,7 @@ export default {
     methods: {
         fetchArticle() {
             const id = this.$route.params.id;
-            axios.get(`http://localhost:8081/api/articles/${id}`)
+            axios.get(this.$baseUrl + `/api/articles/${id}`)
                 .then(response => {
                     this.article = response.data;
                 })
@@ -99,7 +99,7 @@ export default {
         },
         incrementViews() {
             const id = this.$route.params.id;
-            axios.post(`http://localhost:8081/api/articles/${id}/increment-views`)
+            axios.post(this.$baseUrl + `/api/articles/${id}/increment-views`)
                 .catch(error => {
                     this.$message.error('Error incrementing views:'+ error.message);
                 });

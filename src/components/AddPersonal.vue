@@ -69,7 +69,7 @@ export default {
             try {
                 const valid = await this.$refs.form.validate();
                 if (valid) {
-                    await axios.post('http://localhost:8081/api/add-personal', this.form);
+                    await axios.post(this.$baseUrl + '/api/add-personal', this.form);
                     this.$message.success('新增成功');
                     this.$router.push('/individual-members');
                 }

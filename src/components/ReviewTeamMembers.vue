@@ -102,7 +102,7 @@ export default {
     methods: {
         async fetchMembers() {
             try {
-                const response = await axios.get('http://localhost:8081/api/team-members?status=待审核');
+                const response = await axios.get(this.$baseUrl + '/api/team-members?status=待审核');
                 this.members = response.data;
             } catch (error) {
                 console.error('Failed to fetch team members:', error);
@@ -157,7 +157,7 @@ export default {
         },
         async approveMember(member) {
             try {
-                await axios.post(`http://localhost:8081/api/team-members/${member.id}/approve`);
+                await axios.post(this.$baseUrl + `/api/team-members/${member.id}/approve`);
                 this.$message.success('团队会员审核通过');
                 this.fetchMembers();
             } catch (error) {
@@ -167,7 +167,7 @@ export default {
         },
         async rejectMember(member) {
             try {
-                await axios.post(`http://localhost:8081/api/team-members/${member.id}/reject`);
+                await axios.post(this.$baseUrl + `/api/team-members/${member.id}/reject`);
                 this.$message.success('团队会员已拒绝');
                 this.fetchMembers();
             } catch (error) {

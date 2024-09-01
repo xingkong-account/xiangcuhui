@@ -49,7 +49,7 @@ export default {
     methods: {
         async fetchTeamMembers() {
             try {
-                const response = await axios.get('http://localhost:8081/api/team-members?type=团体会员');
+                const response = await axios.get(this.$baseUrl + '/api/team-members?type=团体会员');
                 this.teamMembers = response.data;
             } catch (error) {
                 console.error('Failed to fetch team members:', error);

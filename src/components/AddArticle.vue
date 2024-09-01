@@ -94,7 +94,7 @@ export default {
             this.article.content = this.editor.txt.html();
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    this.$axios.post('http://localhost:8081/api/articles/add', this.article)
+                    this.$axios.post(this.$baseUrl + '/api/articles/add', this.article)
                         .then(() => {
                             this.$message.success('文章添加成功');
                             this.$router.push('/articles');
@@ -121,7 +121,7 @@ export default {
             this.editor.highlight = hljs;
 
             // 配置图片上传
-            this.editor.config.uploadImgServer = 'http://localhost:8081/api/articles/uploadImage';
+            this.editor.config.uploadImgServer = this.$baseUrl +'/api/articles/uploadImage';
             this.editor.config.uploadFileName = 'file';
             this.editor.config.uploadImgParams = {
                 type: "img"
@@ -140,7 +140,7 @@ export default {
             };
 
             // 配置视频上传
-            this.editor.config.uploadVideoServer = "http://localhost:8081/api/articles/uploadImage"; // 注意使用合适的API路径
+            this.editor.config.uploadVideoServer = this.$baseUrl + "/api/articles/uploadImage"; // 注意使用合适的API路径
             this.editor.config.uploadVideoName = "file";
             this.editor.config.uploadVideoParams = {
                 type: "video"

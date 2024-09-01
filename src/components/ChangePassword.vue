@@ -86,7 +86,7 @@ export default {
         submitForm() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    axios.post('http://localhost:8081/api/change-password', {
+                    axios.post(this.$baseUrl + '/api/change-password', {
                         oldPassword: this.form.oldPassword,
                         newPassword: this.form.newPassword,
                         confirmPassword: this.form.confirmPassword

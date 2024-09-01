@@ -168,7 +168,7 @@ export default {
         },
         async fetchArticles() {
             try {
-                const response = await axios.get('http://localhost:8081/api/articles/articleList',
+                const response = await axios.get(this.$baseUrl + '/api/articles/articleList',
                     {
                         params: {
                             pageNum: this.currentPage,
@@ -186,7 +186,7 @@ export default {
         },
         async approveArticle(article) {
             try {
-                await axios.post(`http://localhost:8081/api/articles/${article.id}/approve`);
+                await axios.post(this.$baseUrl + `/api/articles/${article.id}/approve`);
                 this.$message.success('文章审核通过');
                 this.fetchArticles();
             } catch (error) {
@@ -196,7 +196,7 @@ export default {
         },
         async rejectArticle(article) {
             try {
-                await axios.post(`http://localhost:8081/api/articles/${article.id}/reject`);
+                await axios.post(this.$baseUrl + `/api/articles/${article.id}/reject`);
                 this.$message.success('文章已拒绝');
                 this.fetchArticles();
             } catch (error) {

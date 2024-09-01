@@ -100,7 +100,7 @@ export default {
         },
         // 发送手机验证码（可选操作）
         sendSmsCode() {
-            axios.post('http://localhost:8081/api/sendSms', { phone: this.form.phone })
+            axios.post(this.$baseUrl + '/api/sendSms', { phone: this.form.phone })
                 .then(() => {
                     this.$message.success('验证码已发送');
                 })
@@ -113,7 +113,7 @@ export default {
             this.$refs.form.validate((valid) => {
                 if (valid) {
                     // 提交注册请求
-                    axios.post('http://localhost:8081/api/add', {
+                    axios.post(this.$baseUrl + '/api/add', {
                         name: this.form.name,
                         password: this.form.password,
                         phone: this.form.phone,

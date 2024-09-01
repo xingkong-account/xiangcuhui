@@ -80,7 +80,7 @@ export default {
     methods: {
         async fetchMembers() {
             try {
-                const response = await axios.get('http://localhost:8081/api/personal-list');
+                const response = await axios.get(this.$baseUrl + '/api/personal-list');
                 this.members = response.data;
             } catch (error) {
                 console.error('Failed to fetch personal members:', error);
@@ -93,7 +93,7 @@ export default {
         async deleteMember() {
             if (this.currentMemberId) {
                 try {
-                    await axios.delete(`http://localhost:8081/api/delete-personal/${this.currentMemberId}`);
+                    await axios.delete(this.$baseUrl + `/api/delete-personal/${this.currentMemberId}`);
                     this.$message.success('会员删除成功');
                     this.fetchMembers();
                     this.dialogVisible = false;

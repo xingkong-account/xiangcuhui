@@ -46,7 +46,7 @@ export default {
         async fetchMemberData() {
             const memberId = this.$route.params.id;
             try {
-                const response = await axios.get(`http://localhost:8081/api/personal/${memberId}`);
+                const response = await axios.get(this.$baseUrl + `/api/personal/${memberId}`);
                 this.member = response.data;
             } catch (error) {
                 console.error('Failed to fetch member data:', error);
@@ -55,7 +55,7 @@ export default {
         },
         async submitForm() {
             try {
-                await axios.post(`http://localhost:8081/api/update-personal/${this.member.id}`, this.member);
+                await axios.post(this.$baseUrl + `/api/update-personal/${this.member.id}`, this.member);
                 this.$message.success('会员信息更新成功');
                 this.$router.push('/individual-members');
             } catch (error) {

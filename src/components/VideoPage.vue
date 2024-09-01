@@ -32,7 +32,7 @@ export default {
     methods: {
         async fetchVideos() {
             try {
-                const response = await axios.get('http://localhost:8081/api/videos/all');
+                const response = await axios.get(this.$baseUrl + '/api/videos/all');
                 this.videos = response.data;
             } catch (error) {
                 console.error('获取视频失败:', error);

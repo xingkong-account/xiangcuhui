@@ -45,7 +45,7 @@ export default {
         // 获取待审核的视频列表
         async fetchVideos() {
             try {
-                const response = await axios.get('http://localhost:8081/api/videos/review-video');
+                const response = await axios.get(this.$baseUrl + '/api/videos/review-video');
                 this.videos = response.data;
             } catch (error) {
                 this.$message.error('获取待审核视频失败: ' + error.message);
@@ -53,7 +53,7 @@ export default {
         },
         async approveVideo(video) {
             try {
-                await axios.post(`http://localhost:8081/api/videos/${video.id}/approve`, {
+                await axios.post(this.$baseUrl + `/api/videos/${video.id}/approve`, {
                     ...video,
                     status: '已审核',
                     reviewed_at: new Date().toISOString(),
@@ -67,7 +67,7 @@ export default {
         },
         async rejectVideo(video) {
             try {
-                await axios.post(`http://localhost:8081/api/videos/${video.id}/reject`, {
+                await axios.post(this.$baseUrl + `/api/videos/${video.id}/reject`, {
                     ...video,
                     status: '已拒绝',
                     reviewed_at: new Date().toISOString(),

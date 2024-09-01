@@ -105,7 +105,7 @@ export default {
     methods: {
         async fetchMembers() {
             try {
-                const response = await axios.get('http://localhost:8081/api/individual-members');
+                const response = await axios.get(this.$baseUrl + '/api/individual-members');
                 this.members = response.data;
                 if (this.members.length === 0) {
                     this.$message.info('暂无数据');
@@ -143,7 +143,7 @@ export default {
         },
         async approveMember(member) {
             try {
-                await axios.post(`http://localhost:8081/api/individual-members/${member.id}/approve`);
+                await axios.post(this.$baseUrl + `/api/individual-members/${member.id}/approve`);
                 this.$message.success('会员审核通过');
                 this.fetchMembers();
             } catch (error) {
@@ -153,7 +153,7 @@ export default {
         },
         async rejectMember(member) {
             try {
-                await axios.post(`http://localhost:8081/api/individual-members/${member.id}/reject`);
+                await axios.post(this.$baseUrl + `/api/individual-members/${member.id}/reject`);
                 this.$message.success('会员已拒绝');
                 this.fetchMembers();
             } catch (error) {

@@ -14,11 +14,12 @@ Vue.use(ElementUI);
 // });
 
 const instance = axios.create({
-  baseURL: 'http://124.70.48.240:8081/api', // 使用你的 ECS 公网 IP
-  timeout: 10000,
+  baseURL: process.env.VUE_APP_API_BASE_URL,
+  timeout: 5000,
 });
 
 Vue.prototype.$axios = instance;
+Vue.prototype.$baseUrl = process.env.VUE_APP_API_BASE_URL;
 // 将 WangEditor 挂载到 window 对象上
 import E from 'wangeditor';
 window.wangEditor = E;

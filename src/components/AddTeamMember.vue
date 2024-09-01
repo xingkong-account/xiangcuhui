@@ -26,7 +26,7 @@
                 <el-form-item label="上传图片" prop="image_url">
                     <el-upload
                         class="upload-button"
-                        action="http://localhost:8081/api/upload"
+                        :action="$baseUrl + '/api/upload'"
                         list-type="picture"
                         :show-file-list="false"
                         :on-success="handleUploadSuccess"
@@ -105,7 +105,7 @@ export default {
             this.$refs.teamMemberForm.validate(async (valid) => {
                 if (valid) {
                     try {
-                        await axios.post('http://localhost:8081/api/add-team', this.teamMember);
+                        await axios.post(this.$baseUrl + '/api/add-team', this.teamMember);
                         this.$message.success('团队会员添加成功');
                         this.onReset();
                     } catch (error) {

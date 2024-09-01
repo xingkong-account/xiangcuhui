@@ -136,7 +136,7 @@ export default {
                 return Promise.resolve('');
             }
 
-            return axios.get('http://localhost:8081/api/user/role', { params: { username } })
+            return axios.get(this.$baseUrl + '/api/user/role', { params: { username } })
                 .then(response => response.data.role)
                 .catch(error => {
                     console.log('获取用户角色失败:', error);
@@ -161,7 +161,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                axios.delete(`http://localhost:8081/api/articles/${id}`)
+                axios.delete(this.$baseUrl + `/api/articles/${id}`)
                     .then(() => {
                         this.$message.success('删除成功');
                         this.fetchArticles();
@@ -172,7 +172,7 @@ export default {
             }).catch(() => {});
         },
         fetchArticles() {
-            axios.get('http://localhost:8081/api/articles/articleList', {
+            axios.get(this.$baseUrl + '/api/articles/articleList', {
                 params: {
                     pageNum: this.currentPage,
                     pageSize: this.pageSize
