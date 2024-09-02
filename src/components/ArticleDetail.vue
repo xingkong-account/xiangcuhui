@@ -1,10 +1,5 @@
 <template>
     <el-container>
-        <el-header>
-            <div class="header-container">
-                <h1>文章详情</h1>
-            </div>
-        </el-header>
         <el-main>
             <div class="article-container">
                 <h2 class="article-title">{{ article.title }}</h2>
@@ -52,7 +47,7 @@
         <el-footer class="custom-footer">
             <div class="footer-content">
                 <div class="footer-left">
-                    <img src="http://localhost:8081/image.png" width="200px" height="120px" class="">
+                    <img src="@/assets/images/icon.png" width="200px" height="120px" class="">
                 </div>
                 <div class="footer-center">
                     <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
@@ -142,28 +137,11 @@ export default {
 
 <style scoped>
 .article-container {
-    display: flex;          /* 使用flex布局 */
+    display: flex;
     flex-direction: column; /* 让子元素按列显示 */
-    align-items: center;    /* 水平居中对齐 */
-    justify-content: center; /* 垂直居中对齐 */
-    min-height: 100vh;      /* 设置最小高度为100%视口高度，确保垂直居中 */
-}
-
-.article-card {
-    max-width: 800px;      /* 卡片的最大宽度 */
-    width: 100%;           /* 设置宽度为100%以适应屏幕 */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 可选：为卡片增加一些阴影效果 */
-    margin: 20px 0;        /* 卡片上下的外边距 */
-}
-
-.article-title {
-    text-align: center;    /* 标题居中 */
-    margin-bottom: 10px;   /* 标题与蓝线之间的间距 */
-}
-
-.article-header {
-    text-align: center;    /* 文章头部信息居中 */
-    margin-bottom: 10px;   /* 与文章内容的间距 */
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
 }
 
 .article-content {
@@ -175,22 +153,22 @@ export default {
     max-width: 90%;
     margin-left: 100px;
 }
+
+/*底部打印栏背景框样式*/
 .ncdt-bottom-tool {
     background-color: #f0f0f0;
     width: 80%;
     height: 50px;
     display: flex;
-    align-items: center;
-    padding: 0 20px;
-    box-sizing: border-box;
-    margin-left: 100px;
+    margin-bottom: 10px;
+    margin-left: 13%;
 }
 
 .ncdt-bottom-tool .flex {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     width: 80%;
-    margin-left: 100px;
+    margin-right: 1200px;
 }
 
 .ncdt-bottom-tool a {
@@ -199,7 +177,7 @@ export default {
 }
 
 .ncdt-bottom-tool i {
-    margin-right: 8px;
+    margin-right: 3px;
 }
 
 .link a {
@@ -228,25 +206,8 @@ img {
     color: #666;
 }
 
-.article-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.article-content {
-    margin-bottom: 20px;
-}
-
 .article-meta {
     margin-bottom: 20px;
-    font-size: 14px;
-    color: #666;
-}
-.article-header {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 10px;
     font-size: 14px;
     color: #666;
 }
@@ -259,16 +220,11 @@ img {
 }
 
 .article-blue-line {
-    height: 2px;
-    background-color: #A9A9A9; /* 蓝色横线的颜色 */
+    height: 4px;
+    background-color: #A9A9A9;
     margin-bottom: 10px;
     width: 80%;
     margin-left: 100px;
-}
-
-.custom-footer {
-    background-color: #f2f2f2;
-    padding: 20px;
 }
 
 .footer-content {

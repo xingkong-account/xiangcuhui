@@ -171,14 +171,11 @@ public class MembersController{
 
     @GetMapping("/user/role")
     public ResponseEntity<Boolean> getUserRole(@RequestParam String username) {
-        System.out.println("Received request for user role: " + username);
         Member member = memberService.selectByName(username);
         if (member != null) {
-            System.out.println("Member found: " + member);
             boolean isAdmin = "admin".equals(member.getName());
             return ResponseEntity.ok(isAdmin);
         } else {
-            System.out.println("Member not found for username: " + username);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
         }
     }

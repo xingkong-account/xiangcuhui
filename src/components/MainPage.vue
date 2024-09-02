@@ -31,15 +31,16 @@
 
                     <!-- 文章管理下拉菜单 -->
                     <el-submenu class="article-management-menu" :index="'3'" :popper-append-to-body="false" :default-active="activeMenu">
-                        <template #title>文章管理</template>
-                        <el-menu-item index="3-1" @click="navigate('article-review')">文章审核</el-menu-item>
-                        <el-menu-item index="3-2" @click="navigate('articles')">新闻动态</el-menu-item>
-                        <el-menu-item index="3-3" @click="navigate('category-articles', '农村党建')">农村党建</el-menu-item>
-                        <el-menu-item index="3-4" @click="navigate('category-articles', '集体经济')">集体经济</el-menu-item>
-                        <el-menu-item index="3-5" @click="navigate('category-articles', '产业发展')">产业发展</el-menu-item>
-                        <el-menu-item index="3-6" @click="navigate('category-articles', '乡土文化')">乡土文化</el-menu-item>
-                        <el-menu-item index="3-7" @click="navigate('category-articles', '青山绿水')">青山绿水</el-menu-item>
-                        <el-menu-item index="3-8" @click="navigate('category-articles', '青年农人')">青年农人</el-menu-item>
+                        <template #title>文章</template>
+                        <el-menu-item index="3-1" @click="navigate('articles/create')">添加文章</el-menu-item>
+                        <el-menu-item index="3-2" @click="navigate('article-review')">文章审核</el-menu-item>
+                        <el-menu-item index="3-3" @click="navigate('articles')">新闻动态</el-menu-item>
+                        <el-menu-item index="3-4" @click="navigate('category-articles', '农村党建')">农村党建</el-menu-item>
+                        <el-menu-item index="3-5" @click="navigate('category-articles', '集体经济')">集体经济</el-menu-item>
+                        <el-menu-item index="3-6" @click="navigate('category-articles', '产业发展')">产业发展</el-menu-item>
+                        <el-menu-item index="3-7" @click="navigate('category-articles', '乡土文化')">乡土文化</el-menu-item>
+                        <el-menu-item index="3-8" @click="navigate('category-articles', '青山绿水')">青山绿水</el-menu-item>
+                        <el-menu-item index="3-9" @click="navigate('category-articles', '青年农人')">青年农人</el-menu-item>
                     </el-submenu>
                     <!-- 精选视频下拉菜单 -->
                     <el-submenu class="video-menu" :index="'4'" :popper-append-to-body="false" :default-active="activeMenu">

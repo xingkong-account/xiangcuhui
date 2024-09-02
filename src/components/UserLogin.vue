@@ -2,9 +2,9 @@
     <div class="m" style="height: 100vh; display: flex; align-items: center; justify-content: center;">
         <div class="login-card">
             <div class="image-container">
-                <img src="http://localhost:8081/login.png" alt="" style="width: 100%">
+                <img src="@/assets/images/login.png" alt="" style="width: 100%">
             </div>
-            <div class="form-container">
+            <div class="form-container" :class="{'shake': shake}">
                 <el-form :model="user" :rules="rules" ref="submitForm" style="width: 80%">
                     <div class="form-title">欢迎登录</div>
                     <el-form-item prop="name">
@@ -66,6 +66,7 @@ export default {
                 code: ''
             },
             verifyCode: '',  // 验证码组件传过来的 code
+            shake: false,
             rules: {
                 name: [
                     { required: true, message: '请输入用户名', trigger: 'blur' }
@@ -122,6 +123,10 @@ export default {
                             this.$message.error('登录失败：' + errorMessage);
                         });
                 } else {
+                    this.shake = true;
+                    setTimeout(() => {
+                        this.shake = false;
+                    }, 820);
                     this.$message.error('请填写完整信息');
                 }
             });
@@ -144,7 +149,7 @@ export default {
 
 <style scoped>
 .m {
-    background-image: url("http://localhost:8081/backgroundImg.png");
+    background-image: url("@/assets/images/backgroundImg.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -200,4 +205,20 @@ export default {
     flex: 1;
     text-align: right;
 }
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-10px); }
+    80% { transform: translateX(10px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
 </style>

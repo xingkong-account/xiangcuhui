@@ -2,26 +2,36 @@
     <el-container class="m">
         <el-main>
             <el-form :model="form" ref="form" label-width="140px" :rules="rules">
-                <el-form-item label="用户名" prop="name">
-                    <el-input v-model="form.name"></el-input>
-                </el-form-item>
-                <el-form-item label="密码" prop="password">
-                    <el-input v-model="form.password" show-password type="password"></el-input>
-                </el-form-item>
-                <el-form-item label="确认密码" prop="confirmPassword">
-                    <el-input v-model="form.confirmPassword" show-password type="password"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号" prop="phone">
-                    <el-input v-model="form.phone" maxlength="11"></el-input>
-                    <el-button @click="sendSmsCode" :disabled="!form.phone">发送验证码</el-button>
-                </el-form-item>
+                <div :class="{'apply-shake': true, 'shake': shake}">
+                    <el-form-item label="用户名" prop="name">
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item>
+                </div>
+                <div :class="{'apply-shake': true, 'shake': shake}">
+                    <el-form-item label="密码" prop="password">
+                        <el-input v-model="form.password" show-password type="password"></el-input>
+                    </el-form-item>
+                </div>
+                <div :class="{'apply-shake': true, 'shake': shake}">
+                    <el-form-item label="确认密码" prop="confirmPassword">
+                        <el-input v-model="form.confirmPassword" show-password type="password"></el-input>
+                    </el-form-item>
+                </div>
+                <div :class="{'apply-shake': true, 'shake': shake}">
+                    <el-form-item label="手机号" prop="phone">
+                        <el-input v-model="form.phone" maxlength="11"></el-input>
+                        <el-button @click="sendSmsCode" :disabled="!form.phone">发送验证码</el-button>
+                    </el-form-item>
+                </div>
                 <el-form-item label="手机验证码 (可选)" prop="phoneCode">
                     <el-input v-model="form.phoneCode" placeholder="请输入手机验证码"></el-input>
                 </el-form-item>
-                <el-form-item label="验证码" prop="code">
-                    <el-input v-model="form.code" placeholder="请输入验证码"></el-input>
-                    <valid-code @update:value="getCode" ref="validCode"></valid-code>
-                </el-form-item>
+                <div :class="{'apply-shake': true, 'shake': shake}">
+                    <el-form-item label="验证码" prop="code">
+                        <el-input v-model="form.code" placeholder="请输入验证码"></el-input>
+                        <valid-code @update:value="getCode" ref="validCode"></valid-code>
+                    </el-form-item>
+                </div>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm">注册</el-button>
                     <el-button @click="goToLogin">登录</el-button>
@@ -30,6 +40,7 @@
         </el-main>
     </el-container>
 </template>
+
 
 
 <script>
@@ -52,6 +63,7 @@ export default {
                 type: '个人会员'
             },
             verifyCode: '',
+            shake: false,
             rules: {
                 name: [
                     { required: true, message: '请输入用户名', trigger: 'blur' }
@@ -98,9 +110,8 @@ export default {
         refreshCode() {
             this.$refs.validCode.refreshCode();
         },
-        // 发送手机验证码（可选操作）
         sendSmsCode() {
-            axios.post(this.$baseUrl + '/api/sendSms', { phone: this.form.phone })
+            axios.post('http://localhost:8081/api/sendSms', { phone: this.form.phone })
                 .then(() => {
                     this.$message.success('验证码已发送');
                 })
@@ -112,8 +123,7 @@ export default {
         submitForm() {
             this.$refs.form.validate((valid) => {
                 if (valid) {
-                    // 提交注册请求
-                    axios.post(this.$baseUrl + '/api/add', {
+                    axios.post('http://localhost:8081/api/add', {
                         name: this.form.name,
                         password: this.form.password,
                         phone: this.form.phone,
@@ -131,17 +141,27 @@ export default {
                         this.$message.error('注册失败：' + errorMessage);
                     });
                 } else {
+                    this.shake = true;
+                    setTimeout(() => {
+                        this.shake = false;
+                    }, 820);
                     this.$message.error('请填写完整信息');
                 }
             });
         },
         goToLogin() {
+            if (this.form === '') {
+                this.shake = true;
+                setTimeout(() => {
+                    this.shake = false;
+                }, 820);
+                return;
+            }
             this.$router.push('/login');
         }
     }
 };
 </script>
-
 
 <style scoped>
 .el-form {
@@ -150,7 +170,7 @@ export default {
 }
 
 .m {
-    background-image: url("http://localhost:8081/registerBg.png");
+    background-image: url("@/assets/images/registerBg.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -159,5 +179,25 @@ export default {
     align-content: center;
     justify-content: center;
 }
+
+.apply-shake.shake {
+    animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+    18%, 98% {
+        transform: translate3d(-1px, 0, 0);
+    }
+    28%, 88% {
+        transform: translate3d(2px, 0, 0);
+    }
+    38%, 58%, 78% {
+        transform: translate3d(-4px, 0, 0);
+    }
+    40%, 68% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
 </style>
+
 

@@ -56,7 +56,7 @@ export default {
         return {
             videoForm: {
                 title: '',
-                url: '',  // 视频路径
+                url: '',
                 description: '',
                 thumbnail: ''  // 视频缩略图
             },

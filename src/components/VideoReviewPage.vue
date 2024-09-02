@@ -23,7 +23,7 @@
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button @click="approveVideo(scope.row)" type="success">通过</el-button>
-                    <el-button @click="rejectVideo(scope.row)" type="danger">拒绝</el-button>
+                    <el-button @click="confirmRejectVideo(scope.row)" type="danger">拒绝</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -78,6 +78,21 @@ export default {
             } catch (error) {
                 this.$message.error('拒绝视频失败: ' + error.message);
             }
+        },
+        confirmRejectVideo(video) {
+            // 在拒绝前显示确认对话框
+            this.$confirm('您确定要拒绝吗？', '确认拒绝', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.rejectVideo(video);
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消操作'
+                });
+            });
         },
         handleRowClick(row) {
             this.selectedVideo = row;

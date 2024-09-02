@@ -190,6 +190,7 @@ public class ArticleController {
         File saveFile = new File(ROOT_PATH + File.separator + originalFilename);
         file.transferTo(saveFile);
 
+       // 访问图片文件的地址
         String url = "http://" + ip + ":" + port + "/" + originalFilename;
         Map<String, Object> response = new HashMap<>();
 
@@ -205,7 +206,7 @@ public class ArticleController {
             }});
         } else {
             response.put("errno", 1); // 表示错误
-            response.put("message", "Unsupported file type"); // 不支持的文件类型
+            response.put("message", "不支持的文件类型"); // 不支持的文件类型
         }
 
         return response;

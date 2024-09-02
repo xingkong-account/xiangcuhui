@@ -25,7 +25,7 @@ export default {
                 'Authorization': 'Bearer <your-token>'  // 如果需要身份验证，可以在这里设置
             },
             uploadData: {
-                // 如果需要发送额外的表单数据，可以在这里设置
+
             }
         };
     },
@@ -49,7 +49,7 @@ export default {
         }
     },
     created() {
-        this.fetchVideos();  // 初始化时加载视频列表
+        this.fetchVideos();
     }
 };
 </script>
