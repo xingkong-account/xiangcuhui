@@ -47,7 +47,7 @@
         <el-footer class="custom-footer">
             <div class="footer-content">
                 <div class="footer-left">
-                    <img src="@/assets/images/icon.png" width="200px" height="120px" class="">
+                    <img src="@/assets/images/icon.jpg" width="200px" height="120px" class="">
                 </div>
                 <div class="footer-center">
                     <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>

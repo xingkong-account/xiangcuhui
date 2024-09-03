@@ -32,6 +32,12 @@
                         <valid-code @update:value="getCode" ref="validCode"></valid-code>
                     </el-form-item>
                 </div>
+                <el-form-item label="用户类型" prop="type">
+                    <el-radio-group v-model="form.type">
+                        <el-radio label="个人会员">个人会员</el-radio>
+                        <el-radio label="团体会员">团体会员</el-radio>
+                    </el-radio-group>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm">注册</el-button>
                     <el-button @click="goToLogin">登录</el-button>
@@ -111,7 +117,7 @@ export default {
             this.$refs.validCode.refreshCode();
         },
         sendSmsCode() {
-            axios.post('http://localhost:8081/api/sendSms', { phone: this.form.phone })
+            axios.post(this.$baseUrl + '/api/sendSms', { phone: this.form.phone })
                 .then(() => {
                     this.$message.success('验证码已发送');
                 })
@@ -123,7 +129,7 @@ export default {
         submitForm() {
             this.$refs.form.validate((valid) => {
                 if (valid) {
-                    axios.post('http://localhost:8081/api/add', {
+                    axios.post(this.$baseUrl +'/api/add', {
                         name: this.form.name,
                         password: this.form.password,
                         phone: this.form.phone,
@@ -170,7 +176,7 @@ export default {
 }
 
 .m {
-    background-image: url("@/assets/images/registerBg.png");
+    background-image: url("@/assets/images/register.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

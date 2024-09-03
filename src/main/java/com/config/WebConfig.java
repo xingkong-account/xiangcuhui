@@ -12,9 +12,10 @@ public class WebConfig implements WebMvcConfigurer {
     // 跨域请求的配置
     public void addCorsMappings(CorsRegistry registry) {
         String ACCESS_PORT = "8080";
-        String ACCESS_IP = "localhost";
+        String ACCESS_IP = "124.70.48.240";
         registry.addMapping("/**")
-                .allowedOrigins("http://" + ACCESS_IP + ":" + ACCESS_PORT) // 设置允许的前端URL
+//                .allowedOrigins("http://" + ACCESS_IP) // 设置允许的前端URL
+                .allowedOrigins("http://localhost:8080")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
@@ -24,6 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/image/**").addResourceLocations("file:D:/files/");
+//        registry.addResourceHandler("/image/**") .addResourceLocations("file:/home/server/XiangCuHui/java/files/");
     }
 }
 

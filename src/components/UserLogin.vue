@@ -149,7 +149,7 @@ export default {
 
 <style scoped>
 .m {
-    background-image: url("@/assets/images/backgroundImg.png");
+    background-image: url("@/assets/images/login.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

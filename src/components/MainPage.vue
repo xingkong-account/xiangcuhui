@@ -1,152 +1,166 @@
 <template>
     <el-container>
-        <div class="header-image">
-            <el-image src="http://localhost:8081/image.png" fit="contain"></el-image>
-        </div>
-        <el-header>
-            <div class="header-container">
-                <!-- 导航栏 -->
-                <el-menu mode="horizontal" class="header-menu">
-                    <el-menu-item index="1" @click="handleHomeClick" style="font-size: 20px; color: black">首页</el-menu-item>
+        <!-- Header Section -->
+        <el-header class="header-container">
+            <div class="header-logo">
+                <img src="@/assets/images/icon.jpg" alt="Logo" style="object-fit: contain; height: 80px;">
+            </div>
+            <el-menu mode="horizontal" class="header-menu">
+                <el-menu-item index="1" @click="handleHomeClick" style="font-size: 20px; color: black">首页</el-menu-item>
 
-                    <!-- 会员管理下拉菜单 -->
-                    <el-submenu class="member-management-menu" v-if="isAdmin || username" :index="'2'" :popper-append-to-body="false" :default-active="activeMenu">
-                        <template #title>会员管理</template>
-                        <!-- 个人会员子菜单 -->
-                        <el-submenu index="2-1">
-                            <template #title>个人会员</template>
-                            <el-menu-item index="2-1-1" @click="navigate('individual-members')">查看所有个人会员</el-menu-item>
-                            <el-menu-item v-if="isAdmin" index="2-1-2" @click="navigate('add-personal')">添加个人会员</el-menu-item>
-                            <el-menu-item v-if="isAdmin" index="2-1-3" @click="navigate('individual-member-requests')">审核个人会员</el-menu-item>
-                        </el-submenu>
-
-                        <!-- 团队会员子菜单 -->
-                        <el-submenu index="2-2">
-                            <template #title>团队会员</template>
-                            <el-menu-item index="2-2-1" @click="navigate('team-members')">查看所有团队会员</el-menu-item>
-                            <el-menu-item v-if="isAdmin" index="2-2-2" @click="navigate('add-team-member')">添加团队会员</el-menu-item>
-                            <el-menu-item v-if="isAdmin" index="2-2-3" @click="navigate('review-team-members')">审核团队会员</el-menu-item>
-                        </el-submenu>
+                <!-- 会员管理下拉菜单 -->
+                <el-submenu class="member-management-menu" v-if="isAdmin || username" :index="'2'" :popper-append-to-body="false" :default-active="activeMenu">
+                    <template #title>会员管理</template>
+                    <!-- 个人会员子菜单 -->
+                    <el-submenu index="2-1">
+                        <template #title>个人会员</template>
+                        <el-menu-item index="2-1-1" @click="navigate('individual-members')">查看所有个人会员</el-menu-item>
+                        <el-menu-item v-if="isAdmin" index="2-1-2" @click="navigate('add-personal')">添加个人会员</el-menu-item>
+                        <el-menu-item v-if="isAdmin" index="2-1-3" @click="navigate('individual-member-requests')">审核个人会员</el-menu-item>
                     </el-submenu>
 
-                    <!-- 文章管理下拉菜单 -->
-                    <el-submenu class="article-management-menu" :index="'3'" :popper-append-to-body="false" :default-active="activeMenu">
-                        <template #title>文章</template>
-                        <el-menu-item index="3-1" @click="navigate('articles/create')">添加文章</el-menu-item>
-                        <el-menu-item index="3-2" @click="navigate('article-review')">文章审核</el-menu-item>
-                        <el-menu-item index="3-3" @click="navigate('articles')">新闻动态</el-menu-item>
-                        <el-menu-item index="3-4" @click="navigate('category-articles', '农村党建')">农村党建</el-menu-item>
-                        <el-menu-item index="3-5" @click="navigate('category-articles', '集体经济')">集体经济</el-menu-item>
-                        <el-menu-item index="3-6" @click="navigate('category-articles', '产业发展')">产业发展</el-menu-item>
-                        <el-menu-item index="3-7" @click="navigate('category-articles', '乡土文化')">乡土文化</el-menu-item>
-                        <el-menu-item index="3-8" @click="navigate('category-articles', '青山绿水')">青山绿水</el-menu-item>
-                        <el-menu-item index="3-9" @click="navigate('category-articles', '青年农人')">青年农人</el-menu-item>
+                    <!-- 团队会员子菜单 -->
+                    <el-submenu index="2-2">
+                        <template #title>团队会员</template>
+                        <el-menu-item index="2-2-1" @click="navigate('team-members')">查看所有团队会员</el-menu-item>
+                        <el-menu-item v-if="isAdmin" index="2-2-2" @click="navigate('add-team-member')">添加团队会员</el-menu-item>
+                        <el-menu-item v-if="isAdmin" index="2-2-3" @click="navigate('review-team-members')">审核团队会员</el-menu-item>
                     </el-submenu>
-                    <!-- 精选视频下拉菜单 -->
-                    <el-submenu class="video-menu" :index="'4'" :popper-append-to-body="false" :default-active="activeMenu">
-                        <template #title>视频</template>
-                        <el-menu-item index="4-1" @click="navigate('videos')">精选视频</el-menu-item>
-                        <el-menu-item v-if="isAdmin" index="4-2" @click="navigate('video-review')">审核视频</el-menu-item>
-                        <el-menu-item v-if="isAdmin" index="4-3" @click="navigate('video-manage')">已审核视频</el-menu-item>
-                        <el-menu-item index="4-4" @click="navigate('upload-video')">上传视频</el-menu-item>
-                    </el-submenu>
+                </el-submenu>
 
-                    <el-menu-item index="5" @click="navigate('about')" style="font-size: 20px; color: black">关于我们</el-menu-item>
-                </el-menu>
+                <!-- 文章管理下拉菜单 -->
+                <el-submenu class="article-management-menu" :index="'3'" :popper-append-to-body="false" :default-active="activeMenu">
+                    <template #title>文章</template>
+                    <el-menu-item index="3-1" @click="navigate('articles/create')">添加文章</el-menu-item>
+                    <el-menu-item index="3-2" @click="navigate('article-review')">文章审核</el-menu-item>
+                    <el-menu-item index="3-3" @click="navigate('articles')">新闻动态</el-menu-item>
+                    <el-menu-item index="3-4" @click="navigate('category-articles', '农村党建')">农村党建</el-menu-item>
+                    <el-menu-item index="3-5" @click="navigate('category-articles', '集体经济')">集体经济</el-menu-item>
+                    <el-menu-item index="3-6" @click="navigate('category-articles', '产业发展')">产业发展</el-menu-item>
+                    <el-menu-item index="3-7" @click="navigate('category-articles', '乡土文化')">乡土文化</el-menu-item>
+                    <el-menu-item index="3-8" @click="navigate('category-articles', '青山绿水')">青山绿水</el-menu-item>
+                    <el-menu-item index="3-9" @click="navigate('category-articles', '青年农人')">青年农人</el-menu-item>
+                </el-submenu>
+                <!-- 精选视频下拉菜单 -->
+                <el-submenu class="video-menu" :index="'4'" :popper-append-to-body="false" :default-active="activeMenu">
+                    <template #title>视频</template>
+                    <el-menu-item index="4-1" @click="navigate('videos')">精选视频</el-menu-item>
+                    <el-menu-item v-if="isAdmin" index="4-2" @click="navigate('video-review')">审核视频</el-menu-item>
+                    <el-menu-item v-if="isAdmin" index="4-3" @click="navigate('video-manage')">已审核视频</el-menu-item>
+                    <el-menu-item index="4-4" @click="navigate('upload-video')">上传视频</el-menu-item>
+                </el-submenu>
 
-                <!-- 登录注册按钮 -->
-                <div class="auth-buttons">
-                    <div v-if="username">
-                        <el-dropdown @command="handleCommand">
+                <el-menu-item index="5" @click="navigate('about')" style="font-size: 20px; color: black">关于我们</el-menu-item>
+            </el-menu>
+            <!-- 登录注册按钮 -->
+            <div class="auth-buttons">
+                <div v-if="username">
+                    <el-dropdown @command="handleCommand">
                     <span class="el-dropdown-link">
                         欢迎, {{ username }} <i class="el-icon-arrow-down"></i>
                     </span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item command="changePassword">修改密码</el-dropdown-item>
-                                <el-dropdown-item command="logout">退出</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                    </div>
-                    <div v-else>
-                        <el-button type="primary" class="custom-login-button" @click="goToLogin">登录</el-button>
-                        <el-button class="custom-register-button" @click="goToRegister">注册</el-button>
-                    </div>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command="changePassword">修改密码</el-dropdown-item>
+                            <el-dropdown-item command="logout">退出</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </div>
+                <div v-else>
+                    <el-button type="primary" class="custom-login-button" @click="goToLogin">登录</el-button>
+                    <el-button class="custom-register-button" @click="goToRegister">注册</el-button>
                 </div>
             </div>
         </el-header>
 
-
-        <el-main>
-            <el-container class="main-container">
-                <!-- 左侧内容 -->
-                <el-main class="main-content">
-                    <!-- 新闻公告部分 -->
-                    <div class="announcement-container">
-                        <div class="announcement-title">
-                            推荐阅读
-                            <el-button type="text" class="more-button" @click="navigateToArticles">更多>></el-button>
-                        </div>
-                        <div class="announcement-list">
-                            <div v-for="(article, index) in articleTitles" :key="index" class="announcement-item">
-                                <router-link :to="'/articles/' + article.id" class="announcement-link">
-                                    <span>{{ article.category }} - {{ article.title }}</span>
-                                    <span class="announcement-date">{{ formatDate(article.updated_at) }}</span>
-                                </router-link>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!-- 轮播图部分 -->
-                    <el-carousel :interval="5000" arrow="always" class="carousel">
-                        <el-carousel-item v-for="(item, index) in carouselItems" :key="index">
-                            <img :src="item.src" :alt="item.alt" />
-                        </el-carousel-item>
-                    </el-carousel>
-
-                    <el-container class="content-container">
-                        <router-view />
-                    </el-container>
-                </el-main>
-
-                <el-aside width="300px" class="right-sidebar">
-                    <div class="sidebar-item">
-                        <h2 class="sidebar-title">最新文章</h2>
-                        <ul class="sidebar-list">
-                            <li v-for="article in latestArticles" :key="article.id" class="sidebar-list-item">
-                                <router-link :to="'/articles/' + article.id">{{ article.title }}</router-link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="sidebar-item">
-                        <h2 class="sidebar-title">最热文章</h2>
-                        <ul class="sidebar-list">
-                            <li v-for="article in popularArticles" :key="article.id" class="sidebar-list-item">
-                                <router-link :to="'/articles/' + article.id">{{ article.title }}</router-link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="sidebar-item">
-                        <h2>广告</h2>
-                        <img src="http://localhost:8081/" alt="广告">
-                    </div>
-                </el-aside>
-            </el-container>
+        <!-- Main Image Banner -->
+        <el-main class="main-banner">
+            <img src="@/assets/images/banner1.jpg" alt="Banner" class="banner-image">
+            <div class="banner-text">
+                <h1>Website of the Rural Promotion Association</h1>
+            </div>
         </el-main>
 
+        <!-- Main Content Section -->
+        <el-main class="main-content-container">
+            <el-row :gutter="20">
+                <!-- News Section -->
+                <el-col :span="16">
+
+                    <div class="announcement-title">
+                        推荐阅读
+                        <el-button type="text" class="more-button" @click="navigateToArticles">更多>></el-button>
+                    </div>
+                    <div class="announcement-list">
+                        <div v-for="(article, index) in articleTitles" :key="index" class="announcement-item">
+                            <router-link :to="'/articles/' + article.id" class="announcement-link">
+                                <span>{{ article.category }} - {{ article.title }}</span>
+                                <span class="announcement-date">{{ formatDate(article.updated_at) }}</span>
+                            </router-link>
+                        </div>
+                    </div>
+                    <div class="image-section">
+                        <el-carousel height="300px" :interval="5000" arrow="always" indicator-position="outside">
+                            <el-carousel-item v-for="(imageSet, index) in chunkedImages" :key="index">
+                                <el-row :gutter="20">
+                                    <el-col v-for="(image, idx) in imageSet" :key="idx" :span="8">
+                                        <div class="image-card">
+                                            <img :src="image.src" :alt="image.alt" class="image">
+                                            <div class="image-overlay">
+                                <span @click="navigate('category-articles', image.category)">
+                                    {{ image.title }}
+                                </span>
+                                            </div>
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                            </el-carousel-item>
+                        </el-carousel>
+                    </div>
+                    <div>
+
+                    </div>
+                </el-col>
+
+                <!-- 右边部分 -->
+                <el-col :span="8">
+                    <div class="sidebar">
+                        <h2>最新文章</h2>
+                        <ul>
+                            <li v-for="article in latestArticles" :key="article.id">
+                                <router-link :to="'/articles/' + article.id">{{ article.title }}</router-link>
+                            </li>
+                        </ul>
+                        <h2>最热文章</h2>
+                        <ul>
+                            <li v-for="article in popularArticles" :key="article.id">
+                                <router-link :to="'/articles/' + article.id">{{ article.title }}</router-link>
+                            </li>
+                        </ul>
+                        <h2>最热文章</h2>
+                        <ul>
+                            <li v-for="article in popularArticles" :key="article.id">
+                                <router-link :to="'/articles/' + article.id">{{ article.title }}</router-link>
+                            </li>
+                        </ul>
+                    </div>
+                </el-col>
+            </el-row>
+        </el-main>
+
+        <!-- 底部 -->
         <el-footer class="custom-footer">
             <div class="footer-content">
                 <div class="footer-left">
-                    <img src="http://localhost:8081/image.png" width="200px" height="120px" class="">
+                    <img src="@/assets/images/icon.jpg" width="200px" height="120px" class="">
                 </div>
                 <div class="footer-center">
                     <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
-                    <p>主办单位:  乡促会&nbsp;&nbsp;&nbsp; 备案号：</p>
-                    <p>地址: XX省XX市XXXXXX</p>
+                    <p>主办单位: 乡促会&nbsp;&nbsp;&nbsp; 备案号：</p>
+                    <p>地址: 甘肃省兰州市XXXXXX</p>
                 </div>
                 <div class="footer-right">
                     <img src="" alt="Security" class="security-logo">
-                    <p>X公网安备 235487154313号</p>
+                    <p>甘公网安备 235487154313号</p>
                     <p>网站标识码：0000000000</p>
                 </div>
             </div>
@@ -160,10 +174,43 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            carouselItems: [
-                { src: 'https://images.unsplash.com/photo-1519608487953-e999c86e7455?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', alt: 'Starry Sky 1' },
-                { src: 'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', alt: 'Starry Sky 2' },
-                { src: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', alt: 'Starry Sky 3' }
+            carouselImages: [
+                {
+                    src: require('@/assets/images/TeamEconomy.jpg'), // 确保图片路径正确
+                    alt: "农村党建",
+                    title: "关于农村党建",
+                    category: "农村党建"
+                },
+                {
+                    src: require('@/assets/images/country.jpg'),
+                    alt: "集体经济",
+                    title: "关于集体经济",
+                    category: "集体经济"
+                },
+                {
+                    src: require('@/assets/images/industry.jpg'),
+                    alt: "产业发展",
+                    title: "关于产业发展",
+                    category: "产业发展"
+                },
+                {
+                    src: require('@/assets/images/industry.jpg'),
+                    alt: "乡土文化",
+                    title: "关于乡土文化",
+                    category: "乡土文化"
+                },
+                {
+                    src: require('@/assets/images/industry.jpg'),
+                    alt: "青山绿水",
+                    title: "关于青山绿水",
+                    category: "青山绿水"
+                },
+                {
+                    src: require('@/assets/images/industry.jpg'),
+                    alt: "青年农人",
+                    title: "关于青年农人",
+                    category: "青年农人"
+                }
             ],
             articleTitles: [],  // 存储文章标题的数据
             username: '', // 存储用户名
@@ -174,6 +221,19 @@ export default {
             currentPage: 1,
             pageSize: 10
         };
+    },
+    computed: {
+        chunkedImages() {
+            const chunkSize = 3;
+            return this.carouselImages.reduce((resultArray, item, index) => {
+                const chunkIndex = Math.floor(index / chunkSize);
+                if (!resultArray[chunkIndex]) {
+                    resultArray[chunkIndex] = [];
+                }
+                resultArray[chunkIndex].push(item);
+                return resultArray;
+            }, []);
+        }
     },
     methods: {
         navigate(page, category) {
@@ -265,179 +325,139 @@ export default {
 </script>
 
 <style scoped>
-.header-menu {
-    border-bottom: none;
-    background-color: transparent;
-    border-bottom: none;
-}
-
 .header-container {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    padding: 10px 20px; /* 头部的内边距 */
-    /*background-color: #67C23A;*/
-    height: 80%;
+    padding: 0 20px;
 }
-
-.custom-header {
-    background-color: #8BC34A;
+.header-logo img {
+    height: 80px;
+}
+.main-banner {
+    position: relative;
+}
+.banner-image {
+    width: 100%;
+    height: auto;
+}
+.banner-text {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    transform: translate(-20%, -20%);
     color: white;
-    padding: 10px;
+    text-align: left;
 }
-
-.site-title {
-    color: white;
-    margin: 0;
+.news-card {
+    margin-bottom: 10px;
 }
-
-.auth-buttons .el-button {
-    margin-left: 10px;
-}
-
-.main-container {
-    background-color: #F5F5F5;
-}
-
-.carousel {
-    margin-top: 20px;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-/* 热点新闻容器整体样式 */
-.announcement-container {
-    background-color: #F9F9F9; /* 浅灰色背景 */
-    padding: 15px 20px; /* 内边距 */
-    border-radius: 10px; /* 圆角 */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 增加阴影 */
-    margin-bottom: 20px; /* 与其他部分的间距 */
-}
-
-/* 热点新闻标题的样式 */
-.announcement-title {
-    font-size: 24px; /* 增大字体 */
-    font-weight: bold; /* 加粗 */
-    color: #333; /* 深色标题 */
-    margin-bottom: 20px; /* 标题与新闻列表之间的间距 */
+.news-item {
     display: flex;
-    justify-content: space-between; /* 标题与“更多”按钮对齐 */
-    align-items: center;
-    border-bottom: 2px solid #8BC34A; /* 标题底部绿色边框 */
-    padding-bottom: 10px; /* 标题底部内边距 */
+    justify-content: space-between;
 }
-
-/* “更多”按钮的样式 */
-.more-button {
-    font-size: 14px; /* 字体大小 */
-    color: #8BC34A; /* 按钮颜色 */
-    cursor: pointer; /* 鼠标变成指针 */
-    transition: color 0.3s; /* 渐变效果 */
-}
-
-.more-button:hover {
-    color: #4CAF50; /* 鼠标悬停时颜色变化 */
-}
-
-/* 热点新闻列表的样式 */
-.announcement-list {
-    list-style: none; /* 去掉默认列表样式 */
-    padding: 0;
-    margin: 0;
-}
-
-/* 单个新闻项的样式 */
-.announcement-item {
-    padding: 10px 0; /* 上下内边距 */
-    border-bottom: 1px dashed #E0E0E0; /* 分割线 */
-    transition: background-color 0.3s; /* 背景色渐变 */
-}
-
-.announcement-item:hover {
-    background-color: #F1F1F1; /* 鼠标悬停时背景色变化 */
-}
-
-.announcement-item:last-child {
-    border-bottom: none; /* 最后一个项去掉分割线 */
-}
-
-/* 新闻链接的样式 */
-.announcement-link {
-    text-decoration: none; /* 去掉下划线 */
-    color: #333; /* 链接颜色 */
+.footer {
     display: flex;
-    justify-content: space-between; /* 标题和日期左右对齐 */
-    align-items: center; /* 垂直居中 */
-    font-size: 16px; /* 增加字体大小 */
-    font-weight: 500; /* 适中的字体粗细 */
-    transition: color 0.3s; /* 颜色渐变 */
-}
-
-.announcement-link:hover {
-    color: #4CAF50; /* 鼠标悬停时颜色变化 */
-}
-
-/* 新闻日期的样式 */
-.announcement-date {
-    font-size: 14px; /* 日期字体大小 */
-    color: #757575; /* 日期颜色 */
-}
-
-/* 右侧边栏整体样式 */
-.right-sidebar {
-    background-color: #E0F2F1; /* 保持背景色 */
+    justify-content: space-between;
     padding: 20px;
-    border-left: 1px solid #BDBDBD;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
 }
 
-/* 单个侧边栏项目的样式 */
-.sidebar-item {
-    margin-bottom: 20px; /* 间距 */
+.announcement-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
     padding: 10px;
-    border-radius: 8px; /* 圆角 */
-    background-color: #FFFFFF; /* 背景色 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 轻微阴影 */
 }
 
-/* 侧边栏标题的样式 */
-.sidebar-title {
-    font-size: 18px; /* 更大的字体 */
-    font-weight: bold; /* 加粗 */
-    color: #333; /* 标题文字颜色 */
-    border-bottom: 2px solid #8BC34A; /* 标题底部边框 */
-    padding-bottom: 5px; /* 底部内边距 */
-    margin-bottom: 10px; /* 标题和内容之间的间距 */
+.announcement-list {
+    margin-bottom: 40px;
+    padding: 10px;
 }
 
-/* 侧边栏文章列表的样式 */
-.sidebar-list {
-    list-style: none; /* 去掉默认列表样式 */
+.announcement-item {
+    margin-bottom: 10px;
+}
+
+.announcement-link {
+    display: flex;
+    justify-content: space-between;
+    text-decoration: none;
+    color: #333;
+}
+
+.announcement-date {
+    color: #999;
+    font-size: 14px;
+}
+
+.image-section {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.image-card {
+    position: relative;
+    overflow: hidden;
+    height: 300px;
+    width: 100%;
+    border-radius: 8px;
+    scale: 0.8;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(196,200,203);
+    color: #171B1B;
+    text-align: center;
+    font-size: 26px;
+    padding: 10px 0;
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+}
+
+.image-overlay:hover {
+    background-color: rgb(100,171,141);
+}
+
+.sidebar {
+    background-color: #f2f4f6;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.sidebar ul {
+    list-style-type: none;
     padding: 0;
-    margin: 0;
 }
 
-/* 单个列表项的样式 */
-.sidebar-list-item {
-    margin-bottom: 10px; /* 列表项之间的间距 */
+.sidebar ul li {
+    margin-bottom: 5px;
 }
 
-/* 列表项链接的样式 */
-.sidebar-list-item a {
-    text-decoration: none; /* 去掉下划线 */
-    color: black; /* 链接颜色 */
-    font-size: 14px; /* 字体大小 */
-    transition: color 0.3s; /* 颜色渐变过渡 */
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
 }
-
-/* 列表项链接悬停状态的样式 */
-.sidebar-list-item a:hover {
-    color: #4CAF50; /* 悬停时的颜色 */
-}
-
 
 .custom-footer {
-    background-color: #67C23A;
+    background-image: url("@/assets/images/footer.png");
     color: #ffffff;
     padding: 20px 0;
     text-align: center;
@@ -483,53 +503,4 @@ export default {
     text-decoration: underline;
 }
 
-/*修改密码和退出下拉菜单样式*/
-.el-dropdown-link {
-    color: black;
-    font-size: 16px;
-}
-
-/*子菜单鼠标悬停样式*/
-.el-menu-item:hover, .el-submenu__title:hover {
-    background-color: #8BC34A !important;
-}
-
-.header-menu .el-menu-item {
-    color: black; /* 设置菜单项的字体颜色 */
-}
-
-/*登录注册按钮样式*/
-.custom-login-button {
-    background-color: hotpink;
-    color: #f1f3f5;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.custom-login-button:hover {
-    background-color: deeppink;
-}
-
-.custom-login-button:active {
-    background-color: crimson;
-}
-
-.custom-register-button {
-    background-color: powderblue;
-    color: #fff;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.custom-register-button:hover {
-    background-color: darkviolet;
-}
-
-.custom-register-button:active {
-    background-color: indigo;
-}
 </style>
