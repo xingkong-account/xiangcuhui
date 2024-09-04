@@ -1,12 +1,11 @@
 <template>
-    <div class="m" style="height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div class="page-container">
+        <div class="welcome-message">
+            欢迎登录
+        </div>
         <div class="login-card">
-            <div class="image-container">
-                <img src="@/assets/images/login.png" alt="" style="width: 100%">
-            </div>
             <div class="form-container" :class="{'shake': shake}">
-                <el-form :model="user" :rules="rules" ref="submitForm" style="width: 80%">
-                    <div class="form-title">欢迎登录</div>
+                <el-form :model="user" :rules="rules" ref="submitForm" class="form">
                     <el-form-item prop="name">
                         <el-input prefix-icon="el-icon-user" size="medium" placeholder="请输入账号" v-model="user.name"></el-input>
                     </el-form-item>
@@ -22,14 +21,14 @@
                         </div>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm" style="width: 100%">登录</el-button>
+                        <el-button type="primary" class="custom-login-button" @click="submitForm">登录</el-button>
                     </el-form-item>
-                    <div class="footer">
+                    <div class="n">
                         <div class="register">
-                            还没有账号？<span style="color: #67C23A; cursor: pointer" @click="goToRegister">注册</span>
+                            还没有账号？<span class="link" @click="goToRegister">注册</span>
                         </div>
                         <div class="forgot-password">
-                            <span style="color: #67C23A; cursor: pointer">忘记密码</span>
+                            <span class="link">忘记密码</span>
                         </div>
                     </div>
                 </el-form>
@@ -148,63 +147,97 @@ export default {
 </script>
 
 <style scoped>
-.m {
+/* 页面容器样式 */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background-image: url("@/assets/images/login.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     height: 100vh;
-}
-
-.login-card {
-    display: flex;
-    background-color: white;
-    width: 50%;
-    border-radius: 5px;
+    width: 100vw;
     overflow: hidden;
 }
 
-.image-container {
-    flex: 1;
-}
-
-.form-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.form-title {
-    font-size: 20px;
+/* 欢迎登录消息的样式 */
+.welcome-message {
+    color: rgb(156,201,180);
+    font-size: 28px;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 20px;
+    margin: 20px 0;
+    position: relative;
+    width: 100%;
 }
 
-.code-container {
+.welcome-message::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: rgb(156,201,180); /* 下划线颜色 */
+    margin: 8px auto 0;
+}
+
+/* 登录卡片样式 */
+.login-card {
     display: flex;
+    flex-direction: column;
+    width: 30%; /* 控制登录卡片的宽度 */
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 200px;
+    margin-top: 20px;
 }
 
-.code-image {
-    flex: 1;
-    height: 36px;
+/* 表单标题 */
+.form-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #67C23A; /* Green color */
+}
+
+/* 代码输入框容器 */
+.code-container {
     display: flex;
     align-items: center;
 }
 
-.footer {
+/* 登录按钮 */
+.custom-login-button {
+    background-color: rgb(101, 172, 140);
+    border-color: rgb(101, 172, 140);
+    color: #fff;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+    width: 100%;
+}
+
+.custom-login-button:hover {
+    background-color: rgb(85, 145, 118);
+    border-color: rgb(85, 145, 118);
+}
+
+.custom-login-button:active {
+    background-color: rgb(75, 130, 106);
+    border-color: rgb(75, 130, 106);
+}
+
+/* 链接样式 */
+.link {
+    color: #67C23A;
+    cursor: pointer;
+}
+
+.n {
     display: flex;
+    justify-content: space-between;
+    width: 100%;
 }
 
-.register {
-    flex: 1;
-}
-
-.forgot-password {
-    flex: 1;
-    text-align: right;
-}
 @keyframes shake {
     0% { transform: translateX(0); }
     20% { transform: translateX(-10px); }
@@ -220,5 +253,5 @@ export default {
     backface-visibility: hidden;
     perspective: 1000px;
 }
-
 </style>
+

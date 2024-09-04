@@ -1,50 +1,56 @@
 <template>
-    <el-container class="m">
-        <el-main>
-            <el-form :model="form" ref="form" label-width="140px" :rules="rules">
-                <div :class="{'apply-shake': true, 'shake': shake}">
-                    <el-form-item label="用户名" prop="name">
-                        <el-input v-model="form.name"></el-input>
+    <div class="page-container">
+        <div class="welcome-message">
+            欢迎注册
+        </div>
+        <!-- 注册表单 -->
+        <el-container class="m">
+            <el-main>
+                <el-form :model="form" ref="form" label-width="140px" :rules="rules">
+                    <div :class="{'apply-shake': true, 'shake': shake}">
+                        <el-form-item label="用户名" prop="name">
+                            <el-input v-model="form.name"></el-input>
+                        </el-form-item>
+                    </div>
+                    <div :class="{'apply-shake': true, 'shake': shake}">
+                        <el-form-item label="密码" prop="password">
+                            <el-input v-model="form.password" show-password type="password"></el-input>
+                        </el-form-item>
+                    </div>
+                    <div :class="{'apply-shake': true, 'shake': shake}">
+                        <el-form-item label="确认密码" prop="confirmPassword">
+                            <el-input v-model="form.confirmPassword" show-password type="password"></el-input>
+                        </el-form-item>
+                    </div>
+                    <div :class="{'apply-shake': true, 'shake': shake}">
+                        <el-form-item label="手机号" prop="phone">
+                            <el-input v-model="form.phone" maxlength="11"></el-input>
+                            <el-button @click="sendSmsCode" :disabled="!form.phone">发送验证码</el-button>
+                        </el-form-item>
+                    </div>
+                    <el-form-item label="手机验证码 (可选)" prop="phoneCode">
+                        <el-input v-model="form.phoneCode" placeholder="请输入手机验证码"></el-input>
                     </el-form-item>
-                </div>
-                <div :class="{'apply-shake': true, 'shake': shake}">
-                    <el-form-item label="密码" prop="password">
-                        <el-input v-model="form.password" show-password type="password"></el-input>
+                    <div :class="{'apply-shake': true, 'shake': shake}">
+                        <el-form-item label="验证码" prop="code">
+                            <el-input v-model="form.code" placeholder="请输入验证码"></el-input>
+                            <valid-code @update:value="getCode" ref="validCode"></valid-code>
+                        </el-form-item>
+                    </div>
+                    <el-form-item label="用户类型" prop="type" class="user-type">
+                        <el-radio-group v-model="form.type">
+                            <el-radio label="个人会员">个人会员</el-radio>
+                            <el-radio label="团体会员">团体会员</el-radio>
+                        </el-radio-group>
                     </el-form-item>
-                </div>
-                <div :class="{'apply-shake': true, 'shake': shake}">
-                    <el-form-item label="确认密码" prop="confirmPassword">
-                        <el-input v-model="form.confirmPassword" show-password type="password"></el-input>
+                    <el-form-item>
+                        <el-button type="primary" class="custom-register-button" @click="submitForm">注册</el-button>
+                        <el-button @click="goToLogin" class="custom-login-button">登录</el-button>
                     </el-form-item>
-                </div>
-                <div :class="{'apply-shake': true, 'shake': shake}">
-                    <el-form-item label="手机号" prop="phone">
-                        <el-input v-model="form.phone" maxlength="11"></el-input>
-                        <el-button @click="sendSmsCode" :disabled="!form.phone">发送验证码</el-button>
-                    </el-form-item>
-                </div>
-                <el-form-item label="手机验证码 (可选)" prop="phoneCode">
-                    <el-input v-model="form.phoneCode" placeholder="请输入手机验证码"></el-input>
-                </el-form-item>
-                <div :class="{'apply-shake': true, 'shake': shake}">
-                    <el-form-item label="验证码" prop="code">
-                        <el-input v-model="form.code" placeholder="请输入验证码"></el-input>
-                        <valid-code @update:value="getCode" ref="validCode"></valid-code>
-                    </el-form-item>
-                </div>
-                <el-form-item label="用户类型" prop="type">
-                    <el-radio-group v-model="form.type">
-                        <el-radio label="个人会员">个人会员</el-radio>
-                        <el-radio label="团体会员">团体会员</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm">注册</el-button>
-                    <el-button @click="goToLogin">登录</el-button>
-                </el-form-item>
-            </el-form>
-        </el-main>
-    </el-container>
+                </el-form>
+            </el-main>
+        </el-container>
+    </div>
 </template>
 
 
@@ -170,20 +176,43 @@ export default {
 </script>
 
 <style scoped>
-.el-form {
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-.m {
+/* 页面容器样式 */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background-image: url("@/assets/images/register.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed; /* 固定背景，滚动内容时背景不动 */
     height: 100vh;
-    padding: 50px;
-    align-content: center;
-    justify-content: center;
+    width: 100vw;
+    overflow: hidden;
+}
+/* 欢迎注册消息的样式 */
+.welcome-message {
+    color: rgb(156,201,180);
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+    width: 100%;
+}
+
+.welcome-message::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: rgb(156,201,180); /* 下划线颜色 */
+    margin: 8px auto 0;
+}
+
+.el-form {
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 .apply-shake.shake {
@@ -204,6 +233,91 @@ export default {
         transform: translate3d(4px, 0, 0);
     }
 }
+
+/* 用户类型部分的样式 */
+.user-type .el-radio {
+    color: black;
+}
+
+.user-type .el-radio__label {
+    font-weight: bold; /* 字体加粗 */
+}
+
+/* 选中状态时，单选框和字体的颜色都设置为绿色 */
+.user-type .el-radio.is-checked .el-radio__input.is-checked .el-radio__inner {
+    border-color: #67C23A; /* 选中时单选框的边框颜色 */
+    background-color: #67C23A; /* 选中时单选框的背景颜色 */
+}
+
+.user-type .el-radio.is-checked .el-radio__label {
+    color: #67C23A;
+}
+
+/* 注册按钮的样式 */
+.custom-register-button {
+    background-color: rgb(101, 172, 140);
+    border-color: rgb(101, 172, 140);
+    color: #fff;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.custom-register-button:hover {
+    background-color: rgb(85, 145, 118);
+    border-color: rgb(85, 145, 118);
+}
+
+.custom-register-button:active {
+    background-color: rgb(75, 130, 106);
+    border-color: rgb(75, 130, 106);
+}
+
+/* 用户类型部分的样式 */
+.user-type .el-radio {
+    color: black;
+}
+
+/* 选中状态时，单选框和字体的颜色都设置为绿色 */
+.user-type .el-radio.is-checked .el-radio__input.is-checked .el-radio__inner {
+    border-color: #67C23A;
+    background-color: #67C23A;
+}
+
+.user-type .el-radio.is-checked .el-radio__label {
+    color: #67C23A;
+}
+
+/* 注册按钮的样式 */
+.custom-register-button {
+    background-color: rgb(101, 172, 140);
+    border-color: rgb(101, 172, 140);
+    color: #fff;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.custom-register-button:hover {
+    background-color: rgb(85, 145, 118);
+    border-color: rgb(85, 145, 118);
+}
+
+.custom-register-button:active {
+    background-color: rgb(75, 130, 106);
+    border-color: rgb(75, 130, 106);
+}
+/* 登录按钮的样式 */
+.custom-login-button {
+    background-color: rgb(101, 172, 140);
+    border-color: rgb(101, 172, 140);
+    color: #fff;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.custom-login-button:hover {
+    background-color: rgb(85, 145, 118);
+    border-color: rgb(85, 145, 118);
+}
+
+.custom-login-button:active {
+    background-color: rgb(75, 130, 106);
+    border-color: rgb(75, 130, 106);
+}
 </style>
-
-

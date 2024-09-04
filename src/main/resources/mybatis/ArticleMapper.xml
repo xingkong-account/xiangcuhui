@@ -91,14 +91,14 @@
     <select id="selectLatestArticles" resultType="com.bean.Article">
         SELECT * FROM articles
         ORDER BY created_at DESC
-            LIMIT 8
+            LIMIT 10
     </select>
 
     <!-- 获取最热文章 -->
     <select id="selectPopularArticles" resultType="com.bean.Article">
         SELECT * FROM articles
         ORDER BY views DESC
-            LIMIT 8
+            LIMIT 10
     </select>
 
     <select id="getAllArticles" parameterType="map" resultType="com.bean.Article">

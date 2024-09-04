@@ -1,28 +1,29 @@
 <template>
-    <el-container>
+    <el-container class="m">
         <el-header class="header">
+            <span class="header-title">个人会员管理</span>
         </el-header>
         <el-main>
-            <el-card>
-                <div slot="header">
-                    <el-button type="default" @click="goBack" style="margin-right: 20px;">
+            <el-card class="member-card">
+                <div slot="header" class="card-header">
+                    <el-button type="default" @click="goBack" class="back-button">
                         <i class="el-icon-arrow-left"></i> 返回
                     </el-button>
-                    <span>个人会员管理</span>
-                    <el-button type="primary" @click="navigateToAddPage" style="float: right;" class="add-individual">新增会员</el-button>
-
+                    <el-button type="primary" @click="navigateToAddPage" class="add-individual">
+                        新增会员
+                    </el-button>
                 </div>
-                <el-table :data="members" style="width: 100%">
-                    <el-table-column prop="id" label="ID" width="50"></el-table-column>
+                <el-table :data="members" class="member-table">
+                    <el-table-column prop="id" label="ID" width="60"></el-table-column>
                     <el-table-column prop="name" label="姓名" width="150"></el-table-column>
                     <el-table-column prop="phone" label="电话" width="150"></el-table-column>
-                    <el-table-column prop="status" label="状态" width="100"></el-table-column>
-                    <el-table-column prop="created_at" label="创建时间" width="180">
+                    <el-table-column prop="status" label="状态" width="120"></el-table-column>
+                    <el-table-column prop="created_at" label="创建时间" width="200">
                         <template slot-scope="scope">
                             {{ formatDate(scope.row.created_at) }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="updated_at" label="更新时间" width="180">
+                    <el-table-column prop="updated_at" label="更新时间" width="200">
                         <template slot-scope="scope">
                             {{ formatDate(scope.row.updated_at) }}
                         </template>
@@ -138,35 +139,77 @@ export default {
 };
 </script>
 
+
 <style scoped>
-.edit-button {
-    background-color: #4CAF50; /* 绿色背景色 */
-    border-color: #4CAF50; /* 同样的边框颜色 */
+.m {
+    background-image: url("@/assets/images/register.jpg");
+}
+.header {
+    background-color: #f5f5f5;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #ddd;
 }
 
-.delete-button {
-    background-color: #FF5722; /* 红色背景色 */
-    border-color: #FF5722; /* 同样的边框颜色 */
-}
-/* 为按钮添加 hover 效果 */
-.el-button:hover.edit-button {
-    background-color: #45a049; /* 绿色背景色 hover 效果 */
-    border-color: #45a049; /* 同样的边框颜色 */
+.header-title {
+    font-size: 20px;
+    font-weight: bold;
 }
 
-.el-button:hover.delete-button {
-    background-color: #e64a19; /* 红色背景色 hover 效果 */
-    border-color: #e64a19; /* 同样的边框颜色 */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.add-individual{
-    background-color: #FFC107; /* 设置为你想要的颜色 */
-    border-color: #FFC107; /* 设置边框颜色 */
+.back-button {
+    background-color: #e0e0e0;
+    border-color: #e0e0e0;
+}
+
+.add-individual {
+    background-color: rgb(101, 172, 140);
+    border-color: rgb(101, 172, 140);
     color: #fff;
 }
 
 .add-individual:hover {
-    background-color: #FFD54F; /* 悬停时的背景色 */
-    border-color: #FFD54F; /* 悬停时的边框颜色 */
+    background-color: rgb(85, 145, 118);
+    border-color: rgb(85, 145, 118);
+}
+
+.edit-button {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.delete-button {
+    background-color: #FF5722;
+    border-color: #FF5722;
+}
+
+.el-button:hover.edit-button {
+    background-color: #45a049;
+    border-color: #45a049;
+}
+
+.el-button:hover.delete-button {
+    background-color: #e64a19;
+    border-color: #e64a19;
+}
+
+.member-card {
+    margin: 20px auto;
+}
+
+.member-table {
+    margin-top: 20px;
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
 }
 </style>

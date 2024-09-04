@@ -1,5 +1,5 @@
 <template>
-    <el-container>
+    <el-container class="total">
         <!-- Header Section -->
         <el-header class="header-container">
             <div class="header-logo">
@@ -33,7 +33,7 @@
                     <template #title>文章</template>
                     <el-menu-item index="3-1" @click="navigate('articles/create')">添加文章</el-menu-item>
                     <el-menu-item index="3-2" @click="navigate('article-review')">文章审核</el-menu-item>
-                    <el-menu-item index="3-3" @click="navigate('articles')">新闻动态</el-menu-item>
+                    <el-menu-item index="3-3" @click="navigate('articles')">文章管理</el-menu-item>
                     <el-menu-item index="3-4" @click="navigate('category-articles', '农村党建')">农村党建</el-menu-item>
                     <el-menu-item index="3-5" @click="navigate('category-articles', '集体经济')">集体经济</el-menu-item>
                     <el-menu-item index="3-6" @click="navigate('category-articles', '产业发展')">产业发展</el-menu-item>
@@ -76,28 +76,53 @@
         <el-main class="main-banner">
             <img src="@/assets/images/banner1.jpg" alt="Banner" class="banner-image">
             <div class="banner-text">
-                <h1>Website of the Rural Promotion Association</h1>
+                <span>Website of the </span>
+                <br>
+                <span>Rural Promotion</span>
+                <br>
+                <span>Association</span>
             </div>
         </el-main>
 
         <!-- Main Content Section -->
         <el-main class="main-content-container">
             <el-row :gutter="20">
-                <!-- News Section -->
                 <el-col :span="16">
+                    <el-row class="recommend-read">
+                        <!-- 左侧图片列 -->
+                        <el-col :span="6" class="image-column">
+                            <div class="image-container">
+                                <img src="@/assets/images/CountrysideCulture.jpg" alt="Image 1" class="image-item">
+                                <img src="@/assets/images/stack-image2.jpg" alt="Image 2" class="image-item">
+                            </div>
+                        </el-col>
+                        <!-- 右侧推荐阅读内容列 -->
+                        <el-col :span="18">
+                            <div class="announcement-title">
+                                推荐阅读
+                                <el-button type="text" style="color: rgb(87,157,123)" @click="navigateToArticles">更多>></el-button>
+                            </div>
+                            <div class="announcement-list">
+                                <div v-for="(article, index) in articleTitles" :key="index" class="announcement-item">
+                                    <router-link :to="'/articles/' + article.id" class="announcement-link">
+                                        <span>{{ article.category }} - {{ article.title }}</span>
+                                        <span class="announcement-date">{{ formatDate(article.updated_at) }}</span>
+                                    </router-link>
+                                </div>
+                            </div>
+                        </el-col>
+                    </el-row>
 
-                    <div class="announcement-title">
-                        推荐阅读
-                        <el-button type="text" class="more-button" @click="navigateToArticles">更多>></el-button>
-                    </div>
-                    <div class="announcement-list">
-                        <div v-for="(article, index) in articleTitles" :key="index" class="announcement-item">
-                            <router-link :to="'/articles/' + article.id" class="announcement-link">
-                                <span>{{ article.category }} - {{ article.title }}</span>
-                                <span class="announcement-date">{{ formatDate(article.updated_at) }}</span>
-                            </router-link>
+                    <!-- Title Above Carousel -->
+                    <div class="title-container">
+                        <h1 class="main-title">甘肃省乡村发展促进会</h1>
+                        <div class="gansu">
+                            <span>GANSU ASSOCIATION FOR THE</span><br>
+                            <span>PROMOTION OF RURAL</span><br>
+                            <span>DEVELOPMENT</span><br>
                         </div>
                     </div>
+                    <!-- Carousel Section -->
                     <div class="image-section">
                         <el-carousel height="300px" :interval="5000" arrow="always" indicator-position="outside">
                             <el-carousel-item v-for="(imageSet, index) in chunkedImages" :key="index">
@@ -116,23 +141,55 @@
                             </el-carousel-item>
                         </el-carousel>
                     </div>
-                    <div>
 
-                    </div>
+                    <el-row :gutter="20" class="content-section">
+                        <el-col :span="2">
+                            <div class="section-title active">文章</div>
+                        </el-col>
+                        <el-col :span="6">
+                            <div class="text-block">
+                                <div @click="navigate('articles/create')">添加文章</div>
+                                <div @click="navigate('article-review')">文章审核</div>
+                                <div @click="navigate('articles')">文章管理</div>
+                            </div>
+                        </el-col>
+
+                        <el-col :span="6">
+                            <div class="text-block">
+                                <div @click="navigate('category-articles', '农村党建')">农村党建</div>
+                                <div @click="navigate('category-articles', '集体经济')">集体经济</div>
+                                <div @click="navigate('category-articles', '产业发展')">产业发展</div>
+                            </div>
+                        </el-col>
+
+                        <el-col :span="6">
+                            <div class="text-block">
+                                <div @click="navigate('category-articles', '乡土文化')">乡土文化</div>
+                                <div @click="navigate('category-articles', '青山绿水')">青山绿水</div>
+                                <div @click="navigate('category-articles', '青年农人')">青年农人</div>
+                            </div>
+                        </el-col>
+                        <el-col :span="1">
+                            <div class="divider"></div>
+                        </el-col>
+                        <!-- 视频 Section -->
+                        <el-col :span="2">
+                            <div class="section-title active">视频</div>
+                        </el-col>
+                        <el-col :span="5">
+                            <div class="text-block">
+                                <div @click="navigate('videos')">精选视频</div>
+                                <div @click="navigate('upload-video')">上传视频</div>
+                            </div>
+                        </el-col>
+                    </el-row>
                 </el-col>
 
-                <!-- 右边部分 -->
                 <el-col :span="8">
                     <div class="sidebar">
                         <h2>最新文章</h2>
                         <ul>
                             <li v-for="article in latestArticles" :key="article.id">
-                                <router-link :to="'/articles/' + article.id">{{ article.title }}</router-link>
-                            </li>
-                        </ul>
-                        <h2>最热文章</h2>
-                        <ul>
-                            <li v-for="article in popularArticles" :key="article.id">
                                 <router-link :to="'/articles/' + article.id">{{ article.title }}</router-link>
                             </li>
                         </ul>
@@ -151,7 +208,7 @@
         <el-footer class="custom-footer">
             <div class="footer-content">
                 <div class="footer-left">
-                    <img src="@/assets/images/icon.jpg" width="200px" height="120px" class="">
+                    <img src="@/assets/images/icon.jpg" class="foot-img" alt="">
                 </div>
                 <div class="footer-center">
                     <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
@@ -176,13 +233,13 @@ export default {
         return {
             carouselImages: [
                 {
-                    src: require('@/assets/images/TeamEconomy.jpg'), // 确保图片路径正确
+                    src: require('@/assets/images/RuralParty.jpg'), // 确保图片路径正确
                     alt: "农村党建",
                     title: "关于农村党建",
                     category: "农村党建"
                 },
                 {
-                    src: require('@/assets/images/country.jpg'),
+                    src: require('@/assets/images/TeamEconomy.jpg'),
                     alt: "集体经济",
                     title: "关于集体经济",
                     category: "集体经济"
@@ -194,19 +251,19 @@ export default {
                     category: "产业发展"
                 },
                 {
-                    src: require('@/assets/images/industry.jpg'),
+                    src: require('@/assets/images/CountrysideCulture.jpg'),
                     alt: "乡土文化",
                     title: "关于乡土文化",
                     category: "乡土文化"
                 },
                 {
-                    src: require('@/assets/images/industry.jpg'),
+                    src: require('@/assets/images/GreenMountains.jpg'),
                     alt: "青山绿水",
                     title: "关于青山绿水",
                     category: "青山绿水"
                 },
                 {
-                    src: require('@/assets/images/industry.jpg'),
+                    src: require('@/assets/images/YoungFarmer.jpg'),
                     alt: "青年农人",
                     title: "关于青年农人",
                     category: "青年农人"
@@ -325,15 +382,74 @@ export default {
 </script>
 
 <style scoped>
+.total{
+    background-color: rgb(226,229,234);
+}
 .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+    background-color: white;
 }
 .header-logo img {
-    height: 80px;
+    height: fit-content;
 }
+
+/* 主菜单项的样式 */
+.header-menu .el-menu-item {
+    font-size: 16px;
+    color: black; /* 设置主菜单项的文本颜色 */
+    transition: background-color 0.3s, color 0.3s; /* 添加背景色和字体色的过渡效果 */
+}
+
+/* 主菜单项的悬停样式 */
+.header-menu .el-menu-item:hover {
+    background-color: rgba(101, 172, 140, 0.1); /* 设置悬停时的背景色为浅绿色 */
+    color: rgb(101, 172, 140); /* 设置悬停时的文本颜色为绿色 */
+}
+
+/* 主菜单项的点击（选中）样式 */
+.header-menu .el-menu-item.is-active {
+    background-color: rgb(101, 172, 140);
+    color: white;
+}
+
+/* 子菜单项的样式 */
+.header-menu .el-submenu__title {
+    font-size: 18px;
+    color: black; /* 设置子菜单项的文本颜色 */
+    padding: 10px 20px; /* 设置子菜单项的内边距 */
+    transition: background-color 0.3s, color 0.3s; /* 添加背景色和字体色的过渡效果 */
+}
+
+/* 子菜单项的悬停样式 */
+.header-menu .el-submenu__title:hover {
+    background-color: rgba(101, 172, 140, 0.1); /* 设置悬停时的背景色为浅绿色 */
+    color: rgb(101, 172, 140); /* 设置悬停时的文本颜色为绿色 */
+}
+
+/* 子菜单项的点击（选中）样式 */
+.header-menu .el-menu-item.is-active {
+    background-color: rgb(101, 172, 140); /* 设置选中项的背景色为绿色 */
+    color: white; /* 设置选中项的文本颜色为白色 */
+}
+
+/* 主菜单项的样式 */
+.header-menu .el-menu-item {
+    font-size: 16px; /* 设置主菜单项的字体大小 */
+    color: black; /* 设置主菜单项的文本颜色 */
+    transition: background-color 0.3s, color 0.3s; /* 添加背景色和字体色的过渡效果 */
+}
+
+/* 子菜单项的样式 */
+.header-menu .el-submenu__title {
+    font-size: 20px; /* 设置子菜单项的字体大小 */
+    color: black; /* 设置子菜单项的文本颜色 */
+    padding: 10px 20px; /* 设置子菜单项的内边距 */
+    transition: background-color 0.3s, color 0.3s; /* 添加背景色和字体色的过渡效果 */
+}
+
 .main-banner {
     position: relative;
 }
@@ -345,21 +461,159 @@ export default {
     position: absolute;
     top: 10%;
     left: 10%;
-    transform: translate(-20%, -20%);
+    transform: translate(-20%, -15%);
     color: white;
     text-align: left;
+    width: auto;
+    font-size: 20px;
 }
-.news-card {
+
+.title-container {
+    text-align: start; /* 居中对齐标题 */
+    padding: 27px;
+}
+
+.main-title {
+    font-size: 32px; /* 根据需要设置标题字体大小 */
+    color: green; /* 根据需要设置标题颜色 */
+    margin-bottom: 25px; /* 标题下方的间距 */
+}
+
+.gansu {
+    font-size: 18px;
+    color: #333;
+    line-height: 0.5;
+}
+
+.custom-login-button {
+    background-color: rgb(101, 172, 140) !important; /* 设置按钮背景颜色 */
+    color: white !important; /* 设置字体颜色为白色，以便在绿色背景上清晰可见 */
+    border-color: rgb(101, 172, 140) !important; /* 设置边框颜色与背景一致 */
+    padding: 10px 20px; /* 设置按钮的内边距 */
+    font-size: 16px; /* 设置字体大小 */
+    border-radius: 4px; /* 设置圆角边框 */
+    transition: background-color 0.3s ease; /* 添加背景颜色的过渡效果 */
+}
+
+.custom-login-button:hover {
+    background-color: rgb(91, 155, 126) !important; /* 鼠标悬停时稍微加深背景颜色 */
+    border-color: rgb(91, 155, 126) !important; /* 同时调整边框颜色 */
+}
+
+.custom-register-button {
+    background-color: transparent !important; /* 设置注册按钮背景透明 */
+    color: rgb(101, 172, 140) !important; /* 设置注册按钮的字体颜色为绿色 */
+    border: 1px solid rgb(101, 172, 140) !important; /* 设置注册按钮的边框颜色 */
+    padding: 10px 20px; /* 设置按钮的内边距 */
+    font-size: 16px; /* 设置字体大小 */
+    border-radius: 4px; /* 设置圆角边框 */
+    transition: background-color 0.3s ease, color 0.3s ease; /* 添加过渡效果 */
+}
+
+.custom-register-button:hover {
+    background-color: rgb(101, 172, 140) !important; /* 鼠标悬停时，注册按钮的背景变为绿色 */
+    color: white !important; /* 字体颜色变为白色 */
+}
+
+.gansu span {
+    display: block; /* 每个span占据一行 */
+    margin-bottom: 5px; /* 每行之间的间距，减少此值以缩短间距 */
+}
+.el-dropdown-link {
+    background-color: rgb(101,172,140); /* 设置背景颜色为绿色 */
+    color: white; /* 设置文字颜色为白色，以便在绿色背景上清晰可见 */
+    padding: 8px 12px; /* 设置内边距，以增加文本和背景之间的空间 */
+    border-radius: 4px; /* 设置圆角边框，使背景更加柔和 */
+    display: inline-flex; /* 使用 Flexbox 使文字和图标在一行显示 */
+    align-items: center; /* 垂直居中对齐内容 */
+    font-size: 16px; /* 设置字体大小 */
+    cursor: pointer; /* 设置鼠标悬停时的光标样式 */
+    text-decoration: none; /* 去掉默认的文本装饰 */
+}
+
+.el-dropdown-link i {
+    margin-left: 8px; /* 设置图标和文本之间的间距 */
+    font-size: 14px; /* 根据需要调整图标的大小 */
+}
+
+.image-column {
+    position: relative; /* 使内部的绝对定位元素相对于此列 */
+    padding: 1px; /* 列的内边距 */
+    margin-top: 10%;
+}
+
+.image-container {
+    position: relative; /* 包含层叠图片的容器相对定位 */
+    height: auto; /* 调整高度以适应更多图片 */
+}
+
+.image-item {
+    position: absolute; /* 使图片相对于容器绝对定位 */
+    width: 150px; /* 根据需要调整图片宽度 */
+    height: 200px; /* 根据图片比例自动调整高度 */
+    object-fit: cover; /* 保持图片比例并覆盖容器 */
+    border: 2px solid white; /* 可以添加边框以增强视觉效果 */
+    scale: 0.8;
+}
+
+/* 图片1 */
+.image-item:nth-child(1) {
+    top: 0; /* 图片1从容器的顶部开始 */
+    left: 0; /* 图片1从容器的左侧开始 */
+}
+
+/* 图片2 */
+.image-item:nth-child(2) {
+    top: 100px; /* 图片2相对图片1向下20px */
+    left: 100px; /* 图片2相对图片1向右20px */
+}
+
+.content-section {
+    height: fit-content;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    background-color: rgb(227,230,235);
+    padding: 27px;
+    width: auto;
+}
+
+.text-block {
+    font-size: 16px;
+    line-height: 2;
+}
+
+.text-block :hover{
+    color: rgb(87,157,123);
+    cursor: pointer;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
     margin-bottom: 10px;
 }
+
+.section-title.active {
+    color: #4CAF50; /* Active green color for selected section */
+}
+
+.divider {
+    width: 2px;
+    height: 80px;
+    background-color: rgb(170,175,169);
+    margin-right: auto;
+}
+
 .news-item {
     display: flex;
     justify-content: space-between;
 }
-.footer {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
+
+.recommend-read{
+    background-color: rgb(243,244,246);
+    border-radius: 20px;
+    width: auto;
 }
 
 .announcement-title {
@@ -429,31 +683,56 @@ export default {
 
 .image-overlay:hover {
     background-color: rgb(100,171,141);
+    color: white;
 }
 
 .sidebar {
-    background-color: #f2f4f6;
-    padding: 20px;
+    width: 400px; /* 根据需要设置侧边栏的宽度 */
+    height: auto;
+    padding: 20px; /* 容器内边距 */
+    background-color: rgb(226,229,234); /* 侧边栏背景色 */
+    border: 1px solid #ddd; /* 侧边栏边框 */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* 侧边栏阴影 */
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar h2 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
+    font-size: 20px; /* 标题字体大小 */
+    color: green; /* 标题字体颜色 */
+    margin: 0; /* 去掉默认的外边距 */
+    padding: 10px 15px; /* 标题的内边距 */
+    display: flex; /* 使用 Flexbox 布局 */
+    align-items: center; /* 垂直居中对齐标题文本 */
+    border-left: 6px solid green; /* 左边的小分隔线 */
+    background-color: #C0C0C0; /* 背景框的颜色 */
+    border-radius: 4px; /* 背景框的圆角边框 */
+    margin-bottom: 20px;
+    margin-top: 10px;
+    width: 30%;
 }
 
 .sidebar ul {
-    list-style-type: none;
-    padding: 0;
+    /*list-style: none; !* 去掉默认的列表样式 *!*/
+    padding: 0; /* 去掉默认的内边距 */
+    margin: 0; /* 去掉默认的外边距 */
+    flex: 1; /* 使列表填充剩余空间 */
 }
 
-.sidebar ul li {
-    margin-bottom: 5px;
+.sidebar li {
+    margin-bottom: 10px; /* 列表项之间的间距 */
 }
 
-.sidebar ul li a {
+.sidebar a {
+    text-decoration: none; /* 去掉链接的下划线 */
+    color: black; /* 链接颜色 */
+    font-size: 16px; /* 链接字体大小 */
+    line-height: 2.5;
+}
+
+.sidebar a:hover {
     text-decoration: none;
-    color: #333;
+    color: rgb(87,157,123);
 }
 
 .custom-footer {
@@ -484,6 +763,12 @@ export default {
     text-align: center;
 }
 
+.foot-img{
+    scale: 0.8;
+    width: 500px;
+    height: 100px;
+}
+
 .footer-logo, .security-logo {
     width: 80px;
     margin-bottom: 10px;
@@ -500,7 +785,7 @@ export default {
 }
 
 .footer-center a:hover {
-    text-decoration: underline;
+    text-decoration: none;
+    cursor: pointer;
 }
-
 </style>
