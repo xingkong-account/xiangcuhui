@@ -78,9 +78,9 @@ public class ArticleService {
     }
 
     public PageResult<Article> getAllArticles(int pageNum, int pageSize) {
-        int offset = (pageNum - 1) * pageSize; // 计算偏移量
+        int offset = (pageNum - 1) * pageSize;
         List<Article> articles = articleMapper.findAll(offset, pageSize);
-        int total = articleMapper.countAll(); // 获取总记录数
+        int total = articleMapper.countAll();
         return new PageResult<>(articles, total, pageNum, pageSize);
     }
 }

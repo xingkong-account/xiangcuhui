@@ -1,14 +1,25 @@
 <template>
     <div class="individual-member-review" v-if="isAdmin">
-        <el-card class="box-card">
-            <div slot="header" class="clearfix">
-                <el-button type="default" @click="goBack" style="margin-right: 20px;">
-                    <i class="el-icon-arrow-left"></i> 返回
-                </el-button>
-                <span>个人会员审核</span>
-            </div>
-            <el-table :data="members" style="width: 100%">
+        <div class="header-container">
+            <el-button type="default" @click="goBack" class="go-back-button">
+                <i class="el-icon-arrow-left"></i> 返回
+            </el-button>
+            <span class="header-title">个人会员审核</span>
+        </div>
+
+<!--        <div>-->
+<!--            <h3>测试输出:</h3>-->
+<!--            <pre>{{ members }}</pre>-->
+<!--        </div>-->
+
+        <div class="table-container">
+            <el-table :data="members" style="width: 100%;" border>
                 <el-table-column prop="name" label="姓名" width="150"></el-table-column>
+                <el-table-column
+                    prop="type"
+                    label="会员类型"
+                    width="180"
+                ></el-table-column>
                 <el-table-column prop="phone" label="联系方式" width="150"></el-table-column>
                 <el-table-column
                     prop="created_at"
@@ -24,7 +35,7 @@
                 ></el-table-column>
                 <el-table-column prop="status" label="审核状态" width="120">
                     <template slot-scope="scope">
-                        <el-tag :type="getStatusTagType(scope.row.status)">
+                        <el-tag :type="getStatusTagType(scope.row.status)" class="status-tag">
                             {{ scope.row.status }}
                         </el-tag>
                     </template>
@@ -59,26 +70,40 @@
                     </template>
                 </el-table-column>
             </el-table>
-        </el-card>
+        </div>
+
+        <!-- 添加分页组件 -->
+        <el-pagination
+            @size-change="handlePageSizeChange"
+            @current-change="handlePageChange"
+            :current-page="currentPage"
+            :page-size="pageSize"
+            :total="total"
+            layout="total, sizes, prev, pager, next, jumper"
+            class="pagination"
+        ></el-pagination>
 
         <!-- 详情对话框 -->
         <el-dialog
             title="会员详情"
             :visible.sync="dialogVisible"
-            width="50%"
+            width="60%"
             @close="resetDialog"
             :before-close="resetDialog"
+            class="detail-dialog"
         >
-            <div v-html="dialogContent"></div>
+            <div v-html="dialogContent" class="dialog-content"></div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="resetDialog">关闭</el-button>
+                <el-button @click="resetDialog" class="dialog-close-button">关闭</el-button>
             </div>
         </el-dialog>
     </div>
     <div class="image-container" v-else>
         <p>您没有权限访问此页面。</p>
+        <img src="@/assets/images/403.png">
     </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -90,7 +115,10 @@ export default {
             isAdmin: false,
             dialogVisible: false,
             dialogContent: '',
-            redirectTimer: null
+            redirectTimer: null,
+            total: 0,  // 总记录数
+            currentPage: 1,  // 当前页码
+            pageSize: 10  // 每页显示的记录条数
         };
     },
     created() {
@@ -103,19 +131,34 @@ export default {
         }
     },
     methods: {
+        handlePageChange(page) {
+            this.currentPage = page;
+            this.fetchMembers();
+        },
+        handlePageSizeChange(size){
+            this.pageSize = size;
+            this.currentPage = 1;
+            this.fetchMembers();
+        },
         async fetchMembers() {
             try {
-                const response = await axios.get(this.$baseUrl + '/api/individual-members');
-                this.members = response.data;
+                const response = await axios.get(this.$baseUrl + '/api/individual-members', {
+                    params: {
+                        pageNum: this.currentPage,
+                        pageSize: this.pageSize
+                    }
+                });
+                this.members = response.data.data;
+                this.total = response.data.total;
+                // this.$alert(this.members[this.members.length - 1]);
                 if (this.members.length === 0) {
                     this.$message.info('暂无数据');
                 }
             } catch (error) {
-                console.error('Failed to fetch members:', error);
+                console.error('获取会员个人数据失败', error);
             }
         },
         confirmRejectMember(member) {
-            // 在拒绝前显示确认对话框
             this.$confirm('您确定要拒绝此会员吗？', '确认拒绝', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -165,9 +208,8 @@ export default {
             const username = sessionStorage.getItem('username');
             this.isAdmin = (username === 'admin');
             if (!this.isAdmin) {
-                this.$message.warning('您没有权限访问此页面，将跳转到主页面');
+                this.$message.warning('您没有权限访问此页面');
                 this.redirectTimer = setTimeout(() => {
-                    this.$router.push('/');
                 }, 3000);
             }
         },
@@ -204,6 +246,60 @@ export default {
 </script>
 
 <style scoped>
+.individual-member-review {
+    padding: 20px;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e4e7ed;
+    background-color: #ffffff;
+    border-radius: 10px 10px 0 0;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.go-back-button {
+    margin-right: 20px;
+}
+
+.table-container {
+    margin-top: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.status-tag {
+    margin: 0;
+}
+
+.pagination {
+    margin: 20px 0;
+}
+
+.detail-dialog .dialog-content {
+    padding: 20px;
+}
+
+.dialog-footer {
+    text-align: right;
+}
+
+.dialog-close-button {
+    background-color: #409eff;
+    color: #fff;
+}
 .individual-member-review {
     padding: 20px;
 }

@@ -14,17 +14,18 @@
                     <!-- 个人会员子菜单 -->
                     <el-submenu index="2-1">
                         <template #title>个人会员</template>
-                        <el-menu-item index="2-1-1" @click="navigate('individual-members')">查看所有个人会员</el-menu-item>
-                        <el-menu-item v-if="isAdmin" index="2-1-2" @click="navigate('add-personal')">添加个人会员</el-menu-item>
-                        <el-menu-item v-if="isAdmin" index="2-1-3" @click="navigate('individual-member-requests')">审核个人会员</el-menu-item>
+                        <el-menu-item index="2-1-1" @click="navigate('individual-members')">个人会员管理</el-menu-item>
+<!--                        <el-menu-item v-if="isAdmin" index="2-1-2" @click="navigate('add-personal')">添加个人会员</el-menu-item>-->
+<!--                        <el-menu-item v-if="isAdmin" index="2-1-3" @click="navigate('individual-member-requests')">审核个人会员</el-menu-item>-->
                     </el-submenu>
 
                     <!-- 团队会员子菜单 -->
                     <el-submenu index="2-2">
                         <template #title>团队会员</template>
-                        <el-menu-item index="2-2-1" @click="navigate('team-members')">查看所有团队会员</el-menu-item>
-                        <el-menu-item v-if="isAdmin" index="2-2-2" @click="navigate('add-team-member')">添加团队会员</el-menu-item>
-                        <el-menu-item v-if="isAdmin" index="2-2-3" @click="navigate('review-team-members')">审核团队会员</el-menu-item>
+                        <el-menu-item v-if="isAdmin" index="2-2-1" @click="navigate('group--member-manage')">团队会员管理</el-menu-item>
+                        <el-menu-item index="2-2-2" @click="navigate('team-members')">查看所有团队会员</el-menu-item>
+                        <el-menu-item v-if="isAdmin" index="2-2-3" @click="navigate('add-team-member')">添加团队会员</el-menu-item>
+                        <el-menu-item v-if="isAdmin" index="2-2-4" @click="navigate('review-team-members')">审核团队会员</el-menu-item>
                     </el-submenu>
                 </el-submenu>
 
@@ -52,7 +53,7 @@
 
                 <el-menu-item index="5" @click="navigate('about')" style="font-size: 20px; color: black">关于我们</el-menu-item>
             </el-menu>
-            <!-- 登录注册按钮 -->
+            <!-- 登录注册 -->
             <div class="auth-buttons">
                 <div v-if="username">
                     <el-dropdown @command="handleCommand">
@@ -72,7 +73,7 @@
             </div>
         </el-header>
 
-        <!-- Main Image Banner -->
+        <!-- 主页上面的轮播图 -->
         <el-main class="main-banner">
             <img src="@/assets/images/banner1.jpg" alt="Banner" class="banner-image">
             <div class="banner-text">
@@ -84,7 +85,7 @@
             </div>
         </el-main>
 
-        <!-- Main Content Section -->
+        <!-- 主要内容 -->
         <el-main class="main-content-container">
             <el-row :gutter="20">
                 <el-col :span="16">
@@ -113,7 +114,7 @@
                         </el-col>
                     </el-row>
 
-                    <!-- Title Above Carousel -->
+                    <!-- xiangcuhui标题 -->
                     <div class="title-container">
                         <h1 class="main-title">甘肃省乡村发展促进会</h1>
                         <div class="gansu">
@@ -122,7 +123,7 @@
                             <span>DEVELOPMENT</span><br>
                         </div>
                     </div>
-                    <!-- Carousel Section -->
+                    <!-- 文章类别轮播图 -->
                     <div class="image-section">
                         <el-carousel height="300px" :interval="5000" arrow="always" indicator-position="outside">
                             <el-carousel-item v-for="(imageSet, index) in chunkedImages" :key="index">
@@ -172,7 +173,7 @@
                         <el-col :span="1">
                             <div class="divider"></div>
                         </el-col>
-                        <!-- 视频 Section -->
+                        <!-- 视频  -->
                         <el-col :span="2">
                             <div class="section-title active">视频</div>
                         </el-col>
@@ -231,9 +232,10 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            // 文章分类的轮播图数据
             carouselImages: [
                 {
-                    src: require('@/assets/images/RuralParty.jpg'), // 确保图片路径正确
+                    src: require('@/assets/images/RuralParty.jpg'),
                     alt: "农村党建",
                     title: "关于农村党建",
                     category: "农村党建"
@@ -269,9 +271,9 @@ export default {
                     category: "青年农人"
                 }
             ],
-            articleTitles: [],  // 存储文章标题的数据
+            articleTitles: [],
             username: '', // 存储用户名
-            activeMenu: '3',  // 激活的菜单项
+            activeMenu: '3',
             isAdmin: false,
             latestArticles: [],
             popularArticles: [],
@@ -344,7 +346,7 @@ export default {
         },
         logout() {
             sessionStorage.removeItem('username');
-            this.username = ''; // 清除用户名
+            this.username = '';
             this.$router.push('/login');
         },
         fetchArticleTitles() {
@@ -356,8 +358,8 @@ export default {
             })
                 .then(response => {
                     // this.$alert(response.data.data)
-                    this.articleTitles = response.data.data;  // 获取当前页的数据
-                    this.total = response.data.total;  // 获取总记录数
+                    this.articleTitles = response.data.data;
+                    this.total = response.data.total;
                 })
                 .catch(error => {
                     this.$message.error('获取文章列表失败: ' + error.message);

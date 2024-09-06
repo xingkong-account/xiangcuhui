@@ -23,6 +23,9 @@ import VideoPage from "@/components/VideoPage.vue";
 import VideoReviewPage from "@/components/VideoReviewPage.vue";
 import UploadVideo from "@/components/UploadVideo.vue";
 import VideoManage from "@/components/VideoManage.vue";
+import CheckedPerson from "@/components/CheckedPerson.vue";
+import GroupMemberManage from "@/components/GroupMemberManage.vue";
+import CheckedTeam from "@/components/CheckedTeam.vue";
 
 Vue.use(Router);
 
@@ -41,6 +44,7 @@ export default new Router({
             component: ChangePassword,
             meta: { requiresAuth: false }
         },
+        // 主页
         {
             path: '/',
             name: 'MainPage',
@@ -56,6 +60,7 @@ export default new Router({
             name: 'ArticleList',
             component: ArticleList
         },
+        // 发布文章
         {
             path: '/articles/create',
             name: 'AddArticle',
@@ -73,18 +78,21 @@ export default new Router({
             component: ArticleDetail,
             props: true
         },
+        // 个人会员管理
         {
             path: '/individual-members',
             name: 'IndividualMembers',
             component: IndividualMembers,
             meta: { requiresAuth: false }
         },
+        // 团体会员展示
         {
             path: '/team-members',
             name: 'TeamMembers',
             component: TeamMembers,
             meta: { requiresAuth: false }
         },
+        // 404
         {
             path: '*',
             name: 'NotFound',
@@ -100,6 +108,7 @@ export default new Router({
             name: 'AddPersonal',
             component: AddPersonal
         },
+        // 关于我们
         {
             path: '/about',
             name: 'About',
@@ -110,16 +119,19 @@ export default new Router({
             name: 'add-team-member',
             component: AddTeamMember
         },
+        // 团体会员审核
         {
             path: '/review-team-members',
             name: 'review-team-members',
             component: ReviewTeamMembers
         },
+        // 个人会员审核
         {
             path: '/individual-member-requests',
             name: 'IndividualMemberReview',
             component: IndividualMemberReview
         },
+        // 文章审核
         {
             path: '/article-review',
             name: 'ArticleReview',
@@ -130,11 +142,13 @@ export default new Router({
             name: 'category-articles',
             component: ArticleCategory
         },
+        // 展示视频列表
         {
             path: '/videos',
             name: 'VideoPage',
             component: VideoPage
         },
+        // 审核视频
         {
             path: '/video-review',
             name: 'VideoReviewPage',
@@ -145,10 +159,29 @@ export default new Router({
             name: 'UploadVideoPage',
             component: UploadVideo
         },
+        // 已审核的视频
         {
             path: '/video-manage',
             name: 'VideoManage',
             component: VideoManage
+        },
+        // 已审核的个人会员
+        {
+            path: '/checked-person',
+            name: 'CheckedPerson',
+            component: CheckedPerson
+        },
+        // 团体会员管理
+        {
+            path: '/group--member-manage',
+            name: 'GroupMemberManage',
+            component: GroupMemberManage
+        },
+        // 已审核的团体会员
+        {
+            path: '/checked-team',
+            name: 'CheckedTeam',
+            component: CheckedTeam
         }
     ]
 });

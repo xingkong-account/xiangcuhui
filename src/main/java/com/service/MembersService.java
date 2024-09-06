@@ -1,6 +1,7 @@
 package com.service;
 
 import com.bean.Member;
+import com.bean.PageResult;
 import com.mapper.MembersMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -108,6 +109,36 @@ public class MembersService {
             return memberMapper.updateIndividual(member) > 0;
         }
         return false;
+    }
+
+    public PageResult<Member> getAllMembers(int pageNum, int pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        List<Member> members = memberMapper.findAll(offset, pageSize);
+        int total = memberMapper.countAll();
+        return new PageResult<>(members, total, pageNum, pageSize);
+    }
+
+    public PageResult<Member> getAllUnCheckedMembers(int pageNum, int pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        List<Member> members = memberMapper.findAllUnChecked(offset, pageSize);
+        int total = memberMapper.countAllUnChecked();
+        return new PageResult<>(members, total, pageNum, pageSize);
+    }
+
+    public PageResult<Member> getAllCheckedMembers(int pageNum, int pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        List<Member> members = memberMapper.findAllChecked(offset, pageSize);
+        int total = memberMapper.countAllChecked();
+        return new PageResult<>(members, total, pageNum, pageSize);
+    }
+
+    // 多选删除用户
+    public void deleteMembersByIds(List<Long> memberIds) {
+        memberMapper.deleteAllByIdIn(memberIds);
+    }
+
+    public List<Member> searchMembers(String query, String select) {
+        return memberMapper.searchMembers(query, select);
     }
 }
 

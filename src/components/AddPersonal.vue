@@ -32,8 +32,8 @@
         </el-card>
     </div>
     <div class="image-container" v-else>
-        <el-image src="https://th.bing.com/th/id/R.43154c2eed5a578eb233439593ab8bb7?rik=Dpp%2fywekYckTzQ&pid=ImgRaw&r=0&sres=1&sresct=1"></el-image>
         <p>您没有权限访问此页面。</p>
+        <img src="@/assets/images/403.png">
     </div>
 </template>
 
@@ -72,7 +72,6 @@ export default {
                 if (valid) {
                     await axios.post(this.$baseUrl + '/api/add-personal', this.form);
                     this.$message.success('新增成功');
-                    this.$router.push('/individual-members');
                 }
             } catch (error) {
                 this.$message.error('新增失败');
@@ -86,10 +85,7 @@ export default {
             const username = sessionStorage.getItem('username');
             this.isAdmin = (username === 'admin');
             if (!this.isAdmin) {
-                this.$message.warning('您没有权限访问此页面，将跳转到主页面');
-                this.redirectTimer = setTimeout(() => {
-                    this.$router.push('/');
-                }, 3000);
+                this.$message.warning('您没有权限访问此页面');
             }
         },
         goBack(){
@@ -155,7 +151,7 @@ export default {
 }
 
 .custom-submit-button {
-    background-color: #67C23A;
+    background-color: rgb(101,172,140);
     color: #fff;
     border: none;
 }
@@ -188,5 +184,27 @@ export default {
     padding: 20px;
     font-size: 16px;
     color: #ff4d4f;
+}
+
+.image-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image-container img.full-width {
+    width: 100%;
+}
+
+.image-container img.thumbnail {
+    width: auto;
+    max-width: 200px;
+    height: auto;
 }
 </style>

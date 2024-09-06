@@ -1,11 +1,11 @@
 <template>
     <el-container class="not-found-container">
         <div class="not-found-content">
-            <el-image
+            <img
                 class="not-found-image"
-                src="https://www.artzstudio.com/content/images/wordpress/2020/05/404-error-not-found-page-lost.png"
-                fit="contain"
-            ></el-image>
+                src="@/assets/images/404.png"
+                alt="404 Not Found"
+            >
             <h1>Oops! 404 Not Found</h1>
             <p>页面好像开小差了。</p>
             <el-button type="primary" @click="goHome">返回首页</el-button>
@@ -38,7 +38,7 @@ export default {
 }
 
 .not-found-content {
-    max-width: 600px;
+    max-width: 800px;
     padding: 20px;
     background-color: #fff;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
@@ -47,6 +47,8 @@ export default {
 }
 
 .not-found-image {
+    width: 700px;
+    height: auto;
     margin-bottom: 20px;
 }
 

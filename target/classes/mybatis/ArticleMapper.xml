@@ -3,12 +3,11 @@
 
 <mapper namespace="com.mapper.ArticleMapper">
 
-    <!-- 查询所有文章，支持动态 SQL -->
     <select id="findAll" parameterType="map" resultType="com.bean.Article">
-        SELECT
-        *
+        SELECT *
         FROM articles
-        LIMIT #{limit} OFFSET #{offset}
+        LIMIT #{limit}
+        OFFSET #{offset}
     </select>
 
     <select id="countAll" resultType="int">

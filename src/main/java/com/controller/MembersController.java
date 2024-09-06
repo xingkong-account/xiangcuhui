@@ -2,6 +2,7 @@ package com.controller;
 
 import com.bean.Article;
 import com.bean.Member;
+import com.bean.PageResult;
 import com.service.FileService;
 import com.service.MembersService;
 import lombok.AllArgsConstructor;
@@ -47,9 +48,24 @@ public class MembersController{
         }
     }
 
+   // 多选删除
+   @PostMapping("/delete-members")
+   public ResponseEntity<String> deleteMembers(@RequestBody List<Long> memberIds) {
+       try {
+           memberService.deleteMembersByIds(memberIds);
+           return ResponseEntity.ok("删除成功");
+       } catch (Exception e) {
+           e.printStackTrace(); // 可以帮助调试
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("删除失败");
+       }
+   }
+
     @GetMapping("/personal-list")
-    public List<Member> personalList() {
-        return memberService.listIndividuals();
+    public PageResult<Member> personalList(
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize)
+    {
+        return memberService.getAllMembers(pageNum, pageSize);
     }
 
     // 添加个人会员
@@ -66,9 +82,22 @@ public class MembersController{
     }
 
     @GetMapping("/individual-members")
-    public List<Member> getMembersByStatus() {
-        return memberService.getMembersByType("个人会员");
+    public PageResult<Member> getAllMembers(
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize)
+    {
+        return memberService.getAllUnCheckedMembers(pageNum, pageSize);
     }
+
+    // 获取已审核的用户
+    @GetMapping("/processed-members")
+    public PageResult<Member> getAll1Members(
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize)
+    {
+        return memberService.getAllCheckedMembers(pageNum, pageSize);
+    }
+
 
     // 个人会员审核
     @PostMapping("/individual-members/{id}/approve")
@@ -124,6 +153,16 @@ public class MembersController{
         return ResponseEntity.noContent().build();
     }
 
+    // 按条件查询用户
+    @GetMapping("/members")
+    public ResponseEntity<List<Member>> searchMembers(
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "select", required = false) String select) {
+        List<Member> members = memberService.searchMembers(query, select);
+        return new ResponseEntity<>(members, HttpStatus.OK);
+    }
+
+    // 单个删除
     @DeleteMapping("/delete-personal/{id}")
     public ResponseEntity<String> deletePersonal(@PathVariable("id") Integer id) {
         int result = memberService.deleteIndividual(id);

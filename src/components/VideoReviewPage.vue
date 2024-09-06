@@ -37,12 +37,11 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            videos: [],  // 存储待审核的视频列表
-            selectedVideo: null  // 当前选择的视频
+            videos: [],
+            selectedVideo: null
         };
     },
     methods: {
-        // 获取待审核的视频列表
         async fetchVideos() {
             try {
                 const response = await axios.get(this.$baseUrl + '/api/videos/review-video');
@@ -80,7 +79,6 @@ export default {
             }
         },
         confirmRejectVideo(video) {
-            // 在拒绝前显示确认对话框
             this.$confirm('您确定要拒绝吗？', '确认拒绝', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',

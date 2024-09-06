@@ -3,6 +3,7 @@ package com.mapper;
 import com.bean.Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +11,15 @@ import java.util.Map;
 
 @Mapper
 public interface MembersMapper {
+    void deleteAllByIdIn(@Param("memberIds") List<Long> memberIds);
+    List<Member> findAllUnChecked(@Param("offset") int offset, @Param("limit") int limit);
+    List<Member> findAll(@Param("offset") int offset, @Param("limit") int limit);
+    List<Member> findAllChecked(@Param("offset") int offset, @Param("limit") int limit);
+    List<Member> searchMembers(@Param("query") String query, @Param("select") String select);
 
+    int countAll();
+    int countAllChecked();
+    int countAllUnChecked();
     // 个人会员操作
     int add(Member member);
 

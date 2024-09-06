@@ -147,7 +147,6 @@ export default {
 </script>
 
 <style scoped>
-/* 页面容器样式 */
 .page-container {
     display: flex;
     flex-direction: column;
@@ -162,7 +161,7 @@ export default {
     overflow: hidden;
 }
 
-/* 欢迎登录消息的样式 */
+
 .welcome-message {
     color: rgb(156,201,180);
     font-size: 28px;
@@ -178,36 +177,33 @@ export default {
     display: block;
     width: 100%;
     height: 2px;
-    background-color: rgb(156,201,180); /* 下划线颜色 */
+    background-color: rgb(156,201,180);
     margin: 8px auto 0;
 }
 
-/* 登录卡片样式 */
 .login-card {
     display: flex;
     flex-direction: column;
-    width: 30%; /* 控制登录卡片的宽度 */
+    width: 30%;
     border-radius: 5px;
     overflow: hidden;
     padding: 200px;
     margin-top: 20px;
 }
 
-/* 表单标题 */
 .form-title {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
-    color: #67C23A; /* Green color */
+    color: #67C23A;
 }
 
-/* 代码输入框容器 */
 .code-container {
     display: flex;
     align-items: center;
 }
 
-/* 登录按钮 */
+
 .custom-login-button {
     background-color: rgb(101, 172, 140);
     border-color: rgb(101, 172, 140);
@@ -226,7 +222,6 @@ export default {
     border-color: rgb(75, 130, 106);
 }
 
-/* 链接样式 */
 .link {
     color: #67C23A;
     cursor: pointer;

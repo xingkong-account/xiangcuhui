@@ -36,7 +36,6 @@
                             </el-table-column>
                             <el-table-column label="操作" width="300">
                                 <template #default="{ row }">
-                                    <!-- 操作按钮 -->
                                     <el-button
                                         :disabled="!isAdmin"
                                         @click="navigateToEditArticle(row.id)"
@@ -91,25 +90,6 @@
                 ></el-pagination>
             </el-col>
         </el-row>
-
-        <!--   底部-->
-        <el-footer class="custom-footer">
-            <div class="footer-content">
-                <div class="footer-left">
-                    <img src="http://localhost:8081/image.png" width="200px" height="120px" class="">
-                </div>
-                <div class="footer-center">
-                    <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
-                    <p>主办单位:  乡促会&nbsp;&nbsp;&nbsp; 备案号：</p>
-                    <p>地址: 甘肃省兰州市XXXXXX</p>
-                </div>
-                <div class="footer-right">
-                    <img src="" alt="Security" class="security-logo">
-                    <p>甘公网安备 235487154313号</p>
-                    <p>网站标识码：0000000000</p>
-                </div>
-            </div>
-        </el-footer>
     </el-container>
 </template>
 
@@ -188,7 +168,7 @@ export default {
         },
         handlePageChange(page) {
             this.currentPage = page;
-            this.fetchArticles();  // 当页码变化时，重新获取数据
+            this.fetchArticles();
         },
         handlePageSizeChange(size){
             this.pageSize = size;

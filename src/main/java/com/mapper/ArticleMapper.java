@@ -9,8 +9,8 @@ import java.util.List;
 
 @Mapper
 public interface ArticleMapper {
-    List<Article> findAll(@Param("offset") int offset, @Param("limit") int limit); // 增加分页参数
-    int countAll(); // 获取总记录数
+    List<Article> findAll(@Param("offset") int offset, @Param("limit") int limit);
+    int countAll();
     Article findById(Integer id);
     void insert(Article article);
     void update(Article article);
