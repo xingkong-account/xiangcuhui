@@ -138,23 +138,24 @@ export default {
 <style scoped>
 .article-container {
     display: flex;
-    flex-direction: column; /* 让子元素按列显示 */
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
 }
 
 .article-content {
-    text-align: left;      /* 文章内容左对齐 */
+    text-align: left;
+    margin-top: 20px;
 }
 
-.el-card{
+.el-card {
     width: 80%;
     max-width: 90%;
     margin-left: 100px;
 }
 
-/*底部打印栏背景框样式*/
+/* 底部打印栏背景框样式 */
 .ncdt-bottom-tool {
     background-color: #f0f0f0;
     width: 80%;
@@ -189,15 +190,17 @@ img {
     height: 24px;
     vertical-align: middle;
 }
-.back-button{
+
+.back-button {
     background-color: #67C23A;
     border-color: #67C23A;
 }
 
-.back-button :hover{
+.back-button:hover {
     background-color: #228B22;
     border-color: #228B22;
 }
+
 .article-header {
     display: flex;
     justify-content: space-between;
@@ -231,6 +234,8 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .footer-left img,
@@ -248,16 +253,12 @@ img {
 }
 
 .footer-center a {
-    color: #3a8ee6; /* 与蓝色横线相同的颜色 */
+    color: #3a8ee6;
     text-decoration: none;
 }
 
 .footer-center a:hover {
     text-decoration: underline;
-}
-
-.article-content {
-    margin-top: 20px;
 }
 
 .custom-footer {
@@ -268,15 +269,8 @@ img {
     min-height: 200px;
 }
 
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.footer-left, .footer-right {
+.footer-left,
+.footer-right {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -288,7 +282,8 @@ img {
     text-align: center;
 }
 
-.footer-logo, .security-logo {
+.footer-logo,
+.security-logo {
     width: 80px;
     margin-bottom: 10px;
 }
@@ -307,3 +302,4 @@ img {
     text-decoration: underline;
 }
 </style>
+

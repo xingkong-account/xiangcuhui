@@ -55,6 +55,11 @@
     <!-- 获取所有视频 -->
     <select id="getAllVideos" resultType="com.bean.Video">
         SELECT * FROM videos
+    </select>
+
+    <!-- 获取所有已审核视频 -->
+    <select id="getAllCheckedVideos" resultType="com.bean.Video">
+        SELECT * FROM videos
         WHERE status = '已审核'
     </select>
 
@@ -71,8 +76,12 @@
     <!-- 视频审核 -->
     <update id="reviewVideo">
         UPDATE videos
-        SET status = #{status}, updated_at = #{updated_at}
-        WHERE id = #{id}
+        SET
+            status = #{status},
+            updated_at = #{updated_at},
+            reviewed_at = #{reviewed_at},
+            reviewer = #{reviewer}
+            WHERE id = #{id}
     </update>
 </mapper>
 

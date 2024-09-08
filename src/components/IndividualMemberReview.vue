@@ -142,7 +142,7 @@ export default {
         },
         async fetchMembers() {
             try {
-                const response = await axios.get(this.$baseUrl + '/api/individual-members', {
+                const response = await axios.get(this.$baseUrl + '/api/unchecked-individuals', {
                     params: {
                         pageNum: this.currentPage,
                         pageSize: this.pageSize
@@ -205,11 +205,11 @@ export default {
             }
         },
         checkIfAdmin() {
-            const username = sessionStorage.getItem('username');
-            this.isAdmin = (username === 'admin');
+            const usertype = sessionStorage.getItem('usertype');
+            this.isAdmin = (usertype === '管理员');
             if (!this.isAdmin) {
                 this.$message.warning('您没有权限访问此页面');
-                this.redirectTimer = setTimeout(() => {
+                setTimeout(() => {
                 }, 3000);
             }
         },

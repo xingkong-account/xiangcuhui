@@ -15,7 +15,12 @@
                         label="团体类型"
                         width="180"
                 ></el-table-column>
-                <el-table-column prop="contact" label="联系方式" width="150"></el-table-column>
+                <el-table-column prop="phone" label="联系方式" width="150"></el-table-column>
+                <el-table-column prop="image_url" label="团体图片" width="100">
+                    <template scope="scope">
+                        <img :src="scope.row.image_url" alt="团体图片" class="team-image">
+                    </template>
+                </el-table-column>
                 <el-table-column
                         prop="created_at"
                         label="注册日期"
@@ -117,7 +122,7 @@ export default {
         },
         async fetchMembers() {
             try {
-                const response = await axios.get(this.$baseUrl + '/api/group-members', {
+                const response = await axios.get(this.$baseUrl + '/api/checked-teams', {
                     params: {
                         pageNum: this.currentPage,
                         pageSize: this.pageSize
@@ -145,18 +150,19 @@ export default {
             }
         },
         checkIfAdmin() {
-            const username = sessionStorage.getItem('username');
-            this.isAdmin = (username === 'admin');
+            const usertype = sessionStorage.getItem('usertype');
+            this.isAdmin = (usertype === '管理员');
             if (!this.isAdmin) {
                 this.$message.warning('您没有权限访问此页面');
-                this.redirectTimer = setTimeout(() => {
+                setTimeout(() => {
                 }, 3000);
             }
         },
         viewDetails(member) {
             this.dialogContent = `
                 <p><strong>团体名称:</strong> ${member.name}</p>
-                <p><strong>联系方式:</strong> ${member.contact}</p>
+                <p><strong>联系方式:</strong> ${member.phone}</p>
+                <a :href="${member.website}"><strong>官网:</strong> ${member.website}</a>
                 <p><strong>注册日期:</strong> ${this.formatDate(member.created_at)}</p>
                 <p><strong>修改日期:</strong> ${this.formatDate(member.updated_at)}</p>
                 <p><strong>审核状态:</strong> ${member.status}</p>
@@ -186,6 +192,22 @@ export default {
 </script>
 
 <style scoped>
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.team-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    scale: 0.8;
+    justify-content: center;
+    align-items: center;
+    margin-right: 40px;
+}
 .reviewed-group-members .header-container {
     display: flex;
     justify-content: space-between;

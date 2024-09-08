@@ -62,6 +62,7 @@ export default {
             user: {
                 name: '',
                 password: '',
+                type: '',
                 code: ''
             },
             verifyCode: '',  // 验证码组件传过来的 code
@@ -91,28 +92,23 @@ export default {
                         password: this.user.password,
                         code: this.user.code
                     })
+                        // response是登录成功后存储的信息
                         .then(response => {
-                            const { id } = response.data;
-                            if (id) {
+                            const { id, usertype } = response.data;
+                            if (id && usertype) {
                                 sessionStorage.setItem('username', this.user.name);
                                 sessionStorage.setItem('userId', id);
-                                // 检查用户角色
-                                this.checkUserRole()
-                                    .then(isAdmin => {
-                                        if (isAdmin) {
-                                            this.$message.success('登录成功，管理员用户');
-                                            this.$router.push('/');
-                                        } else {
-                                            this.$message.success('登录成功：普通用户');
-                                            this.$router.push('/');
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('检查用户角色失败:', error);
-                                        this.$message.error('登录成功，但角色检查失败');
-                                    });
+                                sessionStorage.setItem('usertype', usertype);  // 保存用户类型
+                                // 检查是否为管理员
+                                if (usertype === '管理员') {
+                                    this.$message.success('登录成功，管理员用户');
+                                    this.$router.push('/');
+                                } else {
+                                    this.$message.success('登录成功，普通用户');
+                                    this.$router.push('/');
+                                }
                             } else {
-                                this.$message.error('登录失败，未获取到用户 ID');
+                                this.$message.error('登录失败，未获取到用户 ID 或用户类型');
                             }
                         })
                         .catch(error => {
@@ -135,7 +131,7 @@ export default {
         },
         checkUserRole() {
             const username = sessionStorage.getItem('username');
-            return axios.get(this.$baseUrl + '/api/user/role', { params: { username } })
+            return axios.get(this.$baseUrl + '/api/user/type', { params: { username } })
                 .then(response => response.data)
                 .catch(error => {
                     console.error('获取用户角色失败:', error);

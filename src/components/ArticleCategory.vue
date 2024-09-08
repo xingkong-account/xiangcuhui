@@ -1,16 +1,21 @@
 <template>
-    <div class="article-category">
+    <div class="main">
         <div class="header">
+            <h4 class="category-title">{{category}} | 文章列表</h4>
+            <span class="list-subtitle">LIST OF ARTICLES</span>
             <button @click="goBack" class="back-button">返回</button>
-            <h1 class="category-title">{{ category }} 文章列表</h1>
         </div>
+        <hr class="divider"/>
         <ul class="article-list">
-            <li v-for="article in articles" :key="article.id" class="article-item">
+            <li v-for="(article, index) in articles" :key="article.id" class="article-item">
                 <router-link :to="'/articles/' + article.id" class="article-link">
                     <div class="article-card">
-                        <h2 class="article-title">{{ article.title }}</h2>
-                        <p class="article-meta">发布于: {{ formatDate(article.created_at) }} | 作者: {{ article.author }}</p>
-                        <p class="article-snippet">{{ getSnippet(article.content) }}</p>
+                        <div class="article-index">{{ formatIndex(index) }}</div>
+                        <div class="article-info">
+                            <h2 class="article-title">{{ article.title }}</h2>
+                            <p class="article-meta">发布于: {{ formatDate(article.created_at) }} 作者: {{ article.author }}</p>
+                            <p class="article-snippet">{{ getSnippet(article.content) }}</p>
+                        </div>
                     </div>
                 </router-link>
             </li>
@@ -42,7 +47,7 @@ export default {
                     this.$message.info('没有找到文章。');
                     setTimeout(() => {
                         this.$router.push("/");
-                    }, 1000)
+                    }, 1000);
                 }
             } catch (error) {
                 console.error('获取文章失败:', error);
@@ -54,7 +59,10 @@ export default {
             return new Date(dateString).toLocaleDateString(undefined, options);
         },
         getSnippet(content) {
-            return content.length > 100 ? content.slice(0, 100) + '...' : content;
+            return content.length > 20 ? content.slice(0, 20) + '...' : content;
+        },
+        formatIndex(index) {
+            return ('0' + (index + 1)).slice(-2); // 格式化序号，01, 02
         },
         goBack() {
             this.$router.go(-1);
@@ -64,28 +72,40 @@ export default {
 </script>
 
 <style scoped>
-.article-category {
-    max-width: 1200px;
+.main {
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
 }
 
 .header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+}
+
+.category-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: rgb(101,172,138);
+}
+
+.list-subtitle {
+    font-size: 1rem;
+    color: rgb(101,172,138);
+    margin-left: 20px;
 }
 
 .back-button {
-    background-color: #67C23A;
+    background-color: rgb(101,172,138);
     color: #fff;
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
     font-size: 1rem;
     cursor: pointer;
-    margin-right: 20px;
+    margin-left: auto;
     transition: background-color 0.3s;
 }
 
@@ -93,10 +113,10 @@ export default {
     background-color: #4CAF50;
 }
 
-.category-title {
-    font-size: 2rem;
-    margin: 0;
-    color: #333;
+.divider {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    border: 3px solid rgb(101,172,138);
 }
 
 .article-list {
@@ -107,40 +127,68 @@ export default {
 
 .article-item {
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
 }
 
 .article-link {
     text-decoration: none;
     color: inherit;
+    display: flex;
+    flex-grow: 1;
 }
 
 .article-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    background: #fff;
+    display: flex;
+    align-items: center;
+    width: 100%;
     transition: box-shadow 0.3s;
+    margin-top: 20px;
 }
 
 .article-card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.article-index {
+    background-color: rgb(101,172,138);
+    color: white;
+    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.article-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #9ec8a5;
+    width: 100%;
+    padding-bottom: 10px;
 }
 
 .article-title {
-    font-size: 1.5rem;
-    margin: 0 0 10px;
-    color: #333333;
+    font-size: 1.25rem;
+    margin: 0;
+    color: rgb(111,111,111);
 }
 
 .article-meta {
     font-size: 0.875rem;
     color: #666;
-    margin-bottom: 10px;
+    margin-right: 20px;
+    max-width: 80%;
 }
 
 .article-snippet {
     font-size: 1rem;
     color: #333;
+    margin-top: 5px;
+    max-width: 50%;
 }
 </style>

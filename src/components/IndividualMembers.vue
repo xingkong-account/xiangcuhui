@@ -339,8 +339,19 @@ export default {
             this.$router.push({ path: `/edit-personal/${member.id}` });
         },
         checkIfAdmin() {
-            const username = sessionStorage.getItem('username');
-            this.isAdmin = (username === 'admin');
+            const usertype = sessionStorage.getItem('usertype');
+            if (!usertype) {
+                this.$message.error('无法获取用户信息');
+                return;
+            }
+            // this.$alert(`用户类型：${usertype}`);
+            this.isAdmin = (usertype === '管理员');
+            if (!this.isAdmin) {
+                this.$message.warning('您没有权限访问此页面');
+                setTimeout(() => {
+
+                }, 3000);
+            }
         },
         getCurrentUserId() {
             this.currentUserId = sessionStorage.getItem('userId');

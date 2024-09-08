@@ -16,7 +16,6 @@ public interface MembersMapper {
     List<Member> findAll(@Param("offset") int offset, @Param("limit") int limit);
     List<Member> findAllChecked(@Param("offset") int offset, @Param("limit") int limit);
     List<Member> searchMembers(@Param("query") String query, @Param("select") String select);
-
     int countAll();
     int countAllChecked();
     int countAllUnChecked();
@@ -63,4 +62,15 @@ public interface MembersMapper {
 
     List<Member> getMembersByType(@Param("type") String type);
     int addTeamMember(Member member);
+
+    List<Member> findAllUnCheckedTeams(@Param("offset") int offset, @Param("limit") int limit);
+    List<Member> findAllTeams(@Param("offset") int offset, @Param("limit") int limit);
+    List<Member> findAllCheckedTeams(@Param("offset") int offset, @Param("limit") int limit);
+    int countAllTeams();
+    int countAllCheckedTeams();
+    int countAllUnCheckedTeams();
+    void deleteAllTeamByIdIn(@Param("memberIds") List<Long> memberIds);
+    List<Member> searchTeamMembers(@Param("query") String query, @Param("select") String select);
+
+
 }

@@ -53,8 +53,14 @@ public class MembersService {
         return memberMapper.findById(id);
     }
 
+    // 单个删除个人会员
     public int deleteIndividual(int id) {
         return memberMapper.deleteIndividual(id);
+    }
+
+    // 多选删除个人会员
+    public void deleteMembersByIds(List<Long> memberIds) {
+        memberMapper.deleteAllByIdIn(memberIds);
     }
 
     public Member selectByName(String name){
@@ -90,7 +96,6 @@ public class MembersService {
     public boolean validatePassword(String rawPassword, String encodedPassword) {
         // 对用户输入的密码进行MD5哈希
         String hashedPassword = DigestUtils.md5DigestAsHex(rawPassword.getBytes());
-        // 比较哈希后的密码
         return hashedPassword.equals(encodedPassword);
     }
 
@@ -98,8 +103,6 @@ public class MembersService {
     public boolean changePassword(String username, String oldPassword, String newPassword) {
         // 使用MD5加密旧密码进行验证
         String encodedOldPassword = DigestUtils.md5DigestAsHex(oldPassword.getBytes());
-
-        // 从数据库中获取用户信息
         Member member = memberMapper.selectByName(username);
 
         if (member != null && member.getPassword().equals(encodedOldPassword)) {
@@ -132,13 +135,50 @@ public class MembersService {
         return new PageResult<>(members, total, pageNum, pageSize);
     }
 
-    // 多选删除用户
-    public void deleteMembersByIds(List<Long> memberIds) {
-        memberMapper.deleteAllByIdIn(memberIds);
+    // 团体会员部分
+    public PageResult<Member> getAllTeamMembers(int pageNum, int pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        List<Member> members = memberMapper.findAllTeams(offset, pageSize);
+        int total = memberMapper.countAllTeams();
+        return new PageResult<>(members, total, pageNum, pageSize);
+    }
+
+    public PageResult<Member> getAllUnCheckedTeamMembers(int pageNum, int pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        List<Member> members = memberMapper.findAllUnCheckedTeams(offset, pageSize);
+        int total = memberMapper.countAllUnCheckedTeams();
+        return new PageResult<>(members, total, pageNum, pageSize);
+    }
+
+    public PageResult<Member> getAllCheckedTeamMembers(int pageNum, int pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        List<Member> members = memberMapper.findAllCheckedTeams(offset, pageSize);
+        int total = memberMapper.countAllCheckedTeams();
+        return new PageResult<>(members, total, pageNum, pageSize);
+    }
+
+    // 多选删除团本会员
+    public void deleteTeamMembersByIds(List<Long> memberIds) {
+        memberMapper.deleteAllTeamByIdIn(memberIds);
+    }
+
+    // 单个删除团体会员
+    public int deleteTeam(int id){
+        return memberMapper.deleteGroup(id);
     }
 
     public List<Member> searchMembers(String query, String select) {
         return memberMapper.searchMembers(query, select);
+    }
+
+    public List<Member> searchTeamMembers(String query, String select) {
+        return memberMapper.searchTeamMembers(query, select);
+    }
+
+    // 更新团体会员信息
+    public int updateTeam(Member member){
+        member.setUpdated_at(LocalDateTime.now());
+        return memberMapper.updateGroup(member);
     }
 }
 

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -48,9 +49,12 @@ public class VideoController {
 
     // 审核视频（通过审核）
     @PostMapping("/{id}/approve")
-    public ResponseEntity<String> approveVideo(@PathVariable("id") int id) {
+    public ResponseEntity<String> approveVideo(
+            @PathVariable("id") int id,
+            @RequestBody Map<String, Object> requestBody) {
         try {
-            videoService.approveVideo(id);
+            String reviewer = (String) requestBody.get("reviewer");
+            videoService.approveVideo(id, reviewer);
             return ResponseEntity.ok("审核通过");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("审核失败");
@@ -59,10 +63,13 @@ public class VideoController {
 
     // 拒绝
     @PostMapping("/{id}/reject")
-    public ResponseEntity<String> rejectVideo(@PathVariable("id") int id) {
+    public ResponseEntity<String> rejectVideo(
+            @PathVariable("id") int id,
+            @RequestBody Map<String, Object> requestBody) {
         try {
-            videoService.rejectVideo(id);
-            return ResponseEntity.ok("视频审核未通过");
+            String reviewer = (String) requestBody.get("reviewer");
+            videoService.rejectVideo(id, reviewer);
+            return ResponseEntity.ok("视频已拒绝");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("审核失败");
         }
@@ -74,10 +81,15 @@ public class VideoController {
         return videoService.getVideoById(id);
     }
 
-    // 获取所有视频（已审核的视频）
+    // 获取所有视频
     @GetMapping("/all")
     public List<Video> getAllVideos() {
         return videoService.getAllVideos();
+    }
+
+    @GetMapping("/all-checked")
+    public List<Video> getAllCheckedVideos() {
+        return videoService.getAllCheckedVideos();
     }
 
     // 获取待审核的视频

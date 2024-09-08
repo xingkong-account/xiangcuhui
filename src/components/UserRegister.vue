@@ -89,7 +89,11 @@ export default {
                 ],
                 phone: [
                     { required: true, message: '请输入手机号', trigger: 'blur' },
-                    { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确', trigger: 'blur' }
+                    {
+                        pattern: /^(1[3-9]\d{9}|\d{3,4}-\d{7,8})$/,
+                        message: '手机号或座机号格式不正确，座机号（0931-11111111）',
+                        trigger: 'blur'
+                    }
                 ],
                 code: [
                     { required: true, message: '请输入验证码', trigger: 'blur' },

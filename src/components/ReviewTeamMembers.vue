@@ -10,6 +10,13 @@
             <el-table :data="members" style="width: 100%">
                 <el-table-column prop="name" label="团队名称" width="150"></el-table-column>
                 <el-table-column prop="phone" label="联系电话" width="150"></el-table-column>
+                <el-table-column prop="image_url" label="团体图片" width="120">
+                    <template v-slot="scope">
+                        <div class="image-container">
+                            <img :src="scope.row.image_url" alt="团体图片" class="team-image">
+                        </div>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="created_at" label="注册日期" width="180">
                     <template slot-scope="scope">
                         {{ formatDate(scope.row.created_at) }}
@@ -59,6 +66,17 @@
             </el-table>
         </el-card>
 
+        <el-pagination
+            @size-change="handlePageSizeChange"
+            @current-change="handlePageChange"
+            :current-page="currentPage"
+            :page-size="pageSize"
+            :total="total"
+            layout="total, sizes, prev, pager, next, jumper"
+            style="margin-left: 80px"
+            class="pagination"
+        ></el-pagination>
+
         <!-- 详情对话框 -->
         <el-dialog
             title="团队会员详情"
@@ -74,6 +92,7 @@
     </div>
     <div class="image-container" v-else>
         <p>您没有权限访问此页面。</p>
+        <img src="@/assets/images/403.png">
     </div>
 </template>
 
@@ -87,7 +106,10 @@ export default {
             isAdmin: false,
             dialogVisible: false,
             dialogContent: '',
-            redirectTimer: null
+            redirectTimer: null,
+            total: 0,
+            currentPage: 1,
+            pageSize: 10
         };
     },
     created() {
@@ -100,16 +122,34 @@ export default {
         }
     },
     methods: {
+        handlePageChange(page) {
+            this.currentPage = page;
+            this.fetchMembers();
+        },
+        handlePageSizeChange(size){
+            this.pageSize = size;
+            this.currentPage = 1;
+            this.fetchMembers();
+        },
         async fetchMembers() {
             try {
-                const response = await axios.get(this.$baseUrl + '/api/team-members?status=待审核');
-                this.members = response.data;
+                const response = await axios.get(this.$baseUrl + '/api/unchecked-teams',{
+                    params: {
+                        pageNum: this.currentPage,
+                        pageSize: this.pageSize
+                    }
+                });
+                this.members = response.data.data;
+                this.total = response.data.total;
+                // await this.$alert("总共" + this.total);
+                if (this.members.length === 0) {
+                    this.$message.info("暂无数据");
+                }
             } catch (error) {
                 console.error('Failed to fetch team members:', error);
             }
         },
         confirmRejectMember(member) {
-            // 在拒绝前显示确认对话框
             this.$confirm('您确定要拒绝此团队会员吗？', '确认拒绝', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -128,7 +168,7 @@ export default {
                 const date = new Date(dateString);
                 if (isNaN(date.getTime())) {
                     console.error('Invalid date:', dateString);
-                    return dateString; // 如果时间无效，返回原始日期字符串
+                    return dateString;
                 }
                 const year = date.getFullYear();
                 const month = ('0' + (date.getMonth() + 1)).slice(-2); // 月份从0开始，需要加1并补零
@@ -140,7 +180,7 @@ export default {
                 return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
             } catch (error) {
                 console.error('Failed to format date:', error);
-                return dateString; // 如果格式化失败，返回原始日期字符串
+                return dateString;
             }
         },
         getStatusTagType(status) {
@@ -168,7 +208,7 @@ export default {
         async rejectMember(member) {
             try {
                 await axios.post(this.$baseUrl + `/api/team-members/${member.id}/reject`);
-                this.$message.success('团队会员已拒绝');
+                this.$message.success('团体会员已拒绝');
                 this.fetchMembers();
             } catch (error) {
                 console.error('Failed to reject team member:', error);
@@ -176,12 +216,11 @@ export default {
             }
         },
         checkIfAdmin() {
-            const username = sessionStorage.getItem('username');
-            this.isAdmin = (username === 'admin');
+            const usertype = sessionStorage.getItem('usertype');
+            this.isAdmin = (usertype === '管理员');
             if (!this.isAdmin) {
-                this.$message.warning('您没有权限访问此页面，将跳转到主页面');
-                this.redirectTimer = setTimeout(() => {
-                    this.$router.push('/');
+                this.$message.warning('您没有权限访问此页面');
+                setTimeout(() => {
                 }, 3000);
             }
         },
@@ -210,11 +249,28 @@ export default {
 </script>
 
 <style scoped>
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.team-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    scale: 0.8;
+    justify-content: center;
+    align-items: center;
+    margin-right: 40px;
+}
+
 .team-member-review {
     padding: 20px;
 }
 .box-card {
-    max-width: 1000px;
+    max-width: 100%;
     margin: 0 auto;
 }
 .image-container {

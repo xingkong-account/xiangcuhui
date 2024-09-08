@@ -1,9 +1,11 @@
 <template>
     <el-container class="total">
-        <!-- Header Section -->
+        <!-- 头部选项 -->
         <el-header class="header-container">
             <div class="header-logo">
-                <img src="@/assets/images/icon.jpg" alt="Logo" style="object-fit: contain; height: 80px;">
+                <img src="@/assets/images/icon.jpg" alt="Logo"
+                     style="object-fit: contain;
+                     height: 80px; scale: 0.8">
             </div>
             <el-menu mode="horizontal" class="header-menu">
                 <el-menu-item index="1" @click="handleHomeClick" style="font-size: 20px; color: black">首页</el-menu-item>
@@ -22,10 +24,10 @@
                     <!-- 团队会员子菜单 -->
                     <el-submenu index="2-2">
                         <template #title>团队会员</template>
-                        <el-menu-item v-if="isAdmin" index="2-2-1" @click="navigate('group--member-manage')">团队会员管理</el-menu-item>
+                        <el-menu-item index="2-2-1" @click="navigate('group--member-manage')">团队会员管理</el-menu-item>
                         <el-menu-item index="2-2-2" @click="navigate('team-members')">查看所有团队会员</el-menu-item>
-                        <el-menu-item v-if="isAdmin" index="2-2-3" @click="navigate('add-team-member')">添加团队会员</el-menu-item>
-                        <el-menu-item v-if="isAdmin" index="2-2-4" @click="navigate('review-team-members')">审核团队会员</el-menu-item>
+<!--                        <el-menu-item v-if="isAdmin" index="2-2-3" @click="navigate('add-team-member')">添加团队会员</el-menu-item>-->
+<!--                        <el-menu-item v-if="isAdmin" index="2-2-4" @click="navigate('review-team-members')">审核团队会员</el-menu-item>-->
                     </el-submenu>
                 </el-submenu>
 
@@ -35,19 +37,24 @@
                     <el-menu-item index="3-1" @click="navigate('articles/create')">添加文章</el-menu-item>
                     <el-menu-item index="3-2" @click="navigate('article-review')">文章审核</el-menu-item>
                     <el-menu-item index="3-3" @click="navigate('articles')">文章管理</el-menu-item>
-                    <el-menu-item index="3-4" @click="navigate('category-articles', '农村党建')">农村党建</el-menu-item>
-                    <el-menu-item index="3-5" @click="navigate('category-articles', '集体经济')">集体经济</el-menu-item>
-                    <el-menu-item index="3-6" @click="navigate('category-articles', '产业发展')">产业发展</el-menu-item>
-                    <el-menu-item index="3-7" @click="navigate('category-articles', '乡土文化')">乡土文化</el-menu-item>
-                    <el-menu-item index="3-8" @click="navigate('category-articles', '青山绿水')">青山绿水</el-menu-item>
-                    <el-menu-item index="3-9" @click="navigate('category-articles', '青年农人')">青年农人</el-menu-item>
+                    <!-- 文章部分的子菜单：按分类查看 -->
+                    <el-submenu :index="'3-4'">
+                        <template #title>按分类查看</template>
+                        <el-menu-item index="3-4-1" @click="navigate('category-articles', '农村党建')">农村党建</el-menu-item>
+                        <el-menu-item index="3-4-2" @click="navigate('category-articles', '集体经济')">集体经济</el-menu-item>
+                        <el-menu-item index="3-4-3" @click="navigate('category-articles', '产业发展')">产业发展</el-menu-item>
+                        <el-menu-item index="3-4-4" @click="navigate('category-articles', '乡土文化')">乡土文化</el-menu-item>
+                        <el-menu-item index="3-4-5" @click="navigate('category-articles', '青山绿水')">青山绿水</el-menu-item>
+                        <el-menu-item index="3-4-6" @click="navigate('category-articles', '青年农人')">青年农人</el-menu-item>
+                    </el-submenu>
                 </el-submenu>
+
                 <!-- 精选视频下拉菜单 -->
                 <el-submenu class="video-menu" :index="'4'" :popper-append-to-body="false" :default-active="activeMenu">
                     <template #title>视频</template>
                     <el-menu-item index="4-1" @click="navigate('videos')">精选视频</el-menu-item>
-                    <el-menu-item v-if="isAdmin" index="4-2" @click="navigate('video-review')">审核视频</el-menu-item>
-                    <el-menu-item v-if="isAdmin" index="4-3" @click="navigate('video-manage')">已审核视频</el-menu-item>
+                    <el-menu-item v-if="isAdmin" index="4-2" @click="navigate('video-review')">视频审核</el-menu-item>
+                    <el-menu-item v-if="isAdmin" index="4-3" @click="navigate('video-manage')">所有视频</el-menu-item>
                     <el-menu-item index="4-4" @click="navigate('upload-video')">上传视频</el-menu-item>
                 </el-submenu>
 
@@ -272,7 +279,7 @@ export default {
                 }
             ],
             articleTitles: [],
-            username: '', // 存储用户名
+            username: '',
             activeMenu: '3',
             isAdmin: false,
             latestArticles: [],
@@ -369,9 +376,9 @@ export default {
             this.$router.push('/articles');
         },
         checkIfAdmin() {
-            const username = sessionStorage.getItem('username');
-            this.isAdmin = (username === 'admin');
-        }
+            const usertype = sessionStorage.getItem('usertype');
+            this.isAdmin = (usertype === '管理员');
+        },
     },
     created() {
         // 获取用户名
@@ -398,58 +405,51 @@ export default {
     height: fit-content;
 }
 
-/* 主菜单项的样式 */
 .header-menu .el-menu-item {
     font-size: 16px;
-    color: black; /* 设置主菜单项的文本颜色 */
-    transition: background-color 0.3s, color 0.3s; /* 添加背景色和字体色的过渡效果 */
+    color: black;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* 主菜单项的悬停样式 */
 .header-menu .el-menu-item:hover {
-    background-color: rgba(101, 172, 140, 0.1); /* 设置悬停时的背景色为浅绿色 */
-    color: rgb(101, 172, 140); /* 设置悬停时的文本颜色为绿色 */
+    background-color: rgba(101, 172, 140, 0.1);
+    color: rgb(101, 172, 140);
 }
 
-/* 主菜单项的点击（选中）样式 */
 .header-menu .el-menu-item.is-active {
     background-color: rgb(101, 172, 140);
     color: white;
 }
 
-/* 子菜单项的样式 */
 .header-menu .el-submenu__title {
     font-size: 18px;
-    color: black; /* 设置子菜单项的文本颜色 */
-    padding: 10px 20px; /* 设置子菜单项的内边距 */
-    transition: background-color 0.3s, color 0.3s; /* 添加背景色和字体色的过渡效果 */
+    color: black;
+    padding: 10px 20px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* 子菜单项的悬停样式 */
 .header-menu .el-submenu__title:hover {
-    background-color: rgba(101, 172, 140, 0.1); /* 设置悬停时的背景色为浅绿色 */
-    color: rgb(101, 172, 140); /* 设置悬停时的文本颜色为绿色 */
+    background-color: rgba(101, 172, 140, 0.1);
+    color: rgb(101, 172, 140);
 }
 
-/* 子菜单项的点击（选中）样式 */
+
 .header-menu .el-menu-item.is-active {
-    background-color: rgb(101, 172, 140); /* 设置选中项的背景色为绿色 */
-    color: white; /* 设置选中项的文本颜色为白色 */
+    background-color: rgb(101, 172, 140); /
+    color: white;
 }
 
-/* 主菜单项的样式 */
 .header-menu .el-menu-item {
-    font-size: 16px; /* 设置主菜单项的字体大小 */
-    color: black; /* 设置主菜单项的文本颜色 */
-    transition: background-color 0.3s, color 0.3s; /* 添加背景色和字体色的过渡效果 */
+    font-size: 16px;
+    color: black;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* 子菜单项的样式 */
 .header-menu .el-submenu__title {
-    font-size: 20px; /* 设置子菜单项的字体大小 */
-    color: black; /* 设置子菜单项的文本颜色 */
-    padding: 10px 20px; /* 设置子菜单项的内边距 */
-    transition: background-color 0.3s, color 0.3s; /* 添加背景色和字体色的过渡效果 */
+    font-size: 20px;
+    color: black;
+    padding: 10px 20px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .main-banner {
@@ -471,14 +471,14 @@ export default {
 }
 
 .title-container {
-    text-align: start; /* 居中对齐标题 */
+    text-align: start;
     padding: 27px;
 }
 
 .main-title {
-    font-size: 32px; /* 根据需要设置标题字体大小 */
-    color: green; /* 根据需要设置标题颜色 */
-    margin-bottom: 25px; /* 标题下方的间距 */
+    font-size: 32px;
+    color: green;
+    margin-bottom: 25px;
 }
 
 .gansu {
@@ -488,86 +488,86 @@ export default {
 }
 
 .custom-login-button {
-    background-color: rgb(101, 172, 140) !important; /* 设置按钮背景颜色 */
-    color: white !important; /* 设置字体颜色为白色，以便在绿色背景上清晰可见 */
-    border-color: rgb(101, 172, 140) !important; /* 设置边框颜色与背景一致 */
-    padding: 10px 20px; /* 设置按钮的内边距 */
-    font-size: 16px; /* 设置字体大小 */
-    border-radius: 4px; /* 设置圆角边框 */
-    transition: background-color 0.3s ease; /* 添加背景颜色的过渡效果 */
+    background-color: rgb(101, 172, 140) !important;
+    color: white !important;
+    border-color: rgb(101, 172, 140) !important;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
 }
 
 .custom-login-button:hover {
-    background-color: rgb(91, 155, 126) !important; /* 鼠标悬停时稍微加深背景颜色 */
-    border-color: rgb(91, 155, 126) !important; /* 同时调整边框颜色 */
+    background-color: rgb(91, 155, 126) !important;
+    border-color: rgb(91, 155, 126) !important;
 }
 
 .custom-register-button {
-    background-color: transparent !important; /* 设置注册按钮背景透明 */
-    color: rgb(101, 172, 140) !important; /* 设置注册按钮的字体颜色为绿色 */
-    border: 1px solid rgb(101, 172, 140) !important; /* 设置注册按钮的边框颜色 */
-    padding: 10px 20px; /* 设置按钮的内边距 */
-    font-size: 16px; /* 设置字体大小 */
-    border-radius: 4px; /* 设置圆角边框 */
-    transition: background-color 0.3s ease, color 0.3s ease; /* 添加过渡效果 */
+    background-color: transparent !important;
+    color: rgb(101, 172, 140) !important;
+    border: 1px solid rgb(101, 172, 140) !important;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .custom-register-button:hover {
-    background-color: rgb(101, 172, 140) !important; /* 鼠标悬停时，注册按钮的背景变为绿色 */
-    color: white !important; /* 字体颜色变为白色 */
+    background-color: rgb(101, 172, 140) !important;
+    color: white !important;
 }
 
 .gansu span {
-    display: block; /* 每个span占据一行 */
-    margin-bottom: 5px; /* 每行之间的间距，减少此值以缩短间距 */
+    display: block;
+    margin-bottom: 5px;
 }
 .el-dropdown-link {
-    background-color: rgb(101,172,140); /* 设置背景颜色为绿色 */
-    color: white; /* 设置文字颜色为白色，以便在绿色背景上清晰可见 */
-    padding: 8px 12px; /* 设置内边距，以增加文本和背景之间的空间 */
-    border-radius: 4px; /* 设置圆角边框，使背景更加柔和 */
-    display: inline-flex; /* 使用 Flexbox 使文字和图标在一行显示 */
-    align-items: center; /* 垂直居中对齐内容 */
-    font-size: 16px; /* 设置字体大小 */
-    cursor: pointer; /* 设置鼠标悬停时的光标样式 */
-    text-decoration: none; /* 去掉默认的文本装饰 */
+    background-color: rgb(101,172,140);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .el-dropdown-link i {
-    margin-left: 8px; /* 设置图标和文本之间的间距 */
-    font-size: 14px; /* 根据需要调整图标的大小 */
+    margin-left: 8px;
+    font-size: 14px;
 }
 
 .image-column {
-    position: relative; /* 使内部的绝对定位元素相对于此列 */
-    padding: 1px; /* 列的内边距 */
+    position: relative;
+    padding: 1px;
     margin-top: 10%;
 }
 
 .image-container {
-    position: relative; /* 包含层叠图片的容器相对定位 */
-    height: auto; /* 调整高度以适应更多图片 */
+    position: relative;
+    height: auto;
 }
 
 .image-item {
-    position: absolute; /* 使图片相对于容器绝对定位 */
-    width: 150px; /* 根据需要调整图片宽度 */
-    height: 200px; /* 根据图片比例自动调整高度 */
-    object-fit: cover; /* 保持图片比例并覆盖容器 */
-    border: 2px solid white; /* 可以添加边框以增强视觉效果 */
+    position: absolute;
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+    border: 2px solid white;
     scale: 0.8;
 }
 
 /* 图片1 */
 .image-item:nth-child(1) {
-    top: 0; /* 图片1从容器的顶部开始 */
-    left: 0; /* 图片1从容器的左侧开始 */
+    top: 0;
+    left: 0;
 }
 
 /* 图片2 */
 .image-item:nth-child(2) {
-    top: 100px; /* 图片2相对图片1向下20px */
-    left: 100px; /* 图片2相对图片1向右20px */
+    top: 100px;
+    left: 100px;
 }
 
 .content-section {
@@ -597,7 +597,7 @@ export default {
 }
 
 .section-title.active {
-    color: #4CAF50; /* Active green color for selected section */
+    color: #4CAF50;
 }
 
 .divider {
@@ -689,46 +689,45 @@ export default {
 }
 
 .sidebar {
-    width: 400px; /* 根据需要设置侧边栏的宽度 */
+    width: 400px;
     height: auto;
-    padding: 20px; /* 容器内边距 */
-    background-color: rgb(226,229,234); /* 侧边栏背景色 */
-    border: 1px solid #ddd; /* 侧边栏边框 */
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* 侧边栏阴影 */
+    padding: 20px;
+    background-color: rgb(226,229,234);
+    border: 1px solid #ddd;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
 }
 
 .sidebar h2 {
-    font-size: 20px; /* 标题字体大小 */
-    color: green; /* 标题字体颜色 */
-    margin: 0; /* 去掉默认的外边距 */
-    padding: 10px 15px; /* 标题的内边距 */
-    display: flex; /* 使用 Flexbox 布局 */
-    align-items: center; /* 垂直居中对齐标题文本 */
-    border-left: 6px solid green; /* 左边的小分隔线 */
-    background-color: #C0C0C0; /* 背景框的颜色 */
-    border-radius: 4px; /* 背景框的圆角边框 */
+    font-size: 20px;
+    color: green;
+    margin: 0;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    border-left: 6px solid green;
+    background-color: #C0C0C0;
+    border-radius: 4px;
     margin-bottom: 20px;
     margin-top: 10px;
     width: 30%;
 }
 
 .sidebar ul {
-    /*list-style: none; !* 去掉默认的列表样式 *!*/
-    padding: 0; /* 去掉默认的内边距 */
-    margin: 0; /* 去掉默认的外边距 */
-    flex: 1; /* 使列表填充剩余空间 */
+    padding: 0;
+    margin: 0; /
+    flex: 1;
 }
 
 .sidebar li {
-    margin-bottom: 10px; /* 列表项之间的间距 */
+    margin-bottom: 10px;
 }
 
 .sidebar a {
-    text-decoration: none; /* 去掉链接的下划线 */
-    color: black; /* 链接颜色 */
-    font-size: 16px; /* 链接字体大小 */
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
     line-height: 2.5;
 }
 

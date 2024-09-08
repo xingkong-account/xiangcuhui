@@ -51,12 +51,13 @@ export default {
             }
         },
         async approveVideo(video) {
+            const reviewer = localStorage.getItem('username') || 'admin';
             try {
                 await axios.post(this.$baseUrl + `/api/videos/${video.id}/approve`, {
                     ...video,
                     status: '已审核',
                     reviewed_at: new Date().toISOString(),
-                    reviewer: 'admin'
+                    reviewer: reviewer
                 });
                 this.$message.success('视频审核通过');
                 this.fetchVideos();

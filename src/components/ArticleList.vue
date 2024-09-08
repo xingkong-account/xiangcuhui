@@ -209,7 +209,6 @@ export default {
 </script>
 
 <style scoped>
-/* 让分页组件在底部对齐 */
 .pagination {
     padding: 20px;
     text-align: center;
@@ -218,45 +217,44 @@ export default {
     margin-bottom: 20px;
 }
 .edit-button {
-    background-color: #4CAF50; /* 绿色背景色 */
-    border-color: #4CAF50; /* 同样的边框颜色 */
+    background-color: #4CAF50;
+    border-color: #4CAF50;
 }
 
 .delete-button {
-    background-color: #FF5722; /* 红色背景色 */
-    border-color: #FF5722; /* 同样的边框颜色 */
+    background-color: #FF5722;
+    border-color: #FF5722;
 }
 
 .detail-button {
-    background-color: #03A9F4; /* 蓝色背景色 */
-    border-color: #03A9F4; /* 同样的边框颜色 */
+    background-color: #03A9F4;
+    border-color: #03A9F4;
 }
 
-/* 为按钮添加 hover 效果 */
 .el-button:hover.edit-button {
-    background-color: #45a049; /* 绿色背景色 hover 效果 */
-    border-color: #45a049; /* 同样的边框颜色 */
+    background-color: #45a049;
+    border-color: #45a049;
 }
 
 .el-button:hover.delete-button {
-    background-color: #e64a19; /* 红色背景色 hover 效果 */
-    border-color: #e64a19; /* 同样的边框颜色 */
+    background-color: #e64a19;
+    border-color: #e64a19;
 }
 
 .el-button:hover.detail-button {
-    background-color: #0288d1; /* 蓝色背景色 hover 效果 */
-    border-color: #0288d1; /* 同样的边框颜色 */
+    background-color: #0288d1;
+    border-color: #0288d1;
 }
 
 .el-button.add-article {
-    background-color: #FFC107; /* 设置为你想要的颜色 */
-    border-color: #FFC107; /* 设置边框颜色 */
+    background-color: #FFC107;
+    border-color: #FFC107;
     color: #fff;
 }
 
 .el-button.add-article:hover {
-    background-color: #FFD54F; /* 悬停时的背景色 */
-    border-color: #FFD54F; /* 悬停时的边框颜色 */
+    background-color: #FFD54F;
+    border-color: #FFD54F;
 }
 
 

@@ -39,6 +39,27 @@
         <!-- 右侧内容 -->
         <el-main>
             <div class="content-wrapper">
+                <!-- 搜索-->
+                <div style="display: flex; width: 100%; background-color: rgb(227,230,235); justify-content: space-between; align-items: center;" v-if="this.showSearchSection">
+                    <div style="display: flex; align-items: center">
+                        <h2>团体会员管理中心</h2>
+                        <el-select v-model="searchType" placeholder="选择搜索条件" style="margin-right: 10px;">
+                            <el-option label="姓名" value="name"></el-option>
+                            <el-option label="电话" value="phone"></el-option>
+                            <el-option label="状态" value="status"></el-option>
+                        </el-select>
+                        <el-input
+                            v-model="searchQuery"
+                            placeholder="输入搜索内容"
+                            prefix-icon="el-icon-search"
+                            style="width: 200px; border-radius: 8px; height: 32px;"
+                        ></el-input>
+                        <el-button type="primary" @click="handleSearch" style="margin-top: 10px; margin-left: 10px;">
+                            搜索
+                        </el-button>
+                    </div>
+                </div>
+               <!--右侧显示的内容-->
                 <add-team-member v-if="activeMenu === '2-1'" />
                 <review-team-members v-if="activeMenu === '3-1'" />
                 <checked-team v-if="activeMenu === '3-2'" />
@@ -46,9 +67,7 @@
                     <!-- 表格内容 -->
                     <div class="table-header">
                         <el-checkbox v-model="selectAll" @change="handleSelectAll">全选</el-checkbox>
-                        <el-button type="text" class="filter-btn">全部状态</el-button>
-                        <el-button type="primary" @click="filterData">查询</el-button>
-                        <el-button type="danger" @click="confirmDeleteSelected" :disabled="selectedMembers.length === 0">
+                        <el-button type="danger" @click="confirmDeleteSelected" :disabled="selectedMembers.length === 0 || !isAdmin">
                             删除选中
                         </el-button>
                     </div>
@@ -62,8 +81,14 @@
                         <el-table-column type="selection" width="55"></el-table-column>
                         <el-table-column prop="id" label="ID" width="80"></el-table-column>
                         <el-table-column prop="name" label="团体名称" width="120"></el-table-column>
-                        <el-table-column prop="contact" label="联系人" width="180"></el-table-column>
-                        <el-table-column prop="phone" label="电话" width="180"></el-table-column>
+                        <el-table-column prop="image_url" label="团体图片" width="120">
+                            <template v-slot="scope">
+                                <div class="image-container">
+                                    <img :src="scope.row.image_url" alt="团体图片" class="team-image">
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="phone" label="联系方式" width="180"></el-table-column>
                         <el-table-column prop="status" label="状态" width="100"></el-table-column>
                         <el-table-column prop="created_at" label="创建时间" width="180">
                             <template #default="{ row }">
@@ -77,9 +102,24 @@
                         </el-table-column>
                         <el-table-column label="操作" width="180">
                             <template slot-scope="scope">
-                                <el-button size="mini" type="text" class="edit-btn" @click="openEditDialog(scope.row)">编辑</el-button>
-                                <el-button size="mini" type="text" class="delete-btn" @click="deleteMember(scope.row.id)">删除</el-button>
+                                <el-button
+                                    size="mini"
+                                    type="text"
+                                    class="edit-btn"
+                                    :disabled="!canEdit(scope.row)"
+                                    @click="openEditDialog(scope.row)"
+                                >编辑
+                                </el-button>
+                                <el-button
+                                    size="mini"
+                                    type="text"
+                                    class="delete-btn"
+                                    :disabled="!isAdmin"
+                                    @click="deleteMember(scope.row.id)"
+                                >删除
+                                </el-button>
                             </template>
+
                         </el-table-column>
                     </el-table>
                 </el-card>
@@ -94,6 +134,54 @@
                         class="pagination"
                     ></el-pagination>
                 </div>
+                <!-- 编辑团队会员的弹窗 -->
+                <el-dialog
+                    title="编辑团体会员"
+                    :visible.sync="dialogVisible"
+                    width="50%"
+                    @close="resetDialog"
+                >
+                    <el-form :model="currentMember" ref="editForm" label-width="100px" class="edit-form">
+                        <el-form-item label="团体名称">
+                            <el-input v-model="currentMember.name" placeholder="请输入团体名称"></el-input>
+                        </el-form-item>
+                        <el-form-item label="联系方式">
+                            <el-input v-model="currentMember.phone" placeholder="请输入联系方式"></el-input>
+                        </el-form-item>
+                        <el-form-item label="简介">
+                            <el-input type="textarea" v-model="currentMember.description" placeholder="请输入团队简介"></el-input>
+                        </el-form-item>
+                        <el-form-item label="官网">
+                            <el-input v-model="currentMember.website" placeholder="请输入团队官网地址"></el-input>
+                        </el-form-item>
+                        <el-form-item label="上传图片" prop="image_url">
+                            <el-upload
+                                class="upload-button"
+                                :action="$baseUrl + '/api/upload'"
+                                list-type="picture"
+                                :show-file-list="false"
+                                :on-success="handleUploadSuccess"
+                                :on-error="handleUploadError"
+                                :limit="1"
+                                accept="image/*">
+                                <el-button size="small" type="primary">点击上传</el-button>
+                                <div slot="tip" class="el-upload__tip">只能上传图片文件</div>
+                            </el-upload>
+                            <el-image v-if="currentMember.image_url" :src="currentMember.image_url" style="width: 100px; margin-top: 10px;"></el-image>
+                        </el-form-item>
+                        <el-form-item label="状态" v-if="isAdmin">
+                            <el-select v-model="currentMember.status" placeholder="请选择状态">
+                                <el-option label="待审核" value="待审核"></el-option>
+                                <el-option label="已审核" value="已审核"></el-option>
+                                <el-option label="已拒绝" value="已拒绝"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="submitEditForm">提交</el-button>
+                            <el-button @click="resetDialog">取消</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-dialog>
             </div>
         </el-main>
     </el-container>
@@ -115,11 +203,15 @@ export default {
         return {
             members: [],
             dialogVisible: false,
-            currentMember: { // 当前编辑的会员信息
+            // 当前编辑的会员信息
+            currentMember: {
                 id: null,
                 name: '',
                 phone: '',
-                status: '待审核'
+                status: '待审核',
+                description: '',
+                website: '',
+                image_url: ''
             },
             showSearchSection: false, // 控制搜索部分的显示
             searchQuery: '', // 搜索框输入的内容
@@ -136,25 +228,36 @@ export default {
         };
     },
     methods: {
+        handleUploadSuccess(response) {
+            if (response && response.url) {
+                this.currentMember.image_url = response.url;
+                this.$message.success('图片上传成功');
+            } else {
+                this.$message.error('上传失败，请稍后重试');
+            }
+        },
+        handleUploadError() {
+            this.$message.error('图片上传失败');
+        },
         async openEditDialog(member) {
             try {
                 // 当前编辑的会员数据
                 this.currentMember = { ...member };
                 this.dialogVisible = true;
             } catch (error) {
-                console.error('Failed to open edit dialog:', error);
+                console.error('打开编辑对话框失败:', error);
                 this.$message.error('无法打开编辑对话框');
             }
         },
         async submitEditForm() {
             try {
-                await axios.post(this.$baseUrl + `/api/update-personal/${this.currentMember.id}`, this.currentMember);
-                this.$message.success('会员信息更新成功');
+                await axios.post(this.$baseUrl + `/api/update-team/${this.currentMember.id}`, this.currentMember);
+                this.$message.success('团体会员信息更新成功');
                 this.dialogVisible = false;
                 await this.fetchMembers();
             } catch (error) {
-                console.error('Failed to update member:', error);
-                this.$message.error('会员信息更新失败');
+                console.error('团体会员信息更新失败:', error);
+                this.$message.error('团体会员信息更新失败');
             }
         },
         async handleSearch() {
@@ -163,7 +266,7 @@ export default {
                 return;
             }
             try {
-                const response = await axios.get(this.$baseUrl + '/api/members', {
+                const response = await axios.get(this.$baseUrl + '/api/all-teams', {
                     params: {
                         query: this.searchQuery,
                         select: this.searchType
@@ -188,7 +291,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                axios.delete(this.$baseUrl + `/api/delete-personal/${id}`)
+                axios.delete(this.$baseUrl + `/api/delete-single-team/${id}`)
                     .then(() => {
                         this.$message.success('删除成功');
                         this.fetchMembers();
@@ -209,7 +312,7 @@ export default {
         },
         async fetchMembers() {
             try {
-                const response = await axios.get(this.$baseUrl + '/api/personal-list', {
+                const response = await axios.get(this.$baseUrl + '/api/team-members', {
                     params: {
                         pageNum: this.currentPage,
                         pageSize: this.pageSize
@@ -217,12 +320,12 @@ export default {
                 });
                 this.members = response.data.data;
                 this.total = response.data.total;
-                // this.$alert(this.total);
+                // await this.$alert(this.members);
                 if (this.members.length === 0) {
                     this.$message.info('暂无数据');
                 }
             } catch (error) {
-                console.error('获取会员个人数据失败', error);
+                console.error('获取团体会员数据失败', error);
             }
         },
         confirmDeleteSelected() {
@@ -276,8 +379,13 @@ export default {
             this.$router.push({ path: `/edit-personal/${member.id}` });
         },
         checkIfAdmin() {
-            const username = sessionStorage.getItem('username');
-            this.isAdmin = (username === 'admin');
+            const userType = sessionStorage.getItem('usertype');
+            this.isAdmin = (userType === '管理员');
+            if (!this.isAdmin) {
+                this.$message.warning('您没有权限访问此页面');
+                setTimeout(() => {
+                }, 3000);
+            }
         },
         getCurrentUserId() {
             this.currentUserId = sessionStorage.getItem('userId');
@@ -310,6 +418,23 @@ export default {
 </script>
 
 <style scoped>
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.team-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    scale: 0.8;
+    justify-content: center;
+    align-items: center;
+    margin-right: 40px;
+}
+
 .back-button{
     background-color: rgb(101, 172, 140);
     border-color: rgb(101, 172, 140);
@@ -417,5 +542,3 @@ export default {
     background-color: transparent;
 }
 </style>
-<script setup>
-</script>

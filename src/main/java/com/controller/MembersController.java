@@ -32,6 +32,7 @@ public class MembersController{
     @Autowired
     private FileService fileService;
 
+    // 注册
     @PostMapping("/add")
     public boolean register(@RequestBody Member member) {
         // 检查用户名是否已存在
@@ -40,7 +41,6 @@ public class MembersController{
             return false;
         }
         try {
-            // 尝试插入新用户
             int rowsAffected = memberService.add(member);
             return rowsAffected > 0;
         } catch (Exception e) {
@@ -48,14 +48,26 @@ public class MembersController{
         }
     }
 
-   // 多选删除
+   // 多选删除个人会员
    @PostMapping("/delete-members")
    public ResponseEntity<String> deleteMembers(@RequestBody List<Long> memberIds) {
        try {
            memberService.deleteMembersByIds(memberIds);
            return ResponseEntity.ok("删除成功");
        } catch (Exception e) {
-           e.printStackTrace(); // 可以帮助调试
+           e.printStackTrace();
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("删除失败");
+       }
+   }
+
+   // 多选删除团体会员
+   @PostMapping("/delete-teams")
+   public ResponseEntity<String> deleteTeamMembers(@RequestBody List<Long> memberIds) {
+       try {
+           memberService.deleteTeamMembersByIds(memberIds);
+           return ResponseEntity.ok("删除成功");
+       } catch (Exception e) {
+           e.printStackTrace();
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("删除失败");
        }
    }
@@ -81,7 +93,8 @@ public class MembersController{
         return memberService.findById(id);
     }
 
-    @GetMapping("/individual-members")
+    // 未审核的个人会员
+    @GetMapping("/unchecked-individuals")
     public PageResult<Member> getAllMembers(
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize)
@@ -89,7 +102,7 @@ public class MembersController{
         return memberService.getAllUnCheckedMembers(pageNum, pageSize);
     }
 
-    // 获取已审核的用户
+    // 获取已审核的个人用户
     @GetMapping("/processed-members")
     public PageResult<Member> getAll1Members(
             @RequestParam(defaultValue = "1") int pageNum,
@@ -110,7 +123,7 @@ public class MembersController{
         }
     }
 
-    // 拒绝用户
+    // 拒绝个人用户
     @PostMapping("/individual-members/{id}/reject")
     public ResponseEntity<String> rejectMember(@PathVariable("id") int id) {
         try {
@@ -131,7 +144,7 @@ public class MembersController{
         }
     }
 
-    // 拒绝用户
+    // 拒绝团体用户
     @PostMapping("/team-members/{id}/reject")
     public ResponseEntity<String> rejectTeamMember(@PathVariable("id") int id) {
         try {
@@ -144,7 +157,7 @@ public class MembersController{
 
 
     @PostMapping("/update-personal/{id}")
-    public ResponseEntity<Void> updateArticle(@PathVariable Integer id, @RequestBody Member member) {
+    public ResponseEntity<Void> updateIndividual(@PathVariable Integer id, @RequestBody Member member) {
         if (memberService.findById(id) == null) {
             return ResponseEntity.notFound().build();
         }
@@ -153,7 +166,7 @@ public class MembersController{
         return ResponseEntity.noContent().build();
     }
 
-    // 按条件查询用户
+    // 按条件查询个人用户
     @GetMapping("/members")
     public ResponseEntity<List<Member>> searchMembers(
             @RequestParam(value = "query", required = false) String query,
@@ -162,7 +175,16 @@ public class MembersController{
         return new ResponseEntity<>(members, HttpStatus.OK);
     }
 
-    // 单个删除
+    // 按条件查询团体
+    @GetMapping("/all-teams")
+    public ResponseEntity<List<Member>> searchTeamMembers(
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "select", required = false) String select) {
+        List<Member> members = memberService.searchTeamMembers(query, select);
+        return new ResponseEntity<>(members, HttpStatus.OK);
+    }
+
+    // 单个删除个人会员
     @DeleteMapping("/delete-personal/{id}")
     public ResponseEntity<String> deletePersonal(@PathVariable("id") Integer id) {
         int result = memberService.deleteIndividual(id);
@@ -173,9 +195,52 @@ public class MembersController{
         }
     }
 
+    // 单个删除团体会员
+    @DeleteMapping("/delete-single-team/{id}")
+    public ResponseEntity<String> deleteSingleTeam(@PathVariable("id") Integer id) {
+        int result = memberService.deleteTeam(id);
+        if (result > 0) {
+            return ResponseEntity.ok("删除成功");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("会员未找到");
+        }
+    }
+
+    // 获取全部类型的团体会员数据
     @GetMapping("/team-members")
-    public List<Member> getTeamMembers() {
-        return memberService.getMembersByType("团体会员");
+    public PageResult<Member> getTeamMembers(
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize)
+    {
+        return memberService.getAllTeamMembers(pageNum, pageSize);
+    }
+
+    // 未审核的团体会员数据
+    @GetMapping("/unchecked-teams")
+    public PageResult<Member> getAllUncheckedMembers(
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize)
+    {
+        return memberService.getAllUnCheckedTeamMembers(pageNum, pageSize);
+    }
+
+    // 已审核的团体会员数据
+    @GetMapping("/checked-teams")
+    public PageResult<Member> getAllCheckedMembers(
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize)
+    {
+        return memberService.getAllCheckedTeamMembers(pageNum, pageSize);
+    }
+
+    @PostMapping("/update-team/{id}")
+    public ResponseEntity<Void> updateTeam(@PathVariable Integer id, @RequestBody Member member) {
+        if (memberService.findById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        member.setId(id);
+        memberService.updateTeam(member);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/upload")
@@ -208,14 +273,16 @@ public class MembersController{
         }
     }
 
-    @GetMapping("/user/role")
-    public ResponseEntity<Boolean> getUserRole(@RequestParam String username) {
+    @GetMapping("/user/type")
+    public ResponseEntity<Map<String, String>> getUserType(@RequestParam String username) {
         Member member = memberService.selectByName(username);
         if (member != null) {
-            boolean isAdmin = "admin".equals(member.getName());
-            return ResponseEntity.ok(isAdmin);
+            Map<String, String> response = new HashMap<>();
+            response.put("type", member.getType());
+            response.put("isAdmin", "管理员".equals(member.getType()) ? "true" : "false");
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "User not found"));
         }
     }
 
@@ -231,30 +298,28 @@ public class MembersController{
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Member member, HttpSession session) {
         Member existingMember = memberService.selectByName(member.getName());
-
         if (existingMember == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("message", "会员不存在"));
         }
         if (existingMember.getStatus().equals("待审核") || existingMember.getStatus().equals("已拒绝")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.singletonMap("message", "会员未审核或已拒绝，无法登录"));
         }
-
         boolean passwordMatches = memberService.validatePassword(member.getPassword(), existingMember.getPassword());
         if (passwordMatches) {
             session.setAttribute("username", existingMember.getName());
+            session.setAttribute("usertype", existingMember.getType());
             session.setAttribute("userId", existingMember.getId());
-
+//            System.out.println("类型：" + (String) session.getAttribute("usertype"));
             Map<String, Object> response = new HashMap<>();
-            String username = (String) session.getAttribute("username");
             response.put("message", "登录成功");
             response.put("id", existingMember.getId());
+            response.put("usertype", existingMember.getType()); // 返回用户类型
 
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "用户名或密码错误"));
         }
     }
-
 
     @PostMapping("/change-password")
     public ResponseEntity<Map<String, Object>> changePassword(

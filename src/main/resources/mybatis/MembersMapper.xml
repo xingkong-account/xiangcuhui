@@ -187,7 +187,7 @@
             <if test="password != null">password = #{password},</if>
             <if test="status != null">status = #{status},</if>
             <if test="updated_at != null">updated_at = #{updated_at},</if>
-            <if test="iamge_url != null">image_url = #{iamge_url},</if>
+            <if test="image_url != null">image_url = #{image_url},</if>
             <if test="description != null">description = #{description},</if>
             <if test="website != null">website = #{website},</if>
         </set>
@@ -232,4 +232,73 @@
             <if test="updated_at != null">#{updated_at},</if>
         </trim>
     </insert>
+
+    <select id="findAllUnCheckedTeams" parameterType="map" resultType="com.bean.Member">
+        SELECT *
+        FROM members
+        WHERE type = '团体会员'
+        AND status = '待审核'
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="findAllTeams" parameterType="map" resultType="com.bean.Member">
+        SELECT *
+        FROM members
+        WHERE type = '团体会员'
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="findAllCheckedTeams" parameterType="map" resultType="com.bean.Member">
+        SELECT *
+        FROM members
+        WHERE type = '团体会员'
+        AND status = '已审核'
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="countAllTeams" resultType="int">
+        SELECT COUNT(*)
+        FROM members
+        WHERE type = '团体会员'
+    </select>
+
+    <select id="countAllCheckedTeams" resultType="int">
+        SELECT COUNT(*)
+        FROM members
+        WHERE type = '团体会员'
+        AND status = '已审核'
+    </select>
+
+    <select id="countAllUnCheckedTeams" resultType="int">
+        SELECT COUNT(*)
+        FROM members
+        WHERE type = '团体会员'
+        AND status = '待审核'
+    </select>
+
+    <delete id="deleteAllTeamByIdIn" parameterType="java.util.List">
+        DELETE FROM members
+        WHERE id IN
+        <foreach collection="memberIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="searchTeamMembers" resultType="com.bean.Member">
+        SELECT * FROM members
+        WHERE 1 = 1
+        <if test="select == 'name' and query != null and query != ''">
+            AND name LIKE CONCAT('%', #{query}, '%')
+        </if>
+        <if test="select == 'phone' and query != null and query != ''">
+            AND phone LIKE CONCAT('%', #{query}, '%')
+        </if>
+        <if test="select == 'status' and query != null and query != ''">
+            AND status = #{query}
+        </if>
+        AND type = '团体会员'
+    </select>
 </mapper>

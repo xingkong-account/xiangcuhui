@@ -4,7 +4,10 @@ import com.bean.Video;
 import com.mapper.VideoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,6 +39,10 @@ public class VideoService {
         return videoMapper.getAllVideos();
     }
 
+    public List<Video> getAllCheckedVideos() {
+        return videoMapper.getAllCheckedVideos();
+    }
+
     public List<Video> getPendingVideos() {
         return videoMapper.getVideosByStatus("待审核");
     }
@@ -56,11 +63,20 @@ public class VideoService {
         return video;
     }
 
-    public void approveVideo(Integer id){
-        videoMapper.reviewVideo(id, "已审核", LocalDateTime.now());
+    public void approveVideo(Integer id, String reviewer) {
+        videoMapper.reviewVideo(id, "已审核", LocalDateTime.now(), LocalDateTime.now(),reviewer);
     }
 
-    public void rejectVideo(Integer id){
-        videoMapper.reviewVideo(id, "已拒绝", LocalDateTime.now());
+    public void rejectVideo(Integer id, String reviewer) {
+        videoMapper.reviewVideo(id, "已拒绝", LocalDateTime.now(), LocalDateTime.now(),reviewer);
     }
+
+
+    private String getCurrentUsername() {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes != null) {
+            return (String) attributes.getRequest().getSession().getAttribute("username");
+        }
+        return "admin";
+   }
 }

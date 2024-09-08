@@ -45,8 +45,9 @@
             </el-form>
         </el-card>
     </div>
-    <div class="no-access" v-else>
+    <div class="image-container" v-else>
         <p>您没有权限访问此页面。</p>
+        <img src="@/assets/images/403.png">
     </div>
 </template>
 
@@ -66,7 +67,14 @@ export default {
             },
             rules: {
                 name: [{ required: true, message: '请输入团队名称', trigger: 'blur' }],
-                phone: [{ required: true, message: '请输入联系方式', trigger: 'blur' }],
+                phone: [
+                    { required: true, message: '请输入联系方式', trigger: 'blur' },
+                    {
+                        pattern: /^(1[3-9]\d{9}$)|^(\d{3,4}-\d{7,8})$/,
+                        message: '请输入正确的电话号码，格式为11位手机号或区号-座机号（例：0931-88888888）',
+                        trigger: 'blur'
+                    }
+                ],
                 description: [{ required: true, message: '请输入团队简介', trigger: 'blur' }],
                 website: [{ required: true, message: '请输入官网地址', trigger: 'blur' }],
                 password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
@@ -80,17 +88,15 @@ export default {
     },
     methods: {
         checkIfAdmin() {
-            const username = sessionStorage.getItem('username');
-            this.isAdmin = (username === 'admin');
+            const usertype = sessionStorage.getItem('usertype');
+            this.isAdmin = (usertype === '管理员');
             if (!this.isAdmin) {
-                this.$message.warning('您没有权限访问此页面，将跳转到主页面');
+                this.$message.warning('您没有权限访问此页面');
                 setTimeout(() => {
-                    this.$router.push('/');
                 }, 3000);
             }
         },
         handleUploadSuccess(response) {
-            // 假设返回的response包含一个url字段
             if (response && response.url) {
                 this.teamMember.image_url = response.url;
                 this.$message.success('图片上传成功');
@@ -126,9 +132,30 @@ export default {
 </script>
 
 <style scoped>
+.image-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image-container img.full-width {
+    width: 100%;
+}
+
+.image-container img.thumbnail {
+    width: auto;
+    max-width: 200px;
+    height: auto;
+}
 .add-team-member {
     padding: 20px;
-    max-width: 600px;
+    max-width: 100%;
     margin: 0 auto;
 }
 .upload-button{
@@ -140,24 +167,24 @@ export default {
 }
 
 .submit-buttton {
-    background-color: #4CAF50; /* 绿色背景色 */
-    border-color: #4CAF50; /* 同样的边框颜色 */
+    background-color: rgb(85,156,122);
+    border-color: rgb(85,156,122);
 }
 
 .reset-button {
-    background-color: deepskyblue; /* 红色背景色 */
-    border-color: yellow; /* 同样的边框颜色 */
+    background-color: rgb(85,156,122);
+    border-color: yellow;
     text-decoration:none ;
-    color: black;
+    color: white;
 }
-/* 为按钮添加 hover 效果 */
+
 .el-button:hover.submit-buttton {
-    background-color: #45a049; /* 绿色背景色 hover 效果 */
-    border-color: #45a049; /* 同样的边框颜色 */
+    background-color: #45a049;
+    border-color: #45a049;
 }
 
 .el-button:hover.reset-button {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #45a049;
+    border-color: #45a049;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="approved-video-page">
         <div style="flex: 1">
-            <h2>已审核视频</h2>
+            <h2>全部视频</h2>
             <el-button @click="goBack" type="default">返回</el-button>
         </div>
         <el-table
@@ -10,6 +10,7 @@
             :highlight-current-row="true"
             @row-click="handleRowClick">
             <el-table-column prop="title" label="标题"></el-table-column>
+            <el-table-column prop="status" label="状态"></el-table-column>
             <el-table-column prop="description" label="描述"></el-table-column>
             <el-table-column prop="thumbnail" label="缩略图">
                 <template slot-scope="scope">

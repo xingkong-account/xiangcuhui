@@ -157,12 +157,11 @@ export default {
             this.fetchArticles();
         },
         checkIfAdmin() {
-            const username = sessionStorage.getItem('username');
-            this.isAdmin = (username === 'admin');
+            const usertype = sessionStorage.getItem('usertype');
+            this.isAdmin = (usertype === '管理员');
             if (!this.isAdmin) {
-                this.$message.warning('您没有权限访问此页面，将跳转到主页面');
-                this.redirectTimer = setTimeout(() => {
-                    this.$router.push('/');
+                this.$message.warning('您没有权限访问此页面');
+                setTimeout(() => {
                 }, 3000);
             }
         },
