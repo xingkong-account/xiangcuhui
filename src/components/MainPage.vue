@@ -435,7 +435,7 @@ export default {
 
 
 .header-menu .el-menu-item.is-active {
-    background-color: rgb(101, 172, 140); /
+    background-color: rgb(101, 172, 140);
     color: white;
 }
 
@@ -716,7 +716,7 @@ export default {
 
 .sidebar ul {
     padding: 0;
-    margin: 0; /
+    margin: 0;
     flex: 1;
 }
 
