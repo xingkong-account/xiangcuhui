@@ -1,10 +1,10 @@
 <template>
     <el-container style="height: 100vh;">
-        <el-header style="background-color: #67C23A; color: white; text-align: center; padding: 10px;">
+        <el-header style="background-color: rgb(101,172,140); color: white; text-align: center; padding: 10px;">
             <span style="margin: 30px;">添加文章</span>
-            <el-button type="default" @click="goBack" style="margin-right: 30px; background-color: #67C23A">
+            <el-button type="default" @click="goBack" style="margin-right: 30px;">
                 <i class="el-icon-arrow-left"></i>
-                <span style="color: white; font-size: 16px; font-weight: bold">
+                <span class="back-button" style="color: white; font-size: 16px; font-weight: bold">
                     返回
                 </span>
             </el-button>
@@ -36,7 +36,7 @@
         <el-footer class="custom-footer">
             <div class="footer-content">
                 <div class="footer-left">
-                    <img src="http://localhost:8081/image.png" width="200px" height="120px" class="">
+                    <img src="@/assets/images/icon.jpg" width="350px" height="100px" class="">
                 </div>
                 <div class="footer-center">
                     <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
@@ -178,6 +178,26 @@ export default {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.back-button {
+    background-color: rgb(85, 145, 118);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.back-button:hover {
+    background-color: rgb(101, 172, 140); /* Lighter color on hover */
+    transform: scale(1.05); /* Slightly enlarge the button */
+}
+
+.back-button:active {
+    background-color: rgb(70, 118, 95); /* Darker color when pressed */
+    transform: scale(0.98); /* Slightly shrink the button on press */
+}
+
 .editor-container {
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -191,20 +211,20 @@ export default {
 }
 
 .submit-buttton {
-    background-color: #4CAF50; /* 绿色背景色 */
-    border-color: #4CAF50; /* 同样的边框颜色 */
+    background-color: rgb(101,172,140);
+    border-color: rgb(101,172,140);
 }
 
 .reset-button {
-    background-color: #C0C0C0; /* 红色背景色 */
-    border-color: #C0C0C0; /* 同样的边框颜色 */
+    background-color: #C0C0C0;
+    border-color: #C0C0C0;
     text-decoration:none ;
     color: black;
 }
-/* 为按钮添加 hover 效果 */
+
 .el-button:hover.submit-buttton {
-    background-color: #45a049; /* 绿色背景色 hover 效果 */
-    border-color: #45a049; /* 同样的边框颜色 */
+    background-color: #45a049;
+    border-color: #45a049;
 }
 
 .el-button:hover.reset-button {
@@ -213,7 +233,7 @@ export default {
 }
 
 .custom-footer {
-    background-color: #67C23A;
+    background-image: url("@/assets/images/footer.png");
     color: #ffffff;
     padding: 20px 0;
     text-align: center;
@@ -240,6 +260,12 @@ export default {
     text-align: center;
 }
 
+.foot-img{
+    scale: 0.8;
+    width: 500px;
+    height: 100px;
+}
+
 .footer-logo, .security-logo {
     width: 80px;
     margin-bottom: 10px;
@@ -256,6 +282,7 @@ export default {
 }
 
 .footer-center a:hover {
-    text-decoration: underline;
+    text-decoration: none;
+    cursor: pointer;
 }
 </style>

@@ -46,7 +46,6 @@
         </el-card>
     </div>
     <div class="image-container" v-else>
-        <p>您没有权限访问此页面。</p>
         <img src="@/assets/images/403.png">
     </div>
 </template>

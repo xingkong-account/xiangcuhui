@@ -101,11 +101,12 @@ export default {
     data() {
         return {
             articles: [],
-            total: 0,  // 总记录数
-            currentPage: 1,  // 当前页码
-            pageSize: 10,  // 每页显示的记录条数
+            total: 0,
+            currentPage: 1,
+            pageSize: 10,
             isAdmin: false,
-            username: ''
+            username: '',
+            usertype: ''
         };
     },
     methods: {
@@ -115,8 +116,7 @@ export default {
                 console.log('未登录或无法获取用户名');
                 return Promise.resolve('');
             }
-
-            return axios.get(this.$baseUrl + '/api/user/role', { params: { username } })
+            return axios.get(this.$baseUrl + '/api/user/type', { params: { username } })
                 .then(response => response.data.role)
                 .catch(error => {
                     console.log('获取用户角色失败:', error);
@@ -191,18 +191,19 @@ export default {
         }
     },
     created() {
+        this.usertype = sessionStorage.getItem('usertype');
         this.username = sessionStorage.getItem('username');
         if (this.username) {
             this.checkUserRole()
                 .then(() => {
-                    this.isAdmin = this.username === 'admin';
-                    this.fetchArticles(); // 只有在用户角色确定后才获取文章列表
+                    this.isAdmin = (this.usertype === '管理员');
+                    this.fetchArticles();
                 })
                 .catch(error => {
                     console.error('获取用户角色失败:', error);
                 });
         } else {
-            this.fetchArticles(); // 未登录时仍然可以获取文章列表
+            this.fetchArticles();
         }
     }
 };
@@ -287,7 +288,7 @@ export default {
 .content-container {
     padding: 20px;
     margin: 0 auto; /* 自动水平居中 */
-    max-width: 1200px; /* 设置最大宽度 */
+    max-width: 1200px;
 }
 
 .article-content {
@@ -305,52 +306,5 @@ export default {
 .el-table th,
 .el-table td {
     text-align: center;
-}
-
-.custom-footer {
-    background-color: #67C23A;
-    color: #ffffff;
-    padding: 20px 0;
-    text-align: center;
-    min-height: 200px;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.footer-left, .footer-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.footer-center {
-    flex: 2;
-    text-align: center;
-}
-
-.footer-logo, .security-logo {
-    width: 80px;
-    margin-bottom: 10px;
-}
-
-.footer-center p {
-    margin: 5px 0;
-}
-
-.footer-center a {
-    color: #ffffff;
-    text-decoration: none;
-    margin: 0 10px;
-}
-
-.footer-center a:hover {
-    text-decoration: underline;
 }
 </style>

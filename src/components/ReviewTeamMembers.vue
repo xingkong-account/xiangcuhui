@@ -91,7 +91,6 @@
         </el-dialog>
     </div>
     <div class="image-container" v-else>
-        <p>您没有权限访问此页面。</p>
         <img src="@/assets/images/403.png">
     </div>
 </template>
@@ -250,10 +249,21 @@ export default {
 
 <style scoped>
 .image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image-container img.thumbnail {
+    width: auto;
+    max-width: 200px;
+    height: auto;
 }
 
 .team-image {

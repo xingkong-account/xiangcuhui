@@ -273,6 +273,7 @@ public class MembersController{
         }
     }
 
+    // 角色验证
     @GetMapping("/user/type")
     public ResponseEntity<Map<String, String>> getUserType(@RequestParam String username) {
         Member member = memberService.selectByName(username);

@@ -103,7 +103,7 @@ export default {
     color: rgb(85,97,83);
     font-size: 30px;
     margin-bottom: 20px;
-    margin-left: 42px;
+    margin-left: 70px;
     font-weight: 400;
 }
 
@@ -111,7 +111,7 @@ export default {
     color: rgb(85,97,83);
     font-size: 18px;
     margin-bottom: 20px;
-    margin-left: 42px;
+    margin-left: 70px;
 }
 
 .card-container {
@@ -119,17 +119,20 @@ export default {
     flex-wrap: wrap;
     gap: 30px;
     justify-content: center;
-    scale: 0.95;
+    scale: 0.9;
 }
 
 .box-card {
-    flex: 1 1 calc(33.333% - 20px);
+    flex: 1 1 calc(30% - 30px);
     box-sizing: border-box;
-    border-radius: 10px;
-    /*scale: 1.0;*/
+    border-radius: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    scale: 0.9;
 }
 
+.box-card:hover{
+    transform: translateY(-10px);
+}
 .card-header {
     font-size: 22px;
     color: #333;
@@ -138,9 +141,9 @@ export default {
 }
 
 .team-image {
-    border-radius: 10px;
+    border-radius: 30px;
     width: 100%;
-    height: 200px;
+    height: 250px;
     object-fit: cover;
 }
 

@@ -4,6 +4,7 @@
             欢迎注册
         </div>
         <!-- 注册表单 -->
+        <!-- 注册表单 -->
         <el-container class="m">
             <el-main>
                 <el-form :model="form" ref="form" label-width="140px" :rules="rules">
@@ -24,7 +25,7 @@
                     </div>
                     <div :class="{'apply-shake': true, 'shake': shake}">
                         <el-form-item label="手机号" prop="phone">
-                            <el-input v-model="form.phone" maxlength="11"></el-input>
+                            <el-input v-model="form.phone" maxlength="13"></el-input>
                             <el-button @click="sendSmsCode" :disabled="!form.phone">发送验证码</el-button>
                         </el-form-item>
                     </div>
@@ -43,6 +44,24 @@
                             <el-radio label="团体会员">团体会员</el-radio>
                         </el-radio-group>
                     </el-form-item>
+
+                    <!-- 图片上传字段，仅在用户类型为团体会员时显示 -->
+                    <el-form-item v-if="form.type === '团体会员'"  label="上传图片" prop="image_url">
+                        <el-upload
+                            class="upload-button"
+                            :action="$baseUrl + '/api/upload'"
+                            list-type="picture"
+                            :show-file-list="false"
+                            :on-success="handleUploadSuccess"
+                            :on-error="handleUploadError"
+                            :limit="1"
+                            accept="image/*">
+                            <el-button size="small" type="primary">点击上传</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传图片文件</div>
+                        </el-upload>
+                        <el-image v-if="form.image_url" :src="form.image_url" style="width: 100px; margin-top: 10px;"></el-image>
+                    </el-form-item>
+
                     <el-form-item>
                         <el-button type="primary" class="custom-register-button" @click="submitForm">注册</el-button>
                         <el-button @click="goToLogin" class="custom-login-button">登录</el-button>
@@ -71,6 +90,7 @@ export default {
                 password: '',
                 confirmPassword: '',
                 phone: '',
+                image_url: '',
                 code: '',
                 type: '个人会员'
             },
@@ -103,6 +123,17 @@ export default {
         };
     },
     methods: {
+        handleUploadSuccess(response) {
+            if (response && response.url) {
+                this.form.image_url = response.url;
+                this.$message.success('图片上传成功');
+            } else {
+                this.$message.error('上传失败，请稍后重试');
+            }
+        },
+        handleUploadError() {
+            this.$message.error('图片上传失败');
+        },
         validateConfirmPassword(rule, value, callback) {
             if (value !== this.form.password) {
                 callback(new Error('两次输入的密码不一致'));
@@ -139,12 +170,13 @@ export default {
         submitForm() {
             this.$refs.form.validate((valid) => {
                 if (valid) {
-                    axios.post(this.$baseUrl +'/api/add', {
+                    axios.post(this.$baseUrl + '/api/add', {
                         name: this.form.name,
                         password: this.form.password,
                         phone: this.form.phone,
                         code: this.form.code,
-                        type: this.form.type
+                        type: this.form.type,
+                        image_url: this.form.image_url
                     }).then((response) => {
                         console.log(response);
                         this.$message.success('注册成功');

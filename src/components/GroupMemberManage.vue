@@ -381,11 +381,6 @@ export default {
         checkIfAdmin() {
             const userType = sessionStorage.getItem('usertype');
             this.isAdmin = (userType === '管理员');
-            if (!this.isAdmin) {
-                this.$message.warning('您没有权限访问此页面');
-                setTimeout(() => {
-                }, 3000);
-            }
         },
         getCurrentUserId() {
             this.currentUserId = sessionStorage.getItem('userId');

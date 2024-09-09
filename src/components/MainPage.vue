@@ -12,7 +12,7 @@
 
                 <!-- 会员管理下拉菜单 -->
                 <el-submenu class="member-management-menu" v-if="isAdmin || username" :index="'2'" :popper-append-to-body="false" :default-active="activeMenu">
-                    <template #title>会员管理</template>
+                    <template #title>会员</template>
                     <!-- 个人会员子菜单 -->
                     <el-submenu index="2-1">
                         <template #title>个人会员</template>

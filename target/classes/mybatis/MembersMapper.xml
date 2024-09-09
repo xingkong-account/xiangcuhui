@@ -83,6 +83,7 @@
             <if test="status != null">status,</if>
             <if test="created_at != null">created_at,</if>
             <if test="updated_at != null">updated_at,</if>
+            <if test="image_url != null">image_url,</if>
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
             <if test="name != null">#{name},</if>
@@ -92,6 +93,7 @@
             <if test="status != null">#{status},</if>
             <if test="created_at != null">#{created_at},</if>
             <if test="updated_at != null">#{updated_at},</if>
+            <if test="image_url != null">#{image_url},</if>
         </trim>
     </insert>
 

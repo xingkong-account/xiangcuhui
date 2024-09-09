@@ -9,17 +9,16 @@
                         <span class="article-date">{{ formatDate(article.created_at) }}</span>
                         <span class="article-source">信息来源: {{ article.source }}</span>
                         <span class="article-views">浏览次数: {{ article.views }}</span>
-                        <span class="article-font-size">
-                        字体:
-                        [
-                        <a href="#" @click.prevent="bigsize">大</a> |
-                        <a href="#" @click.prevent="insize">中</a> |
-                        <a href="#" @click.prevent="smallsize">小</a>
-                        ]
-                    </span>
+<!--                        <span class="article-font-size">-->
+<!--                        字体:-->
+<!--                        [-->
+<!--                        <a href="#" @click.prevent="bigsize">大</a> |-->
+<!--                        <a href="#" @click.prevent="insize">中</a> |-->
+<!--                        <a href="#" @click.prevent="smallsize">小</a>-->
+<!--                        ]-->
+<!--                    </span>-->
                     </div>
                     <div class="w-e-text">
-                        <!-- 渲染内容 -->
                         <div v-html="article.content" class="article-content"></div>
                     </div>
                     <el-button class="back-button" type="primary" @click="goBack">返回</el-button>
@@ -28,26 +27,22 @@
         </el-main>
 
         <div class="ncdt-bottom-tool">
-            <div class="flex">
-                <p>
-      <span>
-        <i class="el-icon-printer"></i>
-      </span>&nbsp;&nbsp;
-                    <span>
-        <a href="javascript:window.print()">打印</a>
-      </span>
-                    <span>
-        <i class="el-icon-circle-close"></i>
-        <a href="javascript:window.opener=null;window.open('about:blank','_self');window.close();">关闭</a>
-      </span>
-                </p>
+            <div class="bottom-tool-content">
+                <span class="bottom-tool-item">
+                    <i class="el-icon-printer"></i>
+                    <a href="javascript:window.print()">打印</a>
+                </span>
+                <span class="bottom-tool-item">
+                    <i class="el-icon-circle-close"></i>
+                    <a href="javascript:window.opener=null;window.open('about:blank','_self');window.close();">关闭</a>
+                </span>
             </div>
         </div>
 
         <el-footer class="custom-footer">
             <div class="footer-content">
                 <div class="footer-left">
-                    <img src="@/assets/images/icon.jpg" width="200px" height="120px" class="">
+                    <img src="@/assets/images/icon.jpg" width="250px" height="150px">
                 </div>
                 <div class="footer-center">
                     <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
@@ -141,44 +136,57 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    line-height: 4;
     min-height: 100vh;
-}
-
-.article-content {
-    text-align: left;
-    margin-top: 20px;
+    width: 100%;
 }
 
 .el-card {
-    width: 80%;
+    width: 100%;
     max-width: 90%;
-    margin-left: 100px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
+.article-content {
+    line-height: 1.8;
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 20px;
+}
 /* 底部打印栏背景框样式 */
 .ncdt-bottom-tool {
     background-color: #f0f0f0;
-    width: 80%;
-    height: 50px;
-    display: flex;
-    margin-bottom: 10px;
-    margin-left: 13%;
+    padding: 10px;
+    border-top: 1px solid #dcdcdc;
+    width: 100%;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    box-sizing: border-box;
 }
 
-.ncdt-bottom-tool .flex {
+.bottom-tool-content {
     display: flex;
-    justify-content: end;
-    width: 80%;
-    margin-right: 1200px;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
 }
 
-.ncdt-bottom-tool a {
-    text-decoration: none;
+.bottom-tool-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.bottom-tool-item a {
     color: #333;
+    text-decoration: none;
 }
 
-.ncdt-bottom-tool i {
-    margin-right: 3px;
+.bottom-tool-item a:hover {
+    text-decoration: underline;
 }
 
 .link a {
@@ -217,7 +225,7 @@ img {
 
 .article-title {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 600;
     margin-bottom: 10px;
     text-align: center;
 }
@@ -226,8 +234,18 @@ img {
     height: 4px;
     background-color: #A9A9A9;
     margin-bottom: 10px;
-    width: 80%;
-    margin-left: 100px;
+    width: 100%;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.custom-footer {
+    background-image: url("@/assets/images/footer.png");
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+    min-height: 200px;
 }
 
 .footer-content {
@@ -238,39 +256,7 @@ img {
     margin: 0 auto;
 }
 
-.footer-left img,
-.footer-right img {
-    max-width: 100%;
-    height: auto;
-}
-
-.footer-center {
-    text-align: center;
-}
-
-.footer-center p {
-    margin: 5px 0;
-}
-
-.footer-center a {
-    color: #3a8ee6;
-    text-decoration: none;
-}
-
-.footer-center a:hover {
-    text-decoration: underline;
-}
-
-.custom-footer {
-    background-color: #67C23A;
-    color: #ffffff;
-    padding: 20px 0;
-    text-align: center;
-    min-height: 200px;
-}
-
-.footer-left,
-.footer-right {
+.footer-left, .footer-right {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -282,8 +268,13 @@ img {
     text-align: center;
 }
 
-.footer-logo,
-.security-logo {
+.foot-img {
+    scale: 0.8;
+    width: 500px;
+    height: 100px;
+}
+
+.footer-logo, .security-logo {
     width: 80px;
     margin-bottom: 10px;
 }
@@ -299,7 +290,8 @@ img {
 }
 
 .footer-center a:hover {
-    text-decoration: underline;
+    text-decoration: none;
+    cursor: pointer;
 }
 </style>
 

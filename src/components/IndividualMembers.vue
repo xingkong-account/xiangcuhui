@@ -346,12 +346,6 @@ export default {
             }
             // this.$alert(`用户类型：${usertype}`);
             this.isAdmin = (usertype === '管理员');
-            if (!this.isAdmin) {
-                this.$message.warning('您没有权限访问此页面');
-                setTimeout(() => {
-
-                }, 3000);
-            }
         },
         getCurrentUserId() {
             this.currentUserId = sessionStorage.getItem('userId');

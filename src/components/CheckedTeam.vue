@@ -80,7 +80,6 @@
         </el-dialog>
     </div>
     <div class="image-container" v-else>
-        <p>您没有权限访问此页面。</p>
         <img src="@/assets/images/403.png">
     </div>
 </template>
@@ -243,6 +242,23 @@ export default {
 
 .image-container {
     text-align: center;
-    padding: 50px;
+    margin: 20px 0;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image-container img.full-width {
+    width: 100%;
+}
+
+.image-container img.thumbnail {
+    width: auto;
+    max-width: 200px;
+    height: auto;
 }
 </style>

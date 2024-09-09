@@ -30,7 +30,7 @@ export default {
     data() {
         return {
             articles: [],
-            category: this.$route.query.category || '新闻动态'
+            category: this.$route.query.category || '文章管理'
         };
     },
     created() {
@@ -42,10 +42,12 @@ export default {
                 const response = await axios.get(this.$baseUrl + '/api/articles', { params: { category: this.category } });
                 this.articles = response.data;
                 if (this.articles.length > 0) {
-                    this.$message.success('加载成功！');
-                } else {
-                    this.$message.info('没有找到文章。');
                     setTimeout(() => {
+                        this.$message.success('加载成功！');
+                    }, 1000);
+                } else {
+                    setTimeout(() => {
+                        this.$message.info('该分类文章列表为空');
                         this.$router.push("/");
                     }, 1000);
                 }
@@ -65,7 +67,7 @@ export default {
             return ('0' + (index + 1)).slice(-2); // 格式化序号，01, 02
         },
         goBack() {
-            this.$router.go(-1);
+            this.$router.push("/");
         }
     }
 };
