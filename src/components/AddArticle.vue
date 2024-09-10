@@ -23,9 +23,20 @@
                 <el-form-item label="内容" prop="content">
                     <div ref="editorContainer" class="editor-container"></div>
                 </el-form-item>
+<!--                <el-form-item label="分类" prop="category">-->
+<!--                    <el-input v-model="article.category" placeholder="请输入分类"></el-input>-->
+<!--                </el-form-item>-->
                 <el-form-item label="分类" prop="category">
-                    <el-input v-model="article.category" placeholder="请输入分类"></el-input>
+                    <el-select v-model="article.category" placeholder="请选择分类">
+                        <el-option label="农村党建" value="农村党建"></el-option>
+                        <el-option label="集体经济" value="集体经济"></el-option>
+                        <el-option label="产业发展" value="产业发展"></el-option>
+                        <el-option label="乡土文化" value="乡土文化"></el-option>
+                        <el-option label="青山绿水" value="青山绿水"></el-option>
+                        <el-option label="青年农人" value="青年农人"></el-option>
+                    </el-select>
                 </el-form-item>
+
                 <el-form-item>
                     <el-button class="submit-buttton" type="primary" @click="submitForm">提交</el-button>
                     <el-button @click="resetForm" class="reset-button" style="margin-left: 10px;">重置</el-button>
@@ -36,7 +47,7 @@
         <el-footer class="custom-footer">
             <div class="footer-content">
                 <div class="footer-left">
-                    <img src="@/assets/images/icon.jpg" width="350px" height="100px" class="">
+                    <img src="@/assets/images/icon.jpg" class="foot-img">
                 </div>
                 <div class="footer-center">
                     <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
@@ -69,6 +80,7 @@ export default {
                 category: '',
                 views: ''
             },
+            isAdmin: false,
             rules: {
                 title: [
                     { required: true, message: '请输入标题', trigger: 'blur' }
@@ -113,6 +125,10 @@ export default {
         },
         goBack(){
             this.$router.go(-1);
+        },
+        canEdit(member){
+            this.isAdmin = (sessionStorage.getItem("usertype") === "管理员");
+            return this.isAdmin || this.article.author === member.name;
         }
     },
     mounted() {
@@ -165,6 +181,9 @@ export default {
         if (this.editor) {
             this.editor.destroy();
         }
+    },
+    created() {
+        this.article.author = sessionStorage.getItem("username");
     }
 };
 </script>
@@ -189,13 +208,13 @@ export default {
 }
 
 .back-button:hover {
-    background-color: rgb(101, 172, 140); /* Lighter color on hover */
-    transform: scale(1.05); /* Slightly enlarge the button */
+    background-color: rgb(101, 172, 140);
+    transform: scale(1.05);
 }
 
 .back-button:active {
-    background-color: rgb(70, 118, 95); /* Darker color when pressed */
-    transform: scale(0.98); /* Slightly shrink the button on press */
+    background-color: rgb(70, 118, 95);
+    transform: scale(0.98);
 }
 
 .editor-container {
@@ -261,9 +280,9 @@ export default {
 }
 
 .foot-img{
-    scale: 0.8;
-    width: 500px;
-    height: 100px;
+    width: 300px;
+    height: 80px;
+    border-radius: 10px;
 }
 
 .footer-logo, .security-logo {

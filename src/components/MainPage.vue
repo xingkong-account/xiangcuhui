@@ -10,13 +10,14 @@
             <el-menu mode="horizontal" class="header-menu">
                 <el-menu-item index="1" @click="handleHomeClick" style="font-size: 20px; color: black">首页</el-menu-item>
 
-                <!-- 会员管理下拉菜单 -->
+                <!-- 会员管理下拉菜单，登录才能看到会员菜单 -->
                 <el-submenu class="member-management-menu" v-if="isAdmin || username" :index="'2'" :popper-append-to-body="false" :default-active="activeMenu">
                     <template #title>会员</template>
                     <!-- 个人会员子菜单 -->
                     <el-submenu index="2-1">
                         <template #title>个人会员</template>
-                        <el-menu-item index="2-1-1" @click="navigate('individual-members')">个人会员管理</el-menu-item>
+                        <el-menu-item index="2-1-1" v-if="isAdmin" @click="navigate('individual-members')">个人会员管理</el-menu-item>
+                        <el-menu-item index="2-1-1" v-else @click="navigate('individual-members')">查看个人会员</el-menu-item>
 <!--                        <el-menu-item v-if="isAdmin" index="2-1-2" @click="navigate('add-personal')">添加个人会员</el-menu-item>-->
 <!--                        <el-menu-item v-if="isAdmin" index="2-1-3" @click="navigate('individual-member-requests')">审核个人会员</el-menu-item>-->
                     </el-submenu>
@@ -35,8 +36,9 @@
                 <el-submenu class="article-management-menu" :index="'3'" :popper-append-to-body="false" :default-active="activeMenu">
                     <template #title>文章</template>
                     <el-menu-item index="3-1" @click="navigate('articles/create')">添加文章</el-menu-item>
-                    <el-menu-item index="3-2" @click="navigate('article-review')">文章审核</el-menu-item>
-                    <el-menu-item index="3-3" @click="navigate('articles')">文章管理</el-menu-item>
+                    <el-menu-item index="3-2" v-if="isAdmin" @click="navigate('article-review')">文章审核</el-menu-item>
+                    <el-menu-item index="3-3" v-if="isAdmin" @click="navigate('articles')">文章管理</el-menu-item>
+                    <el-menu-item index="3-3" v-else @click="navigate('articles')">我发表的</el-menu-item>
                     <!-- 文章部分的子菜单：按分类查看 -->
                     <el-submenu :index="'3-4'">
                         <template #title>按分类查看</template>
@@ -373,7 +375,7 @@ export default {
                 });
         },
         navigateToArticles() {
-            this.$router.push('/articles');
+            this.$router.push('/more');
         },
         checkIfAdmin() {
             const usertype = sessionStorage.getItem('usertype');
@@ -765,9 +767,9 @@ export default {
 }
 
 .foot-img{
-    scale: 0.8;
-    width: 500px;
-    height: 100px;
+    width: 300px;
+    height: 80px;
+    border-radius: 10px;
 }
 
 .footer-logo, .security-logo {

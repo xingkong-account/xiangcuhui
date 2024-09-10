@@ -2,27 +2,40 @@
     <el-container>
         <el-main>
             <div class="article-container">
-                <h2 class="article-title">{{ article.title }}</h2>
-                <div class="article-blue-line"></div>
-                <el-card class="article-card" :body-style="{ padding: '10px 20px' }">
-                    <div class="article-header">
-                        <span class="article-date">{{ formatDate(article.created_at) }}</span>
-                        <span class="article-source">信息来源: {{ article.source }}</span>
-                        <span class="article-views">浏览次数: {{ article.views }}</span>
-<!--                        <span class="article-font-size">-->
-<!--                        字体:-->
-<!--                        [-->
-<!--                        <a href="#" @click.prevent="bigsize">大</a> |-->
-<!--                        <a href="#" @click.prevent="insize">中</a> |-->
-<!--                        <a href="#" @click.prevent="smallsize">小</a>-->
-<!--                        ]-->
-<!--                    </span>-->
+                <div class="article-header">
+                    <div class="header-left">
+                        <div class="dots" style="display: flex; gap: 10px;">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
                     </div>
-                    <div class="w-e-text">
-                        <div v-html="article.content" class="article-content"></div>
+                    <div class="header-right">
+                        <div class="article-meta">
+                            <span class="article-date">{{ formatDate(article.created_at) }}</span>
+                            <span class="article-source">信息来源: {{ article.source }}</span>
+                            <span class="article-views">浏览次数: {{ article.views }}</span>
+                            <span class="article-font-size">
+                              字体:
+                              [
+                              <a href="#" @click.prevent="bigsize">大</a> |
+                              <a href="#" @click.prevent="insize">中</a> |
+                              <a href="#" @click.prevent="smallsize">小</a>
+                              ]
+                            </span>
+                        </div>
                     </div>
-                    <el-button class="back-button" type="primary" @click="goBack">返回</el-button>
-                </el-card>
+                </div>
+
+                <div class="article-green-line"></div>
+                <div class="header-center">
+                    <h2 class="article-title">{{ article.title }}</h2>
+                </div>
+                <div class="">
+                    <div v-html="article.content" class="article-content"></div>
+                </div>
+
+                <el-button class="back-button" type="primary" @click="goBack">返回</el-button>
             </div>
         </el-main>
 
@@ -42,7 +55,7 @@
         <el-footer class="custom-footer">
             <div class="footer-content">
                 <div class="footer-left">
-                    <img src="@/assets/images/icon.jpg" width="250px" height="150px">
+                    <img src="@/assets/images/icon.jpg" style="width: 300px; height: 80px; border-radius: 10px" @click="goMain">
                 </div>
                 <div class="footer-center">
                     <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
@@ -59,7 +72,6 @@
     </el-container>
 </template>
 
-
 <script>
 import axios from 'axios';
 
@@ -73,7 +85,8 @@ export default {
                 updated_at: '',
                 source: '',
                 content: ''
-            }
+            },
+            fonstSize: 20,
         };
     },
     methods: {
@@ -87,6 +100,7 @@ export default {
                     this.$message.error('获取文章详情失败: ' + error.message);
                 });
         },
+        // 文章浏览次数
         incrementViews() {
             const id = this.$route.params.id;
             axios.post(this.$baseUrl + `/api/articles/${id}/increment-views`)
@@ -108,138 +122,140 @@ export default {
         goBack() {
             this.$router.go(-1);
         },
-        setFontSize(size) {
-            document.querySelectorAll('.ncdt-list-box p').forEach((el) => {
-                el.style.fontSize = size;
-            });
+        goMain(){
+            this.$router.push("/");
         },
         bigsize() {
-            this.setFontSize("20px");
+            this.fontSize = 26;
+            this.updateGlobalFontSize();
         },
         insize() {
-            this.setFontSize("16px");
+            this.fontSize = 22;
+            this.updateGlobalFontSize();
         },
         smallsize() {
-            this.setFontSize("14px");
+            this.fontSize = 18;
+            this.updateGlobalFontSize();
+        },
+        updateGlobalFontSize() {
+            document.documentElement.style.fontSize = this.fontSize + 'px';
         },
     },
     created() {
         this.fetchArticle();
         this.incrementViews();
+    },
+    mounted() {
+        this.updateGlobalFontSize();
+    },
+    beforeDestroy() {
+        this.fontSize = 18;
+        this.updateGlobalFontSize();
     }
 };
 </script>
 
 <style scoped>
+/*三个实心圆点*/
+.dots .dot {
+    width: 10px;
+    height: 10px;
+    background-color: #66a482;
+    border-radius: 50%;
+}
+
+.article-font-size a {
+    text-decoration: none;
+    color: #333;
+}
+
+.article-font-size a:hover {
+    color: #5cb85c;
+    font-weight: bold;
+}
+
 .article-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    line-height: 4;
     min-height: 100vh;
     width: 100%;
+    background-image: url("@/assets/images/articleDetailBg.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
-.el-card {
+.article-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
     max-width: 90%;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
+    padding: 10px 0;
+    color: #666;
+}
+
+.header-left .dots i {
+    margin-right: 5px;
+    font-size: 12px;
+    color: #67C23A;
+}
+
+.header-center {
+    text-align: center;
+}
+
+.header-right .article-meta {
+    display: flex;
+    justify-content: flex-end;
+    gap: 70px;
+    color: rgb(113,172,143);
+    font-size: 14px;
+}
+
+.article-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: rgb(85,156,122);
+}
+
+.article-green-line {
+    height: 2px;
+    background-color: rgb(105,182,180);
+    width: 90%;
+    margin: 10px auto;
 }
 
 .article-content {
-    line-height: 1.8;
-    font-size: 20px;
+    font-size: inherit;
     color: #333;
-    margin-bottom: 20px;
+    width: 90%;
+    margin: 20px auto;
+    line-height: 1.8;
 }
-/* 底部打印栏背景框样式 */
+
 .ncdt-bottom-tool {
     background-color: #f0f0f0;
     padding: 10px;
     border-top: 1px solid #dcdcdc;
-    width: 100%;
-    max-width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: left;
-    box-sizing: border-box;
+    width: 96%;
+    margin: 0 auto;
 }
 
 .bottom-tool-content {
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 20px;
-}
-
-.bottom-tool-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    gap: 40px;
+    justify-content: flex-end;
+    margin-right: 20px;
 }
 
 .bottom-tool-item a {
     color: #333;
     text-decoration: none;
 }
-
-.bottom-tool-item a:hover {
-    text-decoration: underline;
-}
-
-.link a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-img {
-    height: 24px;
-    vertical-align: middle;
-}
-
-.back-button {
-    background-color: #67C23A;
-    border-color: #67C23A;
-}
-
-.back-button:hover {
-    background-color: #228B22;
-    border-color: #228B22;
-}
-
-.article-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: #666;
-}
-
-.article-meta {
-    margin-bottom: 20px;
-    font-size: 14px;
-    color: #666;
-}
-
-.article-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.article-blue-line {
-    height: 4px;
-    background-color: #A9A9A9;
-    margin-bottom: 10px;
-    width: 100%;
-    max-width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .custom-footer {
     background-image: url("@/assets/images/footer.png");
     color: #ffffff;
@@ -268,7 +284,7 @@ img {
     text-align: center;
 }
 
-.foot-img {
+.foot-img{
     scale: 0.8;
     width: 500px;
     height: 100px;
@@ -292,6 +308,24 @@ img {
 .footer-center a:hover {
     text-decoration: none;
     cursor: pointer;
+}
+
+.back-button {
+    background-color: rgb(101,172,138);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 60px;
+    transition: background-color 0.3s;
+    transform: translate(-50%, -50%);
+}
+
+.back-button:hover {
+    background-color: #4CAF50;
 }
 </style>
 

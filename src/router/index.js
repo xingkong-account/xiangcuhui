@@ -26,6 +26,7 @@ import VideoManage from "@/components/VideoManage.vue";
 import CheckedPerson from "@/components/CheckedPerson.vue";
 import GroupMemberManage from "@/components/GroupMemberManage.vue";
 import CheckedTeam from "@/components/CheckedTeam.vue";
+import MoreArticles from "@/components/MoreArticles.vue";
 
 Vue.use(Router);
 
@@ -182,6 +183,12 @@ export default new Router({
             path: '/checked-team',
             name: 'CheckedTeam',
             component: CheckedTeam
+        },
+        // 更多文章页面（主页点击更多时展示）
+        {
+            path: '/more',
+            name: 'MoreArticles',
+            component: MoreArticles
         }
     ]
 });

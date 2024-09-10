@@ -14,6 +14,19 @@
         SELECT COUNT(*) FROM articles
     </select>
 
+    <!--分页获取指定作者的文章-->
+    <select id="findAllByName" parameterType="map" resultType="com.bean.Article">
+        SELECT *
+        FROM articles
+        WHERE author = #{author}
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="countAllByName" parameterType="java.lang.String" resultType="int">
+        SELECT COUNT(*) FROM articles
+        WHERE author = #{author}
+    </select>
     <!-- 查询指定 ID 的文章 -->
     <select id="findById" parameterType="java.lang.Integer" resultType="com.bean.Article">
         SELECT

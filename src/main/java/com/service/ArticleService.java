@@ -83,4 +83,11 @@ public class ArticleService {
         int total = articleMapper.countAll();
         return new PageResult<>(articles, total, pageNum, pageSize);
     }
+
+    public PageResult<Article> getAllArticlesByName(String author, int pageNum, int pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        List<Article> articles = articleMapper.findAllByName(author, offset, pageSize);
+        int total = articleMapper.countAllByName(author);
+        return new PageResult<>(articles, total, pageNum, pageSize);
+    }
 }

@@ -1,8 +1,11 @@
 <template>
     <el-container>
         <el-header class="header">
-            <div class="header-container">
+            <div class="header-container" v-if="isAdmin">
                 <h1>文章管理</h1>
+            </div>
+            <div class="header-container" v-else>
+                <h1>我发表的文章</h1>
             </div>
             <div class="button-group">
                 <el-button class="add-article" v-if="check" style="margin-left: 10%" type="primary" @click="navigateToAddArticle">添加文章</el-button>
@@ -14,8 +17,10 @@
             <el-container class="content-container">
                 <el-row>
                     <el-col :span="24">
-                        <el-table :data="articles" stripe>
+                        <!--管理员展示全部文章-->
+                        <el-table :data="articles" stripe v-if="isAdmin">
                             <el-table-column prop="title" label="标题" width="180"></el-table-column>
+                            <el-table-column prop="author" label="作者" width="100"></el-table-column>
                             <el-table-column prop="category" label="分类" width="120"></el-table-column>
                             <el-table-column prop="content" label="内容" width="300">
                                 <template #default="{ row }">
@@ -37,7 +42,7 @@
                             <el-table-column label="操作" width="300">
                                 <template #default="{ row }">
                                     <el-button
-                                        :disabled="!isAdmin"
+                                        :disabled="!canEdit(row.author)"
                                         @click="navigateToEditArticle(row.id)"
                                         type="primary"
                                         size="small"
@@ -46,7 +51,60 @@
                                         编辑
                                     </el-button>
                                     <el-button
-                                        :disabled="!isAdmin"
+                                        :disabled="!canEdit(row.author)"
+                                        @click="deleteArticle(row.id)"
+                                        type="danger"
+                                        size="small"
+                                        class="delete-button"
+                                    >
+                                        删除
+                                    </el-button>
+                                    <el-button
+                                        @click="navigateToDetailPage(row.id)"
+                                        type="primary"
+                                        size="small"
+                                        class="detail-button"
+                                    >
+                                        查看详情
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <!-- 根据文章作者展示文章列表 -->
+                        <el-table :data="myArticles" stripe v-else>
+                            <el-table-column prop="title" label="标题" width="180"></el-table-column>
+                            <el-table-column prop="author" label="作者" width="100"></el-table-column>
+                            <el-table-column prop="category" label="分类" width="120"></el-table-column>
+                            <el-table-column prop="content" label="内容" width="300">
+                                <template #default="{ row }">
+                                    <div class="article-content">
+                                        {{ row.content }}
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="created_at" label="创建时间" width="180">
+                                <template #default="{ row }">
+                                    {{ formatDate(row.created_at) }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="updated_at" label="修改时间" width="180">
+                                <template #default="{ row }">
+                                    {{ formatDate(row.updated_at) }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作" width="300">
+                                <template #default="{ row }">
+                                    <el-button
+                                        :disabled="!canEdit(row.author)"
+                                        @click="navigateToEditArticle(row.id)"
+                                        type="primary"
+                                        size="small"
+                                        class="edit-button"
+                                    >
+                                        编辑
+                                    </el-button>
+                                    <el-button
+                                        :disabled="!canEdit(row.author)"
                                         @click="deleteArticle(row.id)"
                                         type="danger"
                                         size="small"
@@ -101,12 +159,14 @@ export default {
     data() {
         return {
             articles: [],
+            myArticles: [],
             total: 0,
             currentPage: 1,
             pageSize: 10,
             isAdmin: false,
             username: '',
-            usertype: ''
+            usertype: '',
+            author: ''
         };
     },
     methods: {
@@ -122,6 +182,9 @@ export default {
                     console.log('获取用户角色失败:', error);
                     throw error;
                 });
+        },
+        canEdit(articleAuthor) {
+            return this.isAdmin || this.username === articleAuthor;
         },
         check(){
             return this.isAdmin || this.username !== null;
@@ -159,8 +222,24 @@ export default {
                 }
             })
                 .then(response => {
-                    this.articles = response.data.data;  // 获取当前页的数据
-                    this.total = response.data.total;  // 获取总记录数
+                    this.articles = response.data.data;
+                    this.total = response.data.total;
+                })
+                .catch(error => {
+                    this.$message.error('获取文章列表失败: ' + error.message);
+                });
+        },
+        fetchArticlesByUsername() {
+            axios.get(this.$baseUrl + '/api/articles/user-articles', {
+                params: {
+                    author: this.author,
+                    pageNum: this.currentPage,
+                    pageSize: this.pageSize
+                }
+            })
+                .then(response => {
+                    this.myArticles = response.data.data;
+                    this.total = response.data.total;
                 })
                 .catch(error => {
                     this.$message.error('获取文章列表失败: ' + error.message);
@@ -168,12 +247,22 @@ export default {
         },
         handlePageChange(page) {
             this.currentPage = page;
-            this.fetchArticles();
+            if (this.isAdmin){
+                this.fetchArticles();
+            }
+            else{
+                this.fetchArticlesByUsername();
+            }
         },
         handlePageSizeChange(size){
             this.pageSize = size;
             this.currentPage = 1;
-            this.fetchArticles();
+            if (this.isAdmin){
+                this.fetchArticles();
+            }
+            else{
+                this.fetchArticlesByUsername();
+            }
         },
         formatDate(dateString) {
             if (!dateString) return '';
@@ -194,10 +283,16 @@ export default {
         this.usertype = sessionStorage.getItem('usertype');
         this.username = sessionStorage.getItem('username');
         if (this.username) {
+            this.author = this.username;
             this.checkUserRole()
                 .then(() => {
                     this.isAdmin = (this.usertype === '管理员');
-                    this.fetchArticles();
+                    if (this.isAdmin) {
+                        this.fetchArticles();
+                    }
+                    else {
+                        this.fetchArticlesByUsername();
+                    }
                 })
                 .catch(error => {
                     console.error('获取用户角色失败:', error);
@@ -288,7 +383,8 @@ export default {
 .content-container {
     padding: 20px;
     margin: 0 auto; /* 自动水平居中 */
-    max-width: 1200px;
+    max-width: 1400px;
+    justify-content: center;
 }
 
 .article-content {

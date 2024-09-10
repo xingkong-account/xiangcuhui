@@ -36,6 +36,7 @@ export default {
                 content: '',
                 category: ''
             },
+            author: '',
             rules: {
                 title: [
                     { required: true, message: '请输入标题', trigger: 'blur' }
@@ -83,6 +84,9 @@ export default {
         resetForm() {
             this.$refs.form.resetFields();
             this.editor.txt.clear();
+        },
+        canEdit(member){
+            return this.isAdmin || (this.author === member.name);
         }
     },
     mounted() {
@@ -139,6 +143,9 @@ export default {
         if (this.editor) {
             this.editor.destroy();
         }
+    },
+    created() {
+        this.isAdmin = (sessionStorage.getItem("usertype") === "管理员");
     }
 };
 </script>

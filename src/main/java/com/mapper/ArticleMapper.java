@@ -11,6 +11,8 @@ import java.util.List;
 public interface ArticleMapper {
     List<Article> findAll(@Param("offset") int offset, @Param("limit") int limit);
     int countAll();
+    List<Article> findAllByName(@Param("author") String author, @Param("offset") int offset, @Param("limit") int limit);
+    int countAllByName(@Param("author") String author);
     Article findById(Integer id);
     void insert(Article article);
     void update(Article article);

@@ -48,6 +48,16 @@ public class ArticleController {
         return articleService.getAllArticles(pageNum, pageSize);
     }
 
+    // 根据作者名获取文章
+    @GetMapping("/user-articles")
+    public PageResult<Article> getAllArticlesByName(
+            @RequestParam("author") String author,
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        return articleService.getAllArticlesByName(author, pageNum, pageSize);
+    }
+
     // 根据ID获取文章及其图片
     @GetMapping("/{id}")
     public ResponseEntity<Article> getArticleById(@PathVariable Integer id) {

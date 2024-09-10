@@ -1,7 +1,6 @@
 <template>
     <div class="video-list">
         <div class="header">
-            <el-button class="back-button" @click="goBack">返回</el-button>
             <h2 class="title">视频列表</h2>
         </div>
         <div class="search-bar">
@@ -21,7 +20,6 @@
                     <img :src="videos[0].thumbnail" alt="视频缩略图" />
                     <div class="video-play-button">▶</div>
                 </div>
-                <p>{{ truncateDescription(videos[0].description) }}</p>
             </div>
 
             <div class="video-row">
@@ -117,10 +115,6 @@ export default {
 .header {
     align-items: center;
     margin-bottom: 20px;
-}
-
-.back-button{
-     margin-left: 80px;
 }
 
 .video-list {
