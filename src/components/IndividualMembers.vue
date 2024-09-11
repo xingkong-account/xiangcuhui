@@ -40,7 +40,7 @@
         <el-main>
             <div class="content-wrapper">
                 <div style="display: flex; width: 100%; background-color: rgb(227,230,235); justify-content: space-between; align-items: center;" v-if="this.showSearchSection">
-                    <div style="display: flex; align-items: center">
+                    <div style="display: flex; align-items: center; justify-content: center">
                         <h2>个人会员管理中心</h2>
                         <el-select v-model="searchType" placeholder="选择搜索条件" style="margin-right: 10px;">
                             <el-option label="姓名" value="name"></el-option>

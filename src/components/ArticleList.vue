@@ -71,7 +71,7 @@
                             </el-table-column>
                         </el-table>
                         <!-- 根据文章作者展示文章列表 -->
-                        <el-table :data="myArticles" stripe v-else>
+                        <el-table :data="myArticles" stripe v-else-if="username">
                             <el-table-column prop="title" label="标题" width="180"></el-table-column>
                             <el-table-column prop="author" label="作者" width="100"></el-table-column>
                             <el-table-column prop="category" label="分类" width="120"></el-table-column>
@@ -298,7 +298,8 @@ export default {
                     console.error('获取用户角色失败:', error);
                 });
         } else {
-            this.fetchArticles();
+            // this.fetchArticles();
+            this.total = 0;
         }
     }
 };

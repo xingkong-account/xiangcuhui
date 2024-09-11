@@ -1,55 +1,29 @@
 <template>
-    <el-container>
-        <el-header class="header">
-            <div class="header-container">
-                <h1>文章列表</h1>
-                <el-button @click="navigateBack" type="default">返回</el-button>
-            </div>
-        </el-header>
-        <el-main>
-            <el-container class="content-container">
-                <el-row>
-                    <el-col :span="24">
-                        <el-table :data="articles" stripe>
-                            <el-table-column prop="title" label="标题" width="180"></el-table-column>
-                            <el-table-column prop="author" label="作者" width="100"></el-table-column>
-                            <el-table-column prop="category" label="分类" width="120"></el-table-column>
-                            <el-table-column prop="content" label="内容" width="300">
-                                <template #default="{ row }">
-                                    <div class="article-content">
-                                        {{ row.content }}
-                                    </div>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="created_at" label="创建时间" width="180">
-                                <template #default="{ row }">
-                                    {{ formatDate(row.created_at) }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="updated_at" label="修改时间" width="180">
-                                <template #default="{ row }">
-                                    {{ formatDate(row.updated_at) }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="操作" width="120">
-                                <template #default="{ row }">
-                                    <el-button
-                                            @click="navigateToDetailPage(row.id)"
-                                            type="primary"
-                                            size="small"
-                                            class="detail-button"
-                                    >
-                                        查看详情
-                                    </el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-col>
-                </el-row>
-            </el-container>
-        </el-main>
+    <div class="main">
+        <div class="header">
+            <h4 class="category-title">文章列表</h4>
+            <span class="list-subtitle">LIST OF ARTICLES</span>
+            <button @click="navigateBack" class="back-button">返回</button>
+        </div>
+        <hr class="divider"/>
+        <div v-if="articles.length === 0" class="no-articles">暂无文章</div>
+        <ul class="article-list">
+            <li v-for="(article, index) in articles" :key="article.id" class="article-item">
+                <router-link :to="'/articles/' + article.id" class="article-link">
+                    <div class="article-card">
+                        <div class="article-index">{{ formatIndex(index) }}</div>
+                        <div class="article-info">
+                            <h2 class="article-title">{{ article.title }}</h2>
+                            <p class="article-meta">发布于: {{ formatDate(article.created_at) }} 作者: {{ article.author }}</p>
+                            <p class="article-snippet">{{ getSnippet(article.content) }}</p>
+                        </div>
+                    </div>
+                </router-link>
+            </li>
+        </ul>
+
         <el-row class="filter-row">
-            <el-col :span="24" >
+            <el-col :span="24">
                 <span style="margin-left: 10%">请选择单页展示的记录条数:</span>
                 <el-select style="width: 10%" v-model="pageSize" @change="handlePageSizeChange" class="page-size-selector">
                     <el-option label="10条/页" value="10"></el-option>
@@ -58,17 +32,17 @@
                 </el-select>
                 <!-- 分页组件 -->
                 <el-pagination
-                        class="pagination"
-                        background
-                        layout="prev, pager, next, total"
-                        :total="total"
-                        :page-size="pageSize"
-                        :current-page="currentPage"
-                        @current-change="handlePageChange"
+                    class="pagination"
+                    background
+                    layout="prev, pager, next, total"
+                    :total="total"
+                    :page-size="pageSize"
+                    :current-page="currentPage"
+                    @current-change="handlePageChange"
                 ></el-pagination>
             </el-col>
         </el-row>
-    </el-container>
+    </div>
 </template>
 
 <script>
@@ -82,17 +56,13 @@ export default {
             total: 0,
             currentPage: 1,
             pageSize: 10,
-            isAdmin: false,
-            username: '',
-            usertype: '',
-            author: ''
         };
     },
     methods: {
         navigateToDetailPage(id) {
             this.$router.push(`/articles/${id}`);
         },
-        fetchArticles() {
+        async fetchArticles() {
             axios.get(this.$baseUrl + '/api/articles/articleList', {
                 params: {
                     pageNum: this.currentPage,
@@ -102,6 +72,8 @@ export default {
                 .then(response => {
                     this.articles = response.data.data;
                     this.total = response.data.total;
+                    // this.$alert(this.articles[this.articles.length - 1]);
+                    // this.$alert(this.total);
                 })
                 .catch(error => {
                     this.$message.error('获取文章列表失败: ' + error.message);
@@ -127,8 +99,15 @@ export default {
             const seconds = String(date.getSeconds()).padStart(2, '0');
             return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         },
+        // 截取内容，多余内容省略号表示
+        getSnippet(content) {
+            return content.length > 20 ? content.slice(0, 20) + '...' : content;
+        },
         navigateBack() {
             this.$router.push("/")
+        },
+        formatIndex(index) {
+            return ('0' + (index + 1)).slice(-2);
         }
     },
     created() {
@@ -138,56 +117,123 @@ export default {
 </script>
 
 <style scoped>
-.pagination {
+.main {
+    max-width: 1000px;
+    margin: 0 auto;
     padding: 20px;
-    text-align: center;
-}
-.page-size-selector {
-    margin-bottom: 20px;
+    font-family: 'Arial', sans-serif;
 }
 
-.detail-button {
-    background-color: #03A9F4;
-    border-color: #03A9F4;
-}
 .header {
-    background-color: #f5f5f5;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.header-container {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 
-.header-container h1 {
+.category-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: rgb(101,172,138);
+}
+
+.list-subtitle {
+    font-size: 1rem;
+    color: rgb(101,172,138);
+    margin-left: 20px;
+}
+
+.back-button {
+    background-color: rgb(101,172,138);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: auto;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #4CAF50;
+}
+
+.divider {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    border: 3px solid rgb(101,172,138);
+}
+
+.article-list {
+    list-style: none;
+    padding: 0;
     margin: 0;
-    font-size: 24px;
 }
 
-.content-container {
-    padding: 20px;
-    margin: 0 auto; /* 自动水平居中 */
-    max-width: 1400px;
+.article-item {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.article-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-grow: 1;
+}
+
+.article-card {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    transition: box-shadow 0.3s;
+    margin-top: 20px;
+}
+
+.article-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.article-index {
+    background-color: rgb(101,172,138);
+    color: white;
+    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
     justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    margin-right: 20px;
 }
 
-.article-content {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.article-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #9ec8a5;
+    width: 100%;
+    padding-bottom: 10px;
 }
 
-.el-table {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+.article-title {
+    font-size: 1.25rem;
+    margin: 0;
+    color: rgb(111,111,111);
 }
 
-.el-table th,
-.el-table td {
-    text-align: center;
+.article-meta {
+    font-size: 0.875rem;
+    color: #666;
+    margin-right: 20px;
+    max-width: 80%;
+}
+
+.article-snippet {
+    font-size: 1rem;
+    color: #333;
+    margin-top: 5px;
+    max-width: 50%;
 }
 </style>

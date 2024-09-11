@@ -27,6 +27,7 @@ import CheckedPerson from "@/components/CheckedPerson.vue";
 import GroupMemberManage from "@/components/GroupMemberManage.vue";
 import CheckedTeam from "@/components/CheckedTeam.vue";
 import MoreArticles from "@/components/MoreArticles.vue";
+import EditVideo from "@/components/EditVideo.vue";
 
 Vue.use(Router);
 
@@ -189,6 +190,12 @@ export default new Router({
             path: '/more',
             name: 'MoreArticles',
             component: MoreArticles
+        },
+        // 编辑视频信息
+        {
+            path: '/videos/edit/:id',
+            name: 'EditVideo',
+            component: EditVideo
         }
     ]
 });

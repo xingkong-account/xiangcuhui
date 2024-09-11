@@ -35,10 +35,10 @@
                 <!-- 文章管理下拉菜单 -->
                 <el-submenu class="article-management-menu" :index="'3'" :popper-append-to-body="false" :default-active="activeMenu">
                     <template #title>文章</template>
-                    <el-menu-item index="3-1" @click="navigate('articles/create')">添加文章</el-menu-item>
+                    <el-menu-item index="3-1" v-if="username" @click="navigate('articles/create')">添加文章</el-menu-item>
                     <el-menu-item index="3-2" v-if="isAdmin" @click="navigate('article-review')">文章审核</el-menu-item>
                     <el-menu-item index="3-3" v-if="isAdmin" @click="navigate('articles')">文章管理</el-menu-item>
-                    <el-menu-item index="3-3" v-else @click="navigate('articles')">我发表的</el-menu-item>
+                    <el-menu-item index="3-3" v-else-if="username" @click="navigate('articles')">我发表的</el-menu-item>
                     <!-- 文章部分的子菜单：按分类查看 -->
                     <el-submenu :index="'3-4'">
                         <template #title>按分类查看</template>
@@ -57,7 +57,8 @@
                     <el-menu-item index="4-1" @click="navigate('videos')">精选视频</el-menu-item>
                     <el-menu-item v-if="isAdmin" index="4-2" @click="navigate('video-review')">视频审核</el-menu-item>
                     <el-menu-item v-if="isAdmin" index="4-3" @click="navigate('video-manage')">所有视频</el-menu-item>
-                    <el-menu-item index="4-4" @click="navigate('upload-video')">上传视频</el-menu-item>
+                    <el-menu-item v-else-if="username" index="4-3" @click="navigate('video-manage')">我发布的</el-menu-item>
+                    <el-menu-item v-if="username" index="4-4" @click="navigate('upload-video')">上传视频</el-menu-item>
                 </el-submenu>
 
                 <el-menu-item index="5" @click="navigate('about')" style="font-size: 20px; color: black">关于我们</el-menu-item>
@@ -160,7 +161,8 @@
                             <div class="text-block">
                                 <div @click="navigate('articles/create')">添加文章</div>
                                 <div @click="navigate('article-review')">文章审核</div>
-                                <div @click="navigate('articles')">文章管理</div>
+                                <div v-if="isAdmin" @click="navigate('articles')">文章管理</div>
+                                <div v-else @click="navigate('articles')">我的文章</div>
                             </div>
                         </el-col>
 
@@ -223,7 +225,7 @@
                 <div class="footer-center">
                     <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
                     <p>主办单位: 乡促会&nbsp;&nbsp;&nbsp; 备案号：</p>
-                    <p>地址: 甘肃省兰州市XXXXXX</p>
+                    <p>地址: XX省XX市XXX区XXX</p>
                 </div>
                 <div class="footer-right">
                     <img src="" alt="Security" class="security-logo">
@@ -703,16 +705,14 @@ export default {
 
 .sidebar h2 {
     font-size: 20px;
-    color: green;
-    margin: 0;
+    color: rgb(101,172,140);
     padding: 10px 15px;
     display: flex;
     align-items: center;
-    border-left: 6px solid green;
-    background-color: #C0C0C0;
+    border-left: 8px solid rgb(101,172,140);
+    background-color: rgb(197,198,200);
     border-radius: 4px;
-    margin-bottom: 20px;
-    margin-top: 10px;
+    margin: 10px 0 20px;
     width: 30%;
 }
 
@@ -738,6 +738,7 @@ export default {
     color: rgb(87,157,123);
 }
 
+/*底部版权等信息*/
 .custom-footer {
     background-image: url("@/assets/images/footer.png");
     color: #ffffff;

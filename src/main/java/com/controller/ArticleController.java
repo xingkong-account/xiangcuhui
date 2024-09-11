@@ -42,8 +42,8 @@ public class ArticleController {
     // 获取所有文章
     @GetMapping("/articleList")
     public PageResult<Article> getAllArticles(
-            @RequestParam(defaultValue = "1") int pageNum, // 默认页码为1
-            @RequestParam(defaultValue = "10") int pageSize // 默认每页显示10条记录
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize
     ) {
         return articleService.getAllArticles(pageNum, pageSize);
     }

@@ -101,10 +101,10 @@ export default {
                                 sessionStorage.setItem('usertype', usertype);  // 保存用户类型
                                 // 检查是否为管理员
                                 if (usertype === '管理员') {
-                                    this.$message.success('登录成功，管理员用户');
+                                    // this.$message.success('登录成功，管理员用户');
                                     this.$router.push('/');
                                 } else {
-                                    this.$message.success('登录成功，普通用户');
+                                    // this.$message.success('登录成功，普通用户');
                                     this.$router.push('/');
                                 }
                             } else {

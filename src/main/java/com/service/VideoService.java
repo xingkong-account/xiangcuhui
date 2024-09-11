@@ -9,6 +9,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -79,4 +80,26 @@ public class VideoService {
         }
         return "admin";
    }
+
+    public List<Video> searchVideos(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+        if (query.length() > 255) {
+            throw new IllegalArgumentException("查询内容过长");
+        }
+        try {
+            return videoMapper.searchVideos(query.trim());
+        } catch (Exception e) {
+            throw new RuntimeException("搜索视频失败，请稍后重试", e);
+        }
+    }
+
+    public List<Video> getVideosByUsername(String uploader) {
+        return videoMapper.findVideosByUsername(uploader);
+    }
+
+    public void updateVideo(Video video) {
+        videoMapper.updateVideo(video);
+    }
 }

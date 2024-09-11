@@ -1,7 +1,10 @@
 <template>
     <el-container>
         <el-header>
-            <h2>编辑文章</h2>
+            <div style="display: flex; justify-content: space-between">
+                <h2>编辑文章</h2>
+                <el-button style="border-radius: 20px; width: 10%; height: auto" @click="navigateBack" type="default">返回</el-button>
+            </div>
         </el-header>
         <el-main>
             <el-form :model="article" :rules="rules" ref="form">
@@ -52,6 +55,9 @@ export default {
         };
     },
     methods: {
+        navigateBack() {
+            this.$router.go(-1);
+        },
         fetchArticle() {
             const id = this.$route.params.id;
             this.$axios.get(this.$baseUrl + `/api/articles/${id}`)

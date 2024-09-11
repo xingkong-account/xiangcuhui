@@ -27,7 +27,7 @@
                 <p>如果您有任何问题或建议，请随时联系我们。我们非常乐意听取您的意见，并提供帮助。</p>
                 <p><strong>邮箱:</strong> hei564927@gmail.com</p>
                 <p><strong>电话:</strong> (123) 456-7890</p>
-                <p><strong>地址:</strong> 1234 Street Name, City, Country</p>
+                <p><strong>地址:</strong> 1234</p>
             </div>
         </el-card>
     </div>

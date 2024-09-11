@@ -9,6 +9,7 @@
                 placeholder="搜索"
                 prefix-icon="el-icon-search"
                 class="search-input"
+                @keyup.enter="searchVideos"
             />
             <button @click="searchVideos">搜索</button>
         </div>
@@ -81,8 +82,22 @@ export default {
                 this.$message.error('获取视频失败，请稍后再试。');
             }
         },
-        searchVideos() {
-
+        async searchVideos() {
+            if (!this.searchQuery.trim()) {
+                this.videos = [];
+                return;
+            }
+            try {
+                const response = await axios.get(this.$baseUrl +'/api/videos/search', {
+                    params: {
+                        query: this.searchQuery
+                    }
+                });
+                this.videos = response.data;
+            } catch (error) {
+                console.error('搜索视频失败:', error);
+                this.videos = [];
+            }
         },
         truncateDescription(description) {
             return description.length > 10 ? description.slice(0, 10) + '...' : description;
@@ -153,9 +168,9 @@ export default {
     border-radius: 20px;
 }
 
-
 .search-bar button {
     padding: 10px 20px;
+    margin-left: 20px;
     border-radius: 20px;
     background-color: rgb(101,172,140);
     color: white;

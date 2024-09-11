@@ -31,10 +31,14 @@ public interface VideoMapper {
 
     List<Video> getAllUnReviewVideos();
 
+
     void reviewVideo(@Param("id") int id,
                      @Param("status") String status,
                      @Param("updated_at") LocalDateTime updated_at,
                      @Param("reviewed_at") LocalDateTime reviewed_at,
                      @Param("reviewer") String reviewer);
+
+    List<Video> searchVideos(@Param("query") String query);
+    List<Video> findVideosByUsername(@Param("uploader") String uploader);
 
 }

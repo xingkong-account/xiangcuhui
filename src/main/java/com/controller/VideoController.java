@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +40,25 @@ public class VideoController {
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    // 根据视频上传者的名字获取视频信息
+    @GetMapping("/my-videos")
+    public ResponseEntity<List<Video>> getMyVideos(@RequestParam("uploader") String uploader) {
+        List<Video> videos = videoService.getVideosByUsername(uploader);
+        return ResponseEntity.ok(videos);
+    }
+
+
+    @PostMapping("/update")
+    public ResponseEntity<String> updateVideo(@RequestBody Video video) {
+        try {
+            video.setUpdated_at(LocalDateTime.now());
+            videoService.updateVideo(video);
+            return ResponseEntity.ok("视频更新成功！");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("视频更新失败！");
         }
     }
 
@@ -72,6 +93,19 @@ public class VideoController {
             return ResponseEntity.ok("视频已拒绝");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("审核失败");
+        }
+    }
+
+    // 搜索
+    @GetMapping("/search")
+    public ResponseEntity<List<Video>> searchVideos(@RequestParam String query) {
+        try {
+            List<Video> videos = videoService.searchVideos(query);
+            return new ResponseEntity<>(videos, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -20,4 +20,5 @@ public class Video {
     private LocalDateTime updated_at;
     private LocalDateTime reviewed_at; // 视频被审核的时间
     private String reviewer;          // 审核人的名字或ID
+    private String uploader;
 }

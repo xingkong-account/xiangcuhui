@@ -17,9 +17,9 @@ public class WebConfig implements WebMvcConfigurer {
         // 华为云Flexus服务器
         String ACCESS_IP = "120.46.139.40";
         registry.addMapping("/**")
-                .allowedOrigins("http://" + ACCESS_IP) // 设置允许的前端URL
+//                .allowedOrigins("http://" + ACCESS_IP) // 设置允许的前端URL
                 .allowedOrigins("http://localhost:8080")
-//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(9600);
