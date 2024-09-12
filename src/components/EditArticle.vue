@@ -17,6 +17,13 @@
                 <el-form-item label="分类" prop="category">
                     <el-input v-model="article.category"></el-input>
                 </el-form-item>
+                <el-form-item label="状态" prop="status" v-if="isAdmin">
+                    <el-select v-model="article.status">
+                        <el-option label="待审核" value="待审核"></el-option>
+                        <el-option label="通过审核" value="已审核"></el-option>
+                        <el-option label="拒绝" value="已拒绝"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm">提交</el-button>
                     <el-button @click="resetForm">重置</el-button>
@@ -37,8 +44,10 @@ export default {
                 id: null,
                 title: '',
                 content: '',
-                category: ''
+                category: '',
+                status: ''
             },
+            isAdmin: false,
             author: '',
             rules: {
                 title: [

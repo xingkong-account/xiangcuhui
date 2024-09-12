@@ -12,7 +12,7 @@
                     show-word-limit
                 ></el-input>
                 <div class="word-count">
-                    还可以输入：{{ video.description.length }}/100 字
+                    还可以输入：{{100 - video.description.length }}/100 字
                 </div>
             </el-form-item>
             <el-form-item label="视频缩略图" prop="thumbnail">
@@ -51,11 +51,11 @@
                 <video v-if="videoForm.url" :src="videoForm.url" style="width: 100px; margin-top: 10px;"></video>
             </el-form-item>
 
-            <el-form-item label="Status" v-if="isAdmin">
-                <el-select v-model="video.status" placeholder="Select Status">
+            <el-form-item label="状态" v-if="isAdmin">
+                <el-select v-model="video.status" placeholder="选择状态">
                     <el-option label="待审核" value="待审核"></el-option>
-                    <el-option label="已审核" value="已审核"></el-option>
-                    <el-option label="已拒绝" value="已拒绝"></el-option>
+                    <el-option label="通过" value="已审核"></el-option>
+                    <el-option label="拒绝" value="已拒绝"></el-option>
                 </el-select>
             </el-form-item>
 

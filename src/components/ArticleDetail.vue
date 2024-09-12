@@ -262,6 +262,9 @@ export default {
     padding: 20px 0;
     text-align: center;
     min-height: 200px;
+    height: auto;
+    background-size: cover;
+    width: 100%;
 }
 
 .footer-content {
@@ -328,4 +331,3 @@ export default {
     background-color: #4CAF50;
 }
 </style>
-

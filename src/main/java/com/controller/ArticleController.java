@@ -58,7 +58,7 @@ public class ArticleController {
         return articleService.getAllArticlesByName(author, pageNum, pageSize);
     }
 
-    // 根据ID获取文章及其图片
+    // 根据ID获取文章
     @GetMapping("/{id}")
     public ResponseEntity<Article> getArticleById(@PathVariable Integer id) {
         Article article = articleService.findById(id);

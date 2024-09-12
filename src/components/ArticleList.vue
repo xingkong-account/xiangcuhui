@@ -1,11 +1,8 @@
 <template>
     <el-container>
         <el-header class="header">
-            <div class="header-container" v-if="isAdmin">
-                <h1>文章管理</h1>
-            </div>
-            <div class="header-container" v-else>
-                <h1>我发表的文章</h1>
+            <div class="header-container">
+                <h1>{{isAdmin ? "文章管理" : "我发表的文章"}}</h1>
             </div>
             <div class="button-group">
                 <el-button class="add-article" v-if="check" style="margin-left: 10%" type="primary" @click="navigateToAddArticle">添加文章</el-button>
@@ -20,7 +17,8 @@
                         <!--管理员展示全部文章-->
                         <el-table :data="articles" stripe v-if="isAdmin">
                             <el-table-column prop="title" label="标题" width="180"></el-table-column>
-                            <el-table-column prop="author" label="作者" width="100"></el-table-column>
+                            <el-table-column prop="author" label="作者" width="150"></el-table-column>
+                            <el-table-column prop="status" label="状态" width="100"></el-table-column>
                             <el-table-column prop="category" label="分类" width="120"></el-table-column>
                             <el-table-column prop="content" label="内容" width="300">
                                 <template #default="{ row }">
@@ -344,14 +342,15 @@ export default {
 }
 
 .el-button.add-article {
-    background-color: #FFC107;
-    border-color: #FFC107;
+    background-color: rgb(101,172,140);
+    border-color: rgb(101,172,140);
     color: #fff;
 }
 
 .el-button.add-article:hover {
-    background-color: #FFD54F;
-    border-color: #FFD54F;
+    background-color: rgb(91, 155, 126) !important;
+    border-color: rgb(91, 155, 126) !important;
+    cursor: pointer;
 }
 
 
@@ -365,11 +364,12 @@ export default {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    color: rgb(85,97,83);
 }
 
 .header-container h1 {
     margin: 0;
-    font-size: 24px;
+    font-size: 28px;
 }
 
 .button-group {
@@ -383,7 +383,7 @@ export default {
 
 .content-container {
     padding: 20px;
-    margin: 0 auto; /* 自动水平居中 */
+    margin: 0 auto;
     max-width: 1400px;
     justify-content: center;
 }
@@ -398,6 +398,7 @@ export default {
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 16px;
 }
 
 .el-table th,
