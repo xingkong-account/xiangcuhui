@@ -1,13 +1,7 @@
 <template>
-    <el-container style="height: 100vh;">
-        <el-header style="background-color: rgb(101,172,140); color: white; text-align: center; padding: 10px;">
-            <span style="margin: 30px;">添加文章</span>
-            <el-button type="default" @click="goBack" style="margin-right: 30px;">
-                <i class="el-icon-arrow-left"></i>
-                <span class="back-button" style="color: white; font-size: 16px; font-weight: bold">
-                    返回
-                </span>
-            </el-button>
+    <el-container>
+        <el-header style="background-color: rgb(101,172,140); color: white; text-align: center; padding: 13px;">
+            <span style="margin-top: 30px; font-size: 26px">添加文章</span>
         </el-header>
         <el-main style="padding: 20px;">
             <el-form :model="article" :rules="rules" ref="form" label-width="100px" class="article-form">
@@ -23,9 +17,6 @@
                 <el-form-item label="内容" prop="content">
                     <div ref="editorContainer" class="editor-container"></div>
                 </el-form-item>
-<!--                <el-form-item label="分类" prop="category">-->
-<!--                    <el-input v-model="article.category" placeholder="请输入分类"></el-input>-->
-<!--                </el-form-item>-->
                 <el-form-item label="分类" prop="category">
                     <el-select v-model="article.category" placeholder="请选择分类">
                         <el-option label="农村党建" value="农村党建"></el-option>
@@ -190,43 +181,77 @@ export default {
 
 
 <style scoped>
-.article-form {
-    background-color: #f4f4f5;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* 基本样式设置 */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
 }
 
-.back-button {
-    background-color: rgb(85, 145, 118);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
+/* 全局容器样式 */
+.el-container {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.back-button:hover {
-    background-color: rgb(101, 172, 140);
-    transform: scale(1.05);
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .container {
+        padding: 20px;
+    }
+
+    .header, .footer {
+        flex-direction: row; /* 保持水平布局 */
+    }
+
+    .main-content {
+        padding: 20px;
+    }
 }
 
-.back-button:active {
-    background-color: rgb(70, 118, 95);
-    transform: scale(0.98);
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .header, .footer {
+        flex-direction: column; /* 垂直布局 */
+    }
+
+    .main-content {
+        padding: 15px;
+    }
 }
 
-.editor-container {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    min-height: 300px;
-    padding: 10px;
-    background-color: #ffffff;
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+
+    .header, .footer {
+        flex-direction: column; /* 垂直布局 */
+    }
+
+    .main-content {
+        padding: 10px;
+    }
 }
 
-.el-form-item {
-    margin-bottom: 20px;
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .container {
+        padding: 5px;
+    }
+
+    .header, .footer {
+        flex-direction: column; /* 垂直布局 */
+    }
+
+    .main-content {
+        padding: 5px;
+    }
 }
 
 .submit-buttton {
@@ -253,6 +278,7 @@ export default {
 
 .custom-footer {
     background-image: url("@/assets/images/footer.png");
+    background-size: cover;
     color: #ffffff;
     padding: 20px 0;
     text-align: center;
@@ -303,5 +329,72 @@ export default {
 .footer-center a:hover {
     text-decoration: none;
     cursor: pointer;
+}
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .footer-content {
+        flex-direction: row; /* 保持三列布局 */
+    }
+
+    .footer-left, .footer-right {
+        align-items: center;
+    }
+
+    .footer-center {
+        flex: 2;
+    }
+
+    .foot-img {
+        width: 250px; /* 调整图片宽度 */
+        height: 60px;  /* 调整图片高度 */
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .footer-content {
+        flex-direction: column; /* 变为竖直布局 */
+    }
+
+    .footer-left, .footer-right {
+        margin-bottom: 20px; /* 增加底部间距 */
+    }
+
+    .foot-img {
+        width: 200px; /* 调整图片宽度 */
+        height: 50px;  /* 调整图片高度 */
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .footer-content {
+        flex-direction: column; /* 保持竖直布局 */
+    }
+
+    .footer-left, .footer-right {
+        margin-bottom: 15px; /* 调整底部间距 */
+    }
+
+    .foot-img {
+        width: 150px; /* 调整图片宽度 */
+        height: 40px;  /* 调整图片高度 */
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .footer-content {
+        flex-direction: column; /* 保持竖直布局 */
+    }
+
+    .footer-left, .footer-right {
+        margin-bottom: 10px; /* 调整底部间距 */
+    }
+
+    .foot-img {
+        width: 120px; /* 调整图片宽度 */
+        height: 30px;  /* 调整图片高度 */
+    }
 }
 </style>

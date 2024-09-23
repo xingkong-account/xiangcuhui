@@ -139,7 +139,8 @@ export default {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    height: 100%;
+    height: auto;
+    min-height: 90vh;
     width: 100%;
 }
 .title{
@@ -190,7 +191,7 @@ export default {
 .no-videos {
     text-align: center;
     font-size: 28px;
-    color: #606266;
+    color: white;
 }
 
 .video-container {

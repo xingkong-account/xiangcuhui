@@ -12,6 +12,15 @@
         </foreach>
     </delete>
 
+    <select id="findByUsername" parameterType="java.lang.String" resultType="com.bean.Member">
+        select * from members where name = #{name}
+    </select>
+
+    <select id="findByEmail" parameterType="java.lang.String" resultType="com.bean.Member">
+        select * from members where email = #{email}
+        LIMIT 1
+    </select>
+
     <select id="findAllUnChecked" parameterType="map" resultType="com.bean.Member">
         SELECT *
         FROM members
@@ -78,6 +87,7 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null">name,</if>
             <if test="type != null">type,</if>
+            <if test="email != null">email,</if>
             <if test="phone != null">phone,</if>
             <if test="password != null">password,</if>
             <if test="status != null">status,</if>
@@ -88,6 +98,7 @@
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
             <if test="name != null">#{name},</if>
             <if test="type != null">#{type},</if>
+            <if test="email != null">#{email},</if>
             <if test="phone != null">#{phone},</if>
             <if test="password != null">#{password},</if>
             <if test="status != null">#{status},</if>
@@ -118,10 +129,13 @@
         WHERE name = #{name} AND password = #{password} AND type = '个人会员';
     </select>
 
+<!--    编辑个人会员信息，支持授权管理员-->
     <update id="updateIndividual" parameterType="com.bean.Member">
         UPDATE members
         <set>
             <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="email != null">email = #{email},</if>
             <if test="phone != null">phone = #{phone},</if>
             <if test="password != null">password = #{password},</if>
             <if test="status != null">status = #{status},</if>
@@ -129,6 +143,21 @@
         </set>
         WHERE id = #{id} AND type = '个人会员';
     </update>
+
+    <update id="update" parameterType="com.bean.Member">
+        UPDATE members
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updated_at != null">updated_at = #{updated_at},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
 
     <update id="changePwdByName" parameterType="com.bean.Member">
         UPDATE members
@@ -146,6 +175,7 @@
         SELECT
         id,
         name,
+        email,
         type,
         phone,
         status,
@@ -186,6 +216,7 @@
         <set>
             <if test="name != null">name = #{name},</if>
             <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
             <if test="password != null">password = #{password},</if>
             <if test="status != null">status = #{status},</if>
             <if test="updated_at != null">updated_at = #{updated_at},</if>
@@ -212,6 +243,7 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null">name,</if>
             <if test="type != null">type,</if>
+            <if test="email != email">email,</if>
             <if test="phone != null">phone,</if>
             <if test="password != null">password,</if>
             <if test="status != null">status,</if>
@@ -224,6 +256,7 @@
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
             <if test="name != null">#{name},</if>
             <if test="type != null">#{type},</if>
+            <if test="email != null">#{email},</if>
             <if test="phone != null">#{phone},</if>
             <if test="password != null">#{password},</if>
             <if test="status != null">#{status},</if>

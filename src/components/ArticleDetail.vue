@@ -2,6 +2,9 @@
     <el-container>
         <el-main>
             <div class="article-container">
+                <div class="header-center">
+                    <h2 class="article-title">{{ article.title }}</h2>
+                </div>
                 <div class="article-header">
                     <div class="header-left">
                         <div class="dots" style="display: flex; gap: 10px;">
@@ -28,11 +31,8 @@
                 </div>
 
                 <div class="article-green-line"></div>
-                <div class="header-center">
-                    <h2 class="article-title">{{ article.title }}</h2>
-                </div>
-                <div class="">
-                    <div v-html="article.content" class="article-content"></div>
+                <div class="article-content">
+                    <div v-html="article.content" class="article-details"></div>
                 </div>
 
                 <el-button class="back-button" type="primary" @click="goBack">返回</el-button>
@@ -53,21 +53,21 @@
         </div>
 
         <el-footer class="custom-footer">
-            <div class="footer-content">
-                <div class="footer-left">
-                    <img src="@/assets/images/icon.jpg" style="width: 300px; height: 80px; border-radius: 10px" @click="goMain">
-                </div>
-                <div class="footer-center">
-                    <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
-                    <p>主办单位: 乡促会&nbsp;&nbsp;&nbsp; 备案号：</p>
-                    <p>地址: 甘肃省兰州市XXXXXX</p>
-                </div>
-                <div class="footer-right">
-                    <img src="" alt="Security" class="security-logo">
-                    <p>甘公网安备 235487154313号</p>
-                    <p>网站标识码：0000000000</p>
-                </div>
-            </div>
+<!--            <div class="footer-content">-->
+<!--                <div class="footer-left">-->
+<!--                    <img src="@/assets/images/icon.jpg" style="width: 300px; height: 80px; border-radius: 10px" @click="goMain">-->
+<!--                </div>-->
+<!--                <div class="footer-center">-->
+<!--                    <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>-->
+<!--                    <p>主办单位: 乡促会&nbsp;&nbsp;&nbsp; 备案号：</p>-->
+<!--                    <p>地址: 甘肃省兰州市XXXXXX</p>-->
+<!--                </div>-->
+<!--                <div class="footer-right">-->
+<!--                    <img src="" alt="Security" class="security-logo">-->
+<!--                    <p>甘公网安备 235487154313号</p>-->
+<!--                    <p>网站标识码：0000000000</p>-->
+<!--                </div>-->
+<!--            </div>-->
         </el-footer>
     </el-container>
 </template>
@@ -156,6 +156,9 @@ export default {
 </script>
 
 <style scoped>
+.article-meta span {
+    display: inline;
+}
 /*三个实心圆点*/
 .dots .dot {
     width: 10px;
@@ -181,9 +184,9 @@ export default {
     justify-content: center;
     min-height: 100vh;
     width: 100%;
-    background-image: url("@/assets/images/articleDetailBg.png");
+    margin: 20px auto;
+    /*background-image: url("@/assets/images/articleDetailBg.png");*/
     background-repeat: no-repeat;
-    background-size: cover;
     background-position: center;
 }
 
@@ -219,7 +222,10 @@ export default {
 .article-title {
     font-size: 26px;
     font-weight: 600;
-    color: rgb(85,156,122);
+    color: rgb(85, 156, 122);
+    max-width: 60ch;
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 .article-green-line {
@@ -232,9 +238,10 @@ export default {
 .article-content {
     font-size: inherit;
     color: #333;
-    width: 90%;
+    max-width: 90%;
     margin: 20px auto;
     line-height: 1.8;
+    /*background-color: #A9A9A9;*/
 }
 
 .ncdt-bottom-tool {
@@ -256,62 +263,6 @@ export default {
     color: #333;
     text-decoration: none;
 }
-.custom-footer {
-    background-image: url("@/assets/images/footer.png");
-    color: #ffffff;
-    padding: 20px 0;
-    text-align: center;
-    min-height: 200px;
-    height: auto;
-    background-size: cover;
-    width: 100%;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.footer-left, .footer-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.footer-center {
-    flex: 2;
-    text-align: center;
-}
-
-.foot-img{
-    scale: 0.8;
-    width: 500px;
-    height: 100px;
-}
-
-.footer-logo, .security-logo {
-    width: 80px;
-    margin-bottom: 10px;
-}
-
-.footer-center p {
-    margin: 5px 0;
-}
-
-.footer-center a {
-    color: #ffffff;
-    text-decoration: none;
-    margin: 0 10px;
-}
-
-.footer-center a:hover {
-    text-decoration: none;
-    cursor: pointer;
-}
 
 .back-button {
     background-color: rgb(101,172,138);
@@ -329,5 +280,180 @@ export default {
 
 .back-button:hover {
     background-color: #4CAF50;
+}
+
+/* 自适应样式配置 */
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .article-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        width: 100%;
+    }
+    .article-content {
+        flex-grow: 1;
+        width: 100%;
+    }
+    .article-header {
+        padding: 20px 0;
+    }
+
+    .header-right .article-meta {
+        gap: 50px;
+    }
+
+    .ncdt-bottom-tool {
+        padding: 15px;
+    }
+
+    .bottom-tool-content {
+        gap: 30px;
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .article-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start; /* 改为 flex-start */
+        min-height: 100vh;
+        width: 100%;
+    }
+    .article-content {
+        overflow: visible;
+        flex-grow: 1;
+        width: 100%;
+    }
+    .article-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-right .article-meta {
+        flex-direction: row;
+        gap: 20px;
+        font-size: 12px;
+    }
+
+    .ncdt-bottom-tool {
+        padding: 15px;
+    }
+
+    .bottom-tool-content {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .article-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+        justify-content: flex-start; /* 保持顶部布局 */
+        min-height: auto; /* 高度根据内容调整 */
+        width: 100%;
+    }
+    .article-content {
+        flex-grow: 1;
+        width: 100%;
+        background-color: #4CAF50;
+    }
+    .article-content p img{
+        width: 10px; /* 改变图片宽度为容器的 90% */
+        height: 10px; /* 高度自动调整 */
+        margin: 10px 0; /* 添加上下外边距 */
+    }
+    .article-header {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .article-meta span:not(.article-date):not(.article-source) {
+        display: none;
+    }
+
+    /* 控制间距和字体大小 */
+    .article-meta {
+        gap: 10px;
+        font-size: 12px;
+    }
+    .header-right .article-meta {
+        flex-direction: row;
+        gap: 15px;
+        font-size: 14px;
+    }
+
+    .ncdt-bottom-tool {
+        padding: 10px;
+    }
+
+    .bottom-tool-content {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+/* 手机端，宽度在480px以下 */
+@media (max-width: 480px) {
+    .article-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start; /* 保持顶部布局 */
+        min-height: 100vh; /* 高度自适应 */
+        width: 100%;
+    }
+    .article-content {
+        width: 100%;
+        /*background-color: #3a8ee6;*/
+        flex-grow: 1;
+    }
+    .article-content img {
+        width: 100px;
+        height: auto;
+    }
+    /* 顶部文章头部样式 */
+    .article-header {
+        flex-direction: row;
+        align-items: center;
+    }
+    .article-meta span:not(.article-date):not(.article-source) {
+        display: none;
+    }
+
+    /* 控制间距和字体大小 */
+    .article-meta {
+        gap: 10px;
+        font-size: 12px;
+    }
+
+    .header-left, .header-right {
+        margin-bottom: 10px;
+    }
+
+    .header-right .article-meta {
+        flex-direction: row;
+        gap: 10px;
+        font-size: 8px;
+        text-align: center; /* 日期和信息来源居中 */
+    }
+
+    .ncdt-bottom-tool {
+        padding: 5px;
+    }
+
+    .bottom-tool-content {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
 }
 </style>

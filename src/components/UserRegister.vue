@@ -4,7 +4,6 @@
             欢迎注册
         </div>
         <!-- 注册表单 -->
-        <!-- 注册表单 -->
         <el-container class="m">
             <el-main>
                 <el-form :model="form" ref="form" label-width="140px" :rules="rules">
@@ -24,29 +23,36 @@
                         </el-form-item>
                     </div>
                     <div :class="{'apply-shake': true, 'shake': shake}">
+                        <el-form-item label="请输入邮箱" prop="email">
+                            <el-input v-model="form.email"></el-input>
+                        </el-form-item>
+                    </div>
+                    <div :class="{'apply-shake': true, 'shake': shake}">
                         <el-form-item label="手机号" prop="phone">
                             <el-input v-model="form.phone" maxlength="13"></el-input>
                             <el-button @click="sendSmsCode" :disabled="!form.phone">发送验证码</el-button>
                         </el-form-item>
                     </div>
                     <el-form-item label="手机验证码 (可选)" prop="phoneCode">
-                        <el-input v-model="form.phoneCode" placeholder="请输入手机验证码"></el-input>
+                        <el-input v-model="form.phoneCode" placeholder="请输入手机验证码" maxlength="6"></el-input>
                     </el-form-item>
                     <div :class="{'apply-shake': true, 'shake': shake}">
                         <el-form-item label="验证码" prop="code">
-                            <el-input v-model="form.code" placeholder="请输入验证码"></el-input>
-                            <valid-code @update:value="getCode" ref="validCode"></valid-code>
+                            <div class="input-with-code">
+                                <el-input v-model="form.code" placeholder="请输入验证码" maxlength="4"></el-input>
+                                <valid-code @update:value="getCode" ref="validCode" class="code-container"></valid-code>
+                            </div>
                         </el-form-item>
                     </div>
                     <el-form-item label="用户类型" prop="type" class="user-type">
-                        <el-radio-group v-model="form.type">
+                        <el-radio-group v-model="form.type" class="type-group">
                             <el-radio label="个人会员">个人会员</el-radio>
                             <el-radio label="团体会员">团体会员</el-radio>
                         </el-radio-group>
                     </el-form-item>
 
                     <!-- 图片上传字段，仅在用户类型为团体会员时显示 -->
-                    <el-form-item v-if="form.type === '团体会员'"  label="上传图片" prop="image_url">
+                    <el-form-item v-if="form.type === '团体会员'"  label="上传图片" prop="image_url" class="upload-img">
                         <el-upload
                             class="upload-button"
                             :action="$baseUrl + '/api/upload'"
@@ -62,7 +68,7 @@
                         <el-image v-if="form.image_url" :src="form.image_url" style="width: 100px; margin-top: 10px;"></el-image>
                     </el-form-item>
 
-                    <el-form-item>
+                    <el-form-item class="button-group">
                         <el-button type="primary" class="custom-register-button" @click="submitForm">注册</el-button>
                         <el-button @click="goToLogin" class="custom-login-button">登录</el-button>
                     </el-form-item>
@@ -71,8 +77,6 @@
         </el-container>
     </div>
 </template>
-
-
 
 <script>
 import axios from 'axios';
@@ -90,6 +94,7 @@ export default {
                 password: '',
                 confirmPassword: '',
                 phone: '',
+                email: '',
                 image_url: '',
                 code: '',
                 type: '个人会员'
@@ -118,6 +123,14 @@ export default {
                 code: [
                     { required: true, message: '请输入验证码', trigger: 'blur' },
                     { validator: this.validateCode, trigger: 'blur' }
+                ],
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' },
+                    {
+                        pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: '邮箱格式不正确',
+                        trigger: 'blur'
+                    }
                 ]
             }
         };
@@ -173,6 +186,7 @@ export default {
                     axios.post(this.$baseUrl + '/api/add', {
                         name: this.form.name,
                         password: this.form.password,
+                        email: this.form.email,
                         phone: this.form.phone,
                         code: this.form.code,
                         type: this.form.type,
@@ -212,7 +226,13 @@ export default {
 </script>
 
 <style scoped>
-/* 页面容器样式 */
+/*验证码*/
+.input-with-code {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    height: 20px;
+}
 .page-container {
     display: flex;
     flex-direction: column;
@@ -221,12 +241,13 @@ export default {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed; /* 固定背景，滚动内容时背景不动 */
-    height: 100vh;
+    background-attachment: fixed;
+    height: 100%;
     width: 100vw;
     overflow: hidden;
+    box-sizing: border-box;
 }
-/* 欢迎注册消息的样式 */
+
 .welcome-message {
     color: rgb(156,201,180);
     font-size: 28px;
@@ -242,13 +263,83 @@ export default {
     display: block;
     width: 100%;
     height: 2px;
-    background-color: rgb(156,201,180); /* 下划线颜色 */
+    background-color: rgb(156,201,180);
     margin: 8px auto 0;
 }
 
+@media (min-width: 1200px) {
+    .page-container {
+        padding: 20px;
+        justify-content: center;
+        align-items: center;
+    }
+    .welcome-message {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 1200px) and (min-width: 992px) {
+    .page-container {
+        padding: 15px;
+        justify-content: center;
+        align-items: center;
+    }
+    .welcome-message {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 992px) and (min-width: 768px) {
+    .page-container {
+        padding: 10px;
+        justify-content: center;
+        align-items: center;
+    }
+    .welcome-message {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-container {
+        padding: 5px;
+        justify-content: center;
+        align-items: center;
+    }
+    .welcome-message {
+        font-size: 20px;
+    }
+}
+
+/* 给表单设置最大宽度和居中对齐 */
 .el-form {
-    max-width: 400px;
-    margin: 0 auto;
+    max-width: 800px;
+    margin: 10px 10px auto;
+    border-radius: 8px;
+}
+
+.el-form-item {
+    margin-bottom: 20px;
+}
+
+.el-form-item:nth-of-type(1) {
+    margin-bottom: 30px;
+    margin-left: -50px;
+}
+
+.el-form-item:nth-of-type(2) {
+    margin-bottom: 20px;
+    margin-left: -50px;
+}
+
+.el-form-item:nth-of-type(3) {
+    margin-bottom: 15px;
+    margin-left: -50px;
+}
+
+.el-form-item:nth-of-type(4) {
+    margin-bottom: 25px;
+    margin-left: -50px;
 }
 
 .apply-shake.shake {
@@ -269,25 +360,52 @@ export default {
         transform: translate3d(4px, 0, 0);
     }
 }
-
-/* 用户类型部分的样式 */
+.upload-img{
+    margin-left: -45px;
+}
+.user-type {
+    flex-direction: column;
+    align-items: flex-start;
+    display: flex;
+    margin-left: -40px;
+}
 .user-type .el-radio {
-    color: black;
+    margin-right: 30px;
+    margin-bottom: 10px;
+}
+.user-type .el-radio:last-child {
+    margin-bottom: 0;
+}
+.type-group{
+    margin-top: -71px;
+    padding: 10px;
+    /*background-color: #A9A9A9;*/
+    margin-left: 30px;
 }
 
-.user-type .el-radio__label {
-    font-weight: bold; /* 字体加粗 */
+.user-type .el-radio:last-child {
+    margin-right: 0;
 }
 
-/* 选中状态时，单选框和字体的颜色都设置为绿色 */
-.user-type .el-radio.is-checked .el-radio__input.is-checked .el-radio__inner {
-    border-color: #67C23A; /* 选中时单选框的边框颜色 */
-    background-color: #67C23A; /* 选中时单选框的背景颜色 */
+@media (max-width: 768px) {
+    .user-type {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: -30px;
+    }
+    .user-type .el-form-item__label {
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+    .user-type .el-radio {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    .user-type .el-radio:last-child {
+        margin-bottom: 0;
+    }
 }
 
-.user-type .el-radio.is-checked .el-radio__label {
-    color: #67C23A;
-}
 
 /* 注册按钮的样式 */
 .custom-register-button {
@@ -307,12 +425,6 @@ export default {
     border-color: rgb(75, 130, 106);
 }
 
-/* 用户类型部分的样式 */
-.user-type .el-radio {
-    color: black;
-}
-
-/* 选中状态时，单选框和字体的颜色都设置为绿色 */
 .user-type .el-radio.is-checked .el-radio__input.is-checked .el-radio__inner {
     border-color: #67C23A;
     background-color: #67C23A;
@@ -322,7 +434,6 @@ export default {
     color: #67C23A;
 }
 
-/* 注册按钮的样式 */
 .custom-register-button {
     background-color: rgb(101, 172, 140);
     border-color: rgb(101, 172, 140);

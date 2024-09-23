@@ -3,12 +3,14 @@ package com.controller;
 import com.bean.Article;
 import com.bean.Member;
 import com.bean.PageResult;
+import com.dto.ResetPasswordRequestDTO;
 import com.service.FileService;
 import com.service.MembersService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.DigestUtils;
@@ -31,6 +33,8 @@ public class MembersController{
     private MembersService memberService;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     // 注册
     @PostMapping("/add")
@@ -48,7 +52,62 @@ public class MembersController{
         }
     }
 
-   // 多选删除个人会员
+    // 验证用户名和邮箱是否匹配
+    @PostMapping("/validate-username-email")
+    public ResponseEntity<Map<String, Object>> validateUsernameEmail(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String username = request.get("name");
+        boolean isMatch = memberService.validateUsernameEmail(username, email);
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", Map.of("isMatch", isMatch));
+        return ResponseEntity.ok(response);
+    }
+    // 发送QQ邮箱验证码
+    @PostMapping("/send-email-code")
+    public ResponseEntity<String> sendEmailCode(@RequestBody Member member) {
+        String email = member.getEmail();
+        if (email == null || email.isEmpty()) {
+            return ResponseEntity.badRequest().body("邮箱不能为空");
+        }
+        String verificationCode = memberService.generateVerificationCode();
+        memberService.saveCodeToRedis(email, verificationCode);
+        // 发送邮件
+        memberService.sendEmail(member, verificationCode);
+        return ResponseEntity.ok("验证码已发送到您的邮箱，请注意查收。");
+    }
+
+    // 验证QQ邮箱验证码
+    @PostMapping("/verify-email-code")
+    public ResponseEntity<?> verifyEmailCode(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        System.out.println(email);
+        String inputCode = payload.get("code");
+        String storedCode = redisTemplate.opsForValue().get("verification_code:" + email);
+        if (storedCode == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("验证码已过期或不存在");
+        }
+        if (storedCode.equals(inputCode)) {
+            return ResponseEntity.ok(Collections.singletonMap("success", true));
+        } else {
+            return ResponseEntity.ok(Collections.singletonMap("success", false));
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody ResetPasswordRequestDTO request) {
+        Map<String, Object> response = new HashMap<>();
+        boolean isUpdated = memberService.updatePassword(request.getEmail(), request.getPassword());
+        if (isUpdated) {
+            response.put("success", true);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "密码重置失败，请稍后重试");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // 多选删除个人会员
    @PostMapping("/delete-members")
    public ResponseEntity<String> deleteMembers(@RequestBody List<Long> memberIds) {
        try {
@@ -303,7 +362,7 @@ public class MembersController{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("message", "会员不存在"));
         }
         if (existingMember.getStatus().equals("待审核") || existingMember.getStatus().equals("已拒绝")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.singletonMap("message", "会员未审核或已拒绝，无法登录"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.singletonMap("message", "会员未审核或已被拒绝，无法登录"));
         }
         boolean passwordMatches = memberService.validatePassword(member.getPassword(), existingMember.getPassword());
         if (passwordMatches) {

@@ -1,6 +1,6 @@
 <template>
     <div class="about">
-        <el-card class="box-card">
+        <div class="box-card">
             <div slot="header" class="clearfix">
                 <el-button type="default" @click="goBack" style="margin-right: 20px;">
                     <i class="el-icon-arrow-left"></i> 返回
@@ -8,7 +8,9 @@
                 <span>关于我们</span>
             </div>
             <div class="text item">
-                <img src="https://www.bing.com/th?id=OIP.dktjOy4n2xlTeUd6kZr0pQHaEK&w=200&h=106&c=8&rs=1&qlt=90&o=6&dpr=2&pid=3.1&rm=2" alt="我们的团队" class="team-image"/>
+                <img src="https://www.bing.com/th?id=OIP.dktjOy4n2xlTeUd6kZr0pQHaEK&w=200&h=106&c=8&rs=1&qlt=90&o=6&dpr=2&pid=3.1&rm=2"
+                     alt="我们的团队"
+                     class="team-image"/>
             </div>
             <div class="text item">
                 <h2>我们的使命</h2>
@@ -29,7 +31,7 @@
                 <p><strong>电话:</strong> (123) 456-7890</p>
                 <p><strong>地址:</strong> 1234</p>
             </div>
-        </el-card>
+        </div>
     </div>
 </template>
 
@@ -48,27 +50,54 @@ export default {
 .about {
     padding: 20px;
     background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
 }
+
 .box-card {
-    max-width: 800px;
+    width: 100%;
     margin: 0 auto;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    justify-content: center;
 }
+
 .team-image {
-    width: 100%;
+    width: 50%;
     height: auto;
     border-radius: 10px;
+    margin-left: 25%;
 }
+
 .text.item {
     margin-bottom: 20px;
 }
+
 h2 {
     margin-top: 20px;
     color: #409EFF;
+    font-size: 1.5rem;
 }
+
 p {
     line-height: 1.6;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .box-card {
+        width: 90%;
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    p {
+        font-size: 0.875rem;
+    }
 }
 </style>
+

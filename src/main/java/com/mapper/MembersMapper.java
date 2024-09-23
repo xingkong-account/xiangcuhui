@@ -8,10 +8,13 @@ import org.apache.ibatis.annotations.Select;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Mapper
 public interface MembersMapper {
     void deleteAllByIdIn(@Param("memberIds") List<Long> memberIds);
+    Optional<Member> findByUsername(@Param("name") String name);
+    Optional<Member> findByEmail(@Param("email") String email);
     List<Member> findAllUnChecked(@Param("offset") int offset, @Param("limit") int limit);
     List<Member> findAll(@Param("offset") int offset, @Param("limit") int limit);
     List<Member> findAllChecked(@Param("offset") int offset, @Param("limit") int limit);
@@ -36,6 +39,7 @@ public interface MembersMapper {
 
     // 更新个人会员信息
     int updateIndividual(Member member);
+    int update(Member member);
 
     // 修改密码
     int changePwdByName(Member member);

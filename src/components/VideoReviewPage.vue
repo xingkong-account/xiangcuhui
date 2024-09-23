@@ -1,12 +1,13 @@
 <template>
     <div class="video-review-page">
-        <h1>视频审核</h1>
+        <h1 class="video-check-title">视频审核</h1>
         <el-table
             :data="videos"
             style="width: 100%"
             :highlight-current-row="true"
             @row-click="handleRowClick">
             <el-table-column prop="title" label="标题"></el-table-column>
+            <el-table-column prop="uploader" label="上传人"></el-table-column>
             <el-table-column prop="description" label="描述"></el-table-column>
             <el-table-column prop="thumbnail" label="缩略图">
                 <template slot-scope="scope">
@@ -107,8 +108,21 @@ export default {
 </script>
 
 <style scoped>
+.video-check-title{
+    text-align: center;
+    font-size: 2rem;
+    color: rgb(85,97,83);
+    font-weight: 500;
+}
 .video-review-page {
     padding: 20px;
+    background-image: url("@/assets/images/login.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+    width: 100vw;
 }
 
 .thumbnail-img {

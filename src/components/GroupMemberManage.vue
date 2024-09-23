@@ -42,7 +42,7 @@
                 <!-- 搜索-->
                 <div style="display: flex; width: 100%; background-color: rgb(227,230,235); justify-content: space-between; align-items: center;" v-if="this.showSearchSection">
                     <div style="display: flex; align-items: center">
-                        <h2>团体会员管理中心</h2>
+                        <h2 style="margin: 5px 20px 10px 10px">团体会员管理中心</h2>
                         <el-select v-model="searchType" placeholder="选择搜索条件" style="margin-right: 10px;">
                             <el-option label="姓名" value="name"></el-option>
                             <el-option label="电话" value="phone"></el-option>

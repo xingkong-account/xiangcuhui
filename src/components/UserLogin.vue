@@ -4,36 +4,111 @@
             欢迎登录
         </div>
         <div class="login-card">
-            <div class="form-container" :class="{'shake': shake}">
+            <div class="form-container">
                 <el-form :model="user" :rules="rules" ref="submitForm" class="form">
-                    <el-form-item prop="name">
-                        <el-input prefix-icon="el-icon-user" size="medium" placeholder="请输入账号" v-model="user.name"></el-input>
+                    <el-form-item prop="name" :class="{'shake': shakeName}">
+                        <el-input
+                            prefix-icon="el-icon-user"
+                            size="medium"
+                            placeholder="请输入账号"
+                            v-model="user.name"
+                            @blur="checkName"
+                        ></el-input>
                     </el-form-item>
-                    <el-form-item prop="password">
-                        <el-input prefix-icon="el-icon-lock" size="medium" type="password" show-password placeholder="请输入密码" v-model="user.password"></el-input>
+
+                    <el-form-item prop="password" :class="{'shake': shakePassword}">
+                        <el-input
+                            prefix-icon="el-icon-lock"
+                            size="medium"
+                            type="password"
+                            show-password
+                            placeholder="请输入密码"
+                            v-model="user.password"
+                            @blur="checkPassword"
+                        ></el-input>
                     </el-form-item>
-                    <el-form-item prop="code">
+
+                    <el-form-item prop="code" :class="{'shake': shakeCode}">
                         <div class="code-container">
-                            <el-input size="medium" maxlength="4" placeholder="请输入验证码" v-model="user.code" prefix-icon="el-icon-circle-check" style="flex: 1"></el-input>
+                            <el-input
+                                size="medium"
+                                maxlength="4"
+                                placeholder="请输入验证码"
+                                v-model="user.code"
+                                prefix-icon="el-icon-circle-check"
+                                style="flex: 1"
+                                @blur="checkCode"
+                            ></el-input>
                             <div class="code-image">
                                 <valid-code @update:value="getCode"></valid-code>
                             </div>
                         </div>
                     </el-form-item>
+
                     <el-form-item>
                         <el-button type="primary" class="custom-login-button" @click="submitForm">登录</el-button>
                     </el-form-item>
+
                     <div class="n">
                         <div class="register">
                             还没有账号？<span class="link" @click="goToRegister">注册</span>
                         </div>
                         <div class="forgot-password">
-                            <span class="link">忘记密码</span>
+                            <span class="link" @click="showForgotPasswordDialog">忘记密码</span>
                         </div>
                     </div>
                 </el-form>
             </div>
         </div>
+
+        <!-- 忘记密码弹窗 -->
+        <el-dialog title="忘记密码" :visible.sync="dialogVisible" :modal="false" :close-on-click-modal="false">
+            <el-form :model="forgotPasswordForm" :rules="forgotPasswordRules" ref="forgotPasswordForm">
+                <el-form-item prop="name">
+                    <el-input placeholder="请输入用户名" v-model="forgotPasswordForm.name"></el-input>
+                </el-form-item>
+                <el-form-item prop="email">
+                    <el-input placeholder="请输入邮箱" v-model="forgotPasswordForm.email" maxlength="20"></el-input>
+                </el-form-item>
+                <el-form-item prop="code">
+                    <div style="display: flex; align-items: center;">
+                        <el-input
+                            placeholder="请输入验证码"
+                            v-model="forgotPasswordForm.code"
+                            @input="validateEmailCode"
+                            maxlength="4"
+                            style="flex: 1;">
+                        </el-input>
+                        <el-button
+                            type="primary"
+                            @click="handleSendCode"
+                            style="margin-left: 10px;"
+                            :disabled="!canSend()"
+                        >
+                            发送验证码
+                        </el-button>
+                    </div>
+                </el-form-item>
+                <el-form-item prop="password">
+                    <el-input
+                        placeholder="请输入新密码"
+                        v-model="forgotPasswordForm.password"
+                        maxlength="20"
+                        style="flex: 1;">
+                    </el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCancel">取消</el-button>
+        <el-button
+            type="primary"
+            @click="handleResetPassword"
+            :disabled="false"
+        >
+            确认
+        </el-button>
+    </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -52,27 +127,48 @@ export default {
                 callback(new Error('请输入验证码'));
             } else if (value.toLowerCase() !== this.verifyCode) {
                 callback(new Error("验证码错误"));
-                // 刷新验证码
-                this.$refs.validCode.refreshCode();
             } else {
                 callback();
             }
         };
         return {
             user: {
-                name: '',
-                password: '',
+                name: 'admin',
+                password: '1',
                 type: '',
-                code: ''
+                code: ''  // 图形验证码
             },
+            correctMailCode: '',  // 正确的邮箱验证码
             verifyCode: '',  // 验证码组件传过来的 code
-            shake: false,
+            shakeName: false,
+            shakePassword: false,
+            shakeCode: false,
+            dialogVisible: false,
+            forgotPasswordForm: {
+                name: '',
+                email: '',
+                code: '',
+                password: ''
+            },
+            codeSent: false,
+            codeVerified: false,
+            forgotPasswordRules: {
+                name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' },
+                    { pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: '邮箱格式不正确', trigger: 'blur' }
+                ],
+                // code: [
+                //     { validator: this.validateEmailCode, trigger: 'blur' }
+                // ]
+            },
             rules: {
                 name: [
                     { required: true, message: '请输入用户名', trigger: 'blur' }
                 ],
                 password: [
-                    { required: true, message: '请输入密码', trigger: 'blur' }
+                    { required: true, message: '请输入密码', min: 1, max:18, trigger: 'blur' }
                 ],
                 code: [
                     { validator: validateCode, trigger: 'blur' }
@@ -81,6 +177,129 @@ export default {
         };
     },
     methods: {
+        canSend(){
+            return this.forgotPasswordForm.name !== '' && this.forgotPasswordForm.email !== '';
+        },
+        // 发送验证码
+        handleSendCode() {
+            this.$refs.forgotPasswordForm.validate(valid => {
+                if (valid) {
+                    const requestData = {
+                        email: this.forgotPasswordForm.email,
+                        name: this.forgotPasswordForm.name
+                    };
+                    axios.post(this.$baseUrl + '/api/validate-username-email', requestData)
+                        .then(response => {
+                            if (response.data.data.isMatch) {
+                                // 发送验证码
+                                return axios.post(this.$baseUrl + '/api/send-email-code', { email: this.forgotPasswordForm.email });
+                            } else {
+                                this.$message.error("邮箱与用户名不匹配。");
+                                throw new Error("邮箱与用户名不匹配");
+                            }
+                        })
+                        .then(() => {
+                            this.$message.success("验证码已发送，请注意查看您的邮箱。");
+                            setTimeout(() => {
+                                this.codeSent = false;
+                            }, 300000);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            this.$message.error("发送验证码失败，请重试。");
+                        });
+                } else {
+                    this.$message.error("请检查表单填写是否正确。");
+                }
+            });
+        },
+        // 验证输入的邮箱验证码
+        validateEmailCode() {
+            if (this.forgotPasswordForm.code.length === 4) {
+                const requestData = {
+                    email: this.forgotPasswordForm.email,
+                    code: this.forgotPasswordForm.code
+                };
+                axios.post(this.$baseUrl + '/api/verify-email-code', requestData)
+                    .then((response) => {
+                        if (response.data.success) {
+                            this.$message.success("验证码正确");
+                            this.codeVerified = true;
+                        } else {
+                            this.$message.error("验证码错误");
+                            this.codeVerified = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        this.$message.error("验证码验证失败，请稍后重试。");
+                        this.codeVerified = false;
+                    });
+            } else {
+                this.codeVerified = false;
+            }
+        },
+        showForgotPasswordDialog() {
+            this.dialogVisible = true;
+        },
+        handleCancel() {
+            this.dialogVisible = false;
+            this.forgotPasswordForm = {
+                name: '',
+                email: '',
+                code: '',
+                password: ''
+            };
+            this.codeVerified = false;
+            this.codeSent = false;
+            this.$refs.forgotPasswordForm.resetFields(); // 重置表单状态
+        },
+        // 重置密码
+        handleResetPassword() {
+            // this.$alert`(this.codeVerified);
+            if (this.codeVerified) {
+                const requestData = {
+                    email: this.forgotPasswordForm.email,
+                    password: this.forgotPasswordForm.password
+                };
+                axios.post(this.$baseUrl + '/api/reset-password', requestData)
+                    .then(() => {
+                        this.$message.success("密码重置成功");
+                        this.dialogVisible = false;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        this.$message.error("密码重置失败，请稍后重试。");
+                    });
+            } else {
+                this.$message.error("请先验证验证码！");
+            }
+        },
+        checkName() {
+            if (!this.user.name) {
+                this.shakeName = true;
+                this.resetShake('name');
+            }
+        },
+        checkPassword() {
+            if (!this.user.password) {
+                this.shakePassword = true;
+                this.resetShake('password');
+            }
+        },
+        checkCode() {
+            if (!this.user.code) {
+                this.shakeCode = true;
+                this.resetShake('code');
+            }
+        },
+        resetShake(field) {
+            setTimeout(() => {
+                if (field === 'name') this.shakeName = false;
+                else if (field === 'password') this.shakePassword = false;
+                else if (field === 'code') this.shakeCode = false;
+            }, 1000);
+        },
         getCode(code) {
             this.verifyCode = code.toLowerCase()
         },
@@ -118,10 +337,9 @@ export default {
                             this.$message.error('登录失败：' + errorMessage);
                         });
                 } else {
-                    this.shake = true;
-                    setTimeout(() => {
-                        this.shake = false;
-                    }, 820);
+                    this.checkName();
+                    this.checkPassword();
+                    this.checkCode();
                     this.$message.error('请填写完整信息');
                 }
             });
@@ -152,11 +370,42 @@ export default {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
-    overflow: hidden;
+    position: relative;
+    z-index: 1;
 }
 
+@media (min-width: 992px) {
+    .page-container {
+        background-size: cover;
+        height: 100%;
+    }
+}
+
+@media (max-width: 992px) and (min-width: 768px) {
+    .page-container {
+        background-size: cover;
+        padding: 20px;
+        height: 100%;
+    }
+}
+
+@media (max-width: 768px) and (min-width: 480px) {
+    .page-container {
+        background-size: cover;
+        padding: 15px;
+        height: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-container {
+        background-size: contain;
+        padding: 10px;
+        height: 100%;
+    }
+}
 
 .welcome-message {
     color: rgb(156,201,180);
@@ -177,14 +426,74 @@ export default {
     margin: 8px auto 0;
 }
 
+@media (max-width: 992px) and (min-width: 768px) {
+    .welcome-message {
+        font-size: 24px;
+        margin: 18px 0;
+    }
+    .welcome-message::after {
+        width: 80%;
+    }
+}
+
+@media (max-width: 768px) and (min-width: 480px) {
+    .welcome-message {
+        font-size: 22px;
+        margin: 16px 0;
+    }
+    .welcome-message::after {
+        width: 70%;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-message {
+        font-size: 20px;
+        margin: 14px 0;
+    }
+    .welcome-message::after {
+        width: 60%;
+    }
+}
+
 .login-card {
     display: flex;
     flex-direction: column;
     width: 30%;
     border-radius: 5px;
-    overflow: hidden;
+    /*background-color: #A9A9A9;*/
+    min-height: 300px;
+    max-height: 450px;
     padding: 200px;
     margin-top: 20px;
+    overflow: hidden;
+}
+
+@media (min-width: 1200px) {
+    .login-card {
+        width: 30%;
+    }
+}
+
+@media (max-width: 1200px) and (min-width: 992px) {
+    .login-card {
+        width: 40%;
+        padding: 80px;
+    }
+}
+
+@media (max-width: 992px) and (min-width: 768px) {
+    .login-card {
+        width: 50%;
+        padding: 100px;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-card {
+        width: 80%;
+        padding: 100px;
+    }
 }
 
 .form-title {

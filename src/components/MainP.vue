@@ -19,7 +19,7 @@
                             <template #title>个人会员</template>
                             <el-menu-item index="2-1-1" v-if="isAdmin" @click="navigate('individual-members')">个人会员管理</el-menu-item>
                             <el-menu-item index="2-1-1" v-else @click="navigate('individual-members')">查看个人会员</el-menu-item>
-                            <!--                            <el-menu-item v-if="isAdmin" index="2-1-2" @click="navigate('add-personal')">添加个人会员</el-menu-item>-->
+<!--                            <el-menu-item v-if="isAdmin" index="2-1-2" @click="navigate('add-personal')">添加个人会员</el-menu-item>-->
                             <!--<el-menu-item v-if="isAdmin" index="2-1-3" @click="navigate('individual-member-requests')">审核个人会员</el-menu-item>-->
                         </el-submenu>
 
@@ -370,7 +370,7 @@ export default {
                 params: {
                     pageNum: this.currentPage,
                     pageSize: this.pageSize
-                }``
+                }
             })
                 .then(response => {
                     // this.$alert(response.data.data)
@@ -403,6 +403,58 @@ export default {
 </script>
 
 <style scoped>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* 默认PC端原尺寸，宽度在1200px及以上 */
+/*.page-container {*/
+/*    transform: scale(1.0);*/
+/*    transform-origin: top center;*/
+/*    transition: transform 0.3s ease; !* 平滑过渡效果 *!*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    overflow: hidden; !* 禁用容器滚动条 *!*/
+/*}*/
+
+/*!* 大屏平板设备，宽度在992px到1200px之间 *!*/
+/*@media (max-width: 1200px) and (min-width: 992px) {*/
+/*    .page-container {*/
+/*        !* 动态缩放比例 *!*/
+/*        transform: scale(calc(0.7 + 0.3 * (100 / 1200)));*/
+/*        transform-origin: top center;*/
+/*    }*/
+/*}*/
+
+/*!* 小屏平板和大屏手机，宽度在768px到992px之间 *!*/
+/*@media (max-width: 992px) and (min-width: 768px) {*/
+/*    .page-container {*/
+/*        transform: scale(calc(0.6 + 0.4 * (100 / 992)));*/
+/*        transform-origin: top center;*/
+/*    }*/
+/*}*/
+
+/*!* 小屏手机，宽度在480px到768px之间 *!*/
+/*@media (max-width: 768px) and (min-width: 480px) {*/
+/*    .page-container {*/
+/*        transform: scale(calc(0.5 + 0.3 * (100 / 768)));*/
+/*        transform-origin: top center;*/
+/*    }*/
+/*}*/
+
+/*!* 超小屏手机，宽度在480px以下 *!*/
+/*@media (max-width: 480px) {*/
+/*    .page-container {*/
+/*        transform: scale(calc(0.4 + 0.2 * (100 / 480)));*/
+/*        transform-origin: top center;*/
+/*    }*/
+/*}*/
+
+/* 全局默认样式 */
+/* 全局样式 */
 .total {
     width: 100%;
     height: 100%;
@@ -410,6 +462,7 @@ export default {
     box-sizing: border-box;
 }
 
+/* Header 容器 */
 .header-container {
     display: flex;
     justify-content: space-between;
@@ -417,31 +470,36 @@ export default {
     padding: 0 20px;
     background-color: white;
     flex-shrink: 0;
-    position: relative;
+    position: relative; /* 确保子菜单栏的定位相对于这个容器 */
 }
 
+/* Logo 样式 */
 .header-logo img {
     height: fit-content;
     object-fit: contain;
-    max-height: 80px;
+    max-height: 80px; /* 限制 Logo 最大高度 */
 }
 
+/* 菜单项样式 */
 .header-menu .el-menu-item {
     font-size: 16px;
     color: black;
     transition: background-color 0.3s, color 0.3s;
 }
 
+/* 菜单项悬停样式 */
 .header-menu .el-menu-item:hover {
     background-color: rgba(101, 172, 140, 0.1);
     color: rgb(101, 172, 140);
 }
 
+/* 活动菜单项样式 */
 .header-menu .el-menu-item.is-active {
     background-color: rgb(101, 172, 140);
     color: white;
 }
 
+/* 子菜单标题样式 */
 .header-menu .el-submenu__title {
     font-size: 20px;
     color: black;
@@ -449,10 +507,107 @@ export default {
     transition: background-color 0.3s, color 0.3s;
 }
 
+/* 响应式设计 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .header-container {
+        flex-direction: column; /* 确保 logo 和菜单垂直排列 */
+        align-items: center; /* 居中 logo 和菜单 */
+        padding: 0 15px;
+    }
+    .header-logo {
+        margin-bottom: 10px; /* logo 和菜单之间的间距 */
+    }
+    .header-menu {
+        width: 100%; /* 使菜单宽度填满父容器 */
+        margin-top: 10px; /* 菜单和 logo 之间的间距 */
+        z-index: 10; /* 确保菜单在轮播图之上 */
+    }
+    .header-menu .el-menu-item {
+        font-size: 15px;
+    }
+    .header-menu .el-submenu__title {
+        font-size: 18px;
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .header-container {
+        flex-direction: column; /* 垂直排列 logo 和菜单 */
+        align-items: center; /* 居中 logo 和菜单 */
+        padding: 10px;
+    }
+    .header-logo {
+        margin-bottom: 15px; /* logo 和菜单之间的间距 */
+    }
+    .header-menu {
+        width: 100%; /* 使菜单宽度填满父容器 */
+        margin-top: 10px; /* 菜单和 logo 之间的间距 */
+        z-index: 10; /* 确保菜单在轮播图之上 */
+    }
+    .header-menu .el-menu-item {
+        font-size: 14px;
+    }
+    .header-menu .el-submenu__title {
+        font-size: 17px;
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .header-container {
+        flex-direction: column; /* 垂直排列 logo 和菜单 */
+        align-items: center; /* 居中 logo 和菜单 */
+        padding: 10px;
+    }
+    .header-logo {
+        margin-bottom: 15px; /* logo 和菜单之间的间距 */
+    }
+    .header-menu {
+        width: 100%; /* 使菜单宽度填满父容器 */
+        margin-top: 10px; /* 菜单和 logo 之间的间距 */
+        z-index: 10; /* 确保菜单在轮播图之上 */
+    }
+    .header-menu .el-menu-item {
+        font-size: 13px;
+    }
+    .header-menu .el-submenu__title {
+        font-size: 16px;
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .header-container {
+        flex-direction: column; /* 垂直排列 logo 和菜单 */
+        align-items: center; /* 居中 logo 和菜单 */
+        padding: 10px;
+    }
+    .header-logo {
+        margin-bottom: 10px; /* logo 和菜单之间的间距 */
+    }
+    .header-menu {
+        width: 100%; /* 使菜单宽度填满父容器 */
+        margin-top: 10px; /* 菜单和 logo 之间的间距 */
+        z-index: 10; /* 确保菜单在轮播图之上 */
+    }
+    .header-menu .el-menu-item {
+        font-size: 12px;
+    }
+    .header-menu .el-submenu__title {
+        font-size: 14px;
+    }
+}
+
+
+
+/* 默认样式 */
 .main-banner {
     position: relative;
     height: auto;
-    overflow: hidden;
+    overflow: hidden; /* 确保图片不会导致滚动条 */
 }
 
 .banner-image {
@@ -470,7 +625,49 @@ export default {
     width: auto;
     font-size: 20px;
 }
+/* 响应式媒体查询 */
 
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .banner-text {
+        font-size: 18px;
+        top: 12%;
+        left: 10%;
+        transform: translate(-15%, -12%);
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .banner-text {
+        font-size: 16px;
+        top: 15%;
+        left: 8%;
+        transform: translate(-10%, -10%);
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .banner-text {
+        font-size: 14px;
+        top: 18%;
+        left: 6%;
+        transform: translate(-5%, -5%);
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .banner-text {
+        font-size: 12px;
+        top: 20%;
+        left: 5%;
+        transform: translate(0, 0);
+    }
+}
+
+/* 默认样式 */
 .title-container {
     text-align: start;
     padding: 27px;
@@ -486,6 +683,68 @@ export default {
     font-size: 18px;
     color: #333;
     line-height: 0.5;
+}
+
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .title-container {
+        padding: 20px;
+    }
+    .main-title {
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+    .gansu {
+        font-size: 16px;
+        line-height: 0.7;
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .title-container {
+        padding: 15px;
+    }
+    .main-title {
+        font-size: 24px;
+        margin-bottom: 18px;
+    }
+    .gansu {
+        font-size: 14px;
+        line-height: 0.75;
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .title-container {
+        padding: 12px;
+    }
+    .main-title {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    .gansu {
+        font-size: 12px;
+        line-height: 0.8;
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .title-container {
+        padding: 10px;
+    }
+    .main-title {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    .gansu {
+        font-size: 10px;
+        line-height: 1;
+    }
 }
 
 .custom-login-button {
@@ -523,6 +782,44 @@ export default {
     margin-bottom: 5px;
 }
 
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .custom-login-button,
+    .custom-register-button {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .custom-login-button,
+    .custom-register-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .custom-login-button,
+    .custom-register-button {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .custom-login-button,
+    .custom-register-button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
 .el-dropdown-link {
     background-color: rgb(101,172,140);
     color: white;
@@ -540,6 +837,7 @@ export default {
     font-size: 14px;
 }
 
+/* 默认样式 */
 .el-dropdown-link {
     background-color: rgb(101, 172, 140);
     color: white;
@@ -556,6 +854,61 @@ export default {
     margin-left: 8px;
     font-size: 14px;
 }
+
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .el-dropdown-link {
+        padding: 10px 14px;
+        font-size: 15px;
+    }
+
+    .el-dropdown-link i {
+        margin-left: 10px;
+        font-size: 15px;
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .el-dropdown-link {
+        padding: 9px 13px;
+        font-size: 14px;
+    }
+
+    .el-dropdown-link i {
+        margin-left: 9px;
+        font-size: 13px;
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .el-dropdown-link {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .el-dropdown-link i {
+        margin-left: 8px;
+        font-size: 12px;
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .el-dropdown-link {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .el-dropdown-link i {
+        margin-left: 6px;
+        font-size: 11px;
+    }
+}
+
 .image-column {
     position: relative;
     padding: 1px;
@@ -587,6 +940,65 @@ export default {
     top: 100px;
     left: 100px;
 }
+
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .image-item {
+        width: 120px;
+        height: 160px;
+        transform: scale(0.85);
+    }
+
+    .image-item:nth-child(2) {
+        top: 80px;
+        left: 80px;
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .image-item {
+        width: 100px;
+        height: 140px;
+        transform: scale(0.9);
+    }
+
+    .image-item:nth-child(2) {
+        top: 60px;
+        left: 60px;
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .image-item {
+        width: 80px;
+        height: 120px;
+        transform: scale(0.95);
+    }
+
+    .image-item:nth-child(2) {
+        top: 40px;
+        left: 40px;
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .image-item {
+        width: 60px;
+        height: 100px;
+        transform: scale(1);
+    }
+
+    .image-item:nth-child(2) {
+        top: 20px;
+        left: 20px;
+    }
+}
+
 .content-section {
     height: fit-content;
     margin-top: 20px;
@@ -617,6 +1029,7 @@ export default {
     color: #4CAF50;
 }
 
+/* 默认样式 */
 .content-section {
     height: fit-content;
     margin-top: 20px;
@@ -647,6 +1060,74 @@ export default {
     color: #4CAF50;
 }
 
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .content-section {
+        padding: 20px;
+    }
+
+    .text-block {
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+    .section-title {
+        font-size: 17px;
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .content-section {
+        padding: 15px;
+    }
+
+    .text-block {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .section-title {
+        font-size: 16px;
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .content-section {
+        padding: 12px;
+    }
+
+    .text-block {
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .section-title {
+        font-size: 15px;
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .content-section {
+        padding: 10px;
+    }
+
+    .text-block {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .section-title {
+        font-size: 14px;
+    }
+}
+
+
+/* 默认样式 */
 .divider {
     width: 2px;
     height: 80px;
@@ -654,6 +1135,38 @@ export default {
     margin-right: auto;
 }
 
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .divider {
+        height: 70px; /* 适度调整高度 */
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .divider {
+        height: 60px; /* 进一步调整高度 */
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .divider {
+        height: 50px; /* 继续调整高度 */
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .divider {
+        height: 40px; /* 最小高度 */
+    }
+}
+
+
+/* 默认样式 */
 .news-item {
     display: flex;
     justify-content: space-between;
@@ -662,6 +1175,44 @@ export default {
     border-bottom: 1px solid #ddd;
 }
 
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .news-item {
+        padding: 12px;
+        flex-direction: row; /* 保持水平排列 */
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .news-item {
+        padding: 10px;
+        flex-direction: row; /* 保持水平排列 */
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .news-item {
+        padding: 8px;
+        flex-direction: column; /* 切换为垂直排列 */
+        align-items: flex-start;
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .news-item {
+        padding: 6px;
+        flex-direction: column; /* 保持垂直排列 */
+        align-items: flex-start;
+    }
+}
+
+
+/* 默认样式 */
 .recommend-read {
     background-color: rgb(243, 244, 246);
     border-radius: 20px;
@@ -699,6 +1250,94 @@ export default {
     font-size: 14px;
 }
 
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .announcement-title {
+        font-size: 17px;
+        padding: 12px;
+    }
+
+    .announcement-list {
+        padding: 15px;
+    }
+
+    .announcement-link {
+        font-size: 15px;
+    }
+
+    .announcement-date {
+        font-size: 13px;
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .announcement-title {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .announcement-list {
+        padding: 12px;
+    }
+
+    .announcement-link {
+        font-size: 14px;
+    }
+
+    .announcement-date {
+        font-size: 12px;
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .announcement-title {
+        font-size: 15px;
+        padding: 10px;
+    }
+
+    .announcement-list {
+        padding: 10px;
+    }
+
+    .announcement-link {
+        font-size: 13px;
+    }
+
+    .announcement-date {
+        font-size: 11px;
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .recommend-read {
+        border-radius: 15px; /* 调整边框半径 */
+    }
+
+    .announcement-title {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .announcement-list {
+        padding: 8px;
+    }
+
+    .announcement-link {
+        font-size: 12px;
+    }
+
+    .announcement-date {
+        font-size: 10px;
+    }
+}
+
+/*文章类别轮播图，每行展示三张 */
+/* 默认样式 */
 .image-section {
     width: 100%;
     margin: 10px 0;
@@ -710,8 +1349,8 @@ export default {
     height: 300px;
     width: 100%;
     border-radius: 8px;
-    transform: scale(1.0);
-    transform-origin: top left;
+    transform: scale(1.0); /* 初始缩放比例 */
+    transform-origin: top left; /* 缩放原点设置在左上角 */
 }
 
 .image {
@@ -739,6 +1378,65 @@ export default {
     color: white;
 }
 
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .image-card {
+        height: 250px; /* 调整高度 */
+        width: 90%; /* 调整宽度 */
+        transform: scale(0.75); /* 按比例缩小 */
+    }
+
+    .image-overlay {
+        font-size: 22px; /* 调整文字大小 */
+        padding: 8px 0;
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .image-card {
+        height: 200px; /* 进一步调整高度 */
+        width: 85%; /* 调整宽度 */
+        transform: scale(0.7); /* 按比例缩小 */
+    }
+
+    .image-overlay {
+        font-size: 18px; /* 调整文字大小 */
+        padding: 6px 0;
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .image-card {
+        height: 160px; /* 调整高度 */
+        width: 80%; /* 调整宽度 */
+        transform: scale(0.65); /* 按比例缩小 */
+    }
+
+    .image-overlay {
+        font-size: 16px; /* 调整文字大小 */
+        padding: 5px 0;
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .image-card {
+        height: 130px; /* 最小高度 */
+        width: 75%; /* 最小宽度 */
+        transform: scale(0.6); /* 按比例缩小 */
+    }
+
+    .image-overlay {
+        font-size: 14px; /* 调整文字大小 */
+        padding: 4px 0;
+    }
+}
+
+/* 默认样式 */
 .sidebar {
     display: flex;
     flex-direction: column;
@@ -763,7 +1461,7 @@ export default {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 50%;
+    height: 50%; /* 每个 section 占据父容器的一半高度 */
     overflow: hidden;
 }
 
@@ -786,10 +1484,76 @@ h2 {
     -ms-overflow-style: none;
 }
 
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .sidebar {
+        width: 350px; /* 调整宽度 */
+        padding: 15px;
+        gap: 15px;
+    }
+
+    h2 {
+        font-size: 18px; /* 调整标题字体大小 */
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .sidebar {
+        width: 300px; /* 调整宽度 */
+        padding: 10px;
+        gap: 10px;
+    }
+
+    h2 {
+        font-size: 16px; /* 调整标题字体大小 */
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .sidebar {
+        width: 250px; /* 调整宽度 */
+        padding: 8px;
+        gap: 8px;
+    }
+
+    h2 {
+        font-size: 14px; /* 调整标题字体大小 */
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .sidebar {
+        width: 200px; /* 调整宽度 */
+        padding: 5px;
+        gap: 5px;
+    }
+
+    h2 {
+        font-size: 12px; /* 调整标题字体大小 */
+    }
+
+    .sidebar ul {
+        scrollbar-width: thin;
+        -ms-overflow-style: scrollbar;
+    }
+}
+
+ul::-webkit-scrollbar {
+    display: none; /* 隐藏 WebKit 浏览器中的滚动条 */
+}
+
 .router-link {
     text-decoration: none;
     color: inherit;
 }
+
+
+/* 默认样式 */
 .sidebar a {
     text-decoration: none;
     color: black;
@@ -802,6 +1566,42 @@ h2 {
     color: rgb(87, 157, 123);
 }
 
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .sidebar a {
+        font-size: 15px; /* 调整字体大小 */
+        line-height: 2.4; /* 调整行高 */
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .sidebar a {
+        font-size: 14px; /* 调整字体大小 */
+        line-height: 2.3; /* 调整行高 */
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .sidebar a {
+        font-size: 13px; /* 调整字体大小 */
+        line-height: 2.2; /* 调整行高 */
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .sidebar a {
+        font-size: 12px; /* 调整字体大小 */
+        line-height: 2; /* 调整行高 */
+    }
+}
+
+
+/* 底部版权等信息 */
 .custom-footer {
     background-image: url("@/assets/images/footer.png");
     background-size: cover;
@@ -855,5 +1655,75 @@ h2 {
 .footer-center a:hover {
     text-decoration: none;
     cursor: pointer;
+}
+
+/* 响应式媒体查询 */
+
+/* 大屏平板设备，宽度在992px到1200px之间 */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .footer-content {
+        flex-direction: row; /* 保持三列布局 */
+    }
+
+    .footer-left, .footer-right {
+        align-items: center;
+    }
+
+    .footer-center {
+        flex: 2;
+    }
+
+    .foot-img {
+        width: 250px; /* 调整图片宽度 */
+        height: 60px;  /* 调整图片高度 */
+    }
+}
+
+/* 小屏平板和大屏手机，宽度在768px到992px之间 */
+@media (max-width: 992px) and (min-width: 768px) {
+    .footer-content {
+        flex-direction: column; /* 变为竖直布局 */
+    }
+
+    .footer-left, .footer-right {
+        margin-bottom: 20px; /* 增加底部间距 */
+    }
+
+    .foot-img {
+        width: 200px; /* 调整图片宽度 */
+        height: 50px;  /* 调整图片高度 */
+    }
+}
+
+/* 小屏手机，宽度在480px到768px之间 */
+@media (max-width: 768px) and (min-width: 480px) {
+    .footer-content {
+        flex-direction: column; /* 保持竖直布局 */
+    }
+
+    .footer-left, .footer-right {
+        margin-bottom: 15px; /* 调整底部间距 */
+    }
+
+    .foot-img {
+        width: 150px; /* 调整图片宽度 */
+        height: 40px;  /* 调整图片高度 */
+    }
+}
+
+/* 超小屏手机，宽度在480px以下 */
+@media (max-width: 480px) {
+    .footer-content {
+        flex-direction: column; /* 保持竖直布局 */
+    }
+
+    .footer-left, .footer-right {
+        margin-bottom: 10px; /* 调整底部间距 */
+    }
+
+    .foot-img {
+        width: 120px; /* 调整图片宽度 */
+        height: 30px;  /* 调整图片高度 */
+    }
 }
 </style>

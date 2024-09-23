@@ -84,6 +84,7 @@
                         <el-table-column type="selection" width="55"></el-table-column>
                         <el-table-column prop="id" label="ID" width="80"></el-table-column>
                         <el-table-column prop="name" label="姓名" width="120"></el-table-column>
+                        <el-table-column prop="type" label="类型" width="90"></el-table-column>
                         <el-table-column prop="phone" label="电话" width="180"></el-table-column>
                         <el-table-column prop="status" label="状态" width="100"></el-table-column>
                         <el-table-column prop="created_at" label="创建时间" width="180">
@@ -151,6 +152,12 @@
                                 <el-option label="已拒绝" value="已拒绝"></el-option>
                             </el-select>
                         </el-form-item>
+                        <el-form-item label="身份类型" v-if="isAdmin">
+                            <el-select v-model="currentMember.type" placeholder="请选择会员类型">
+                                <el-option label="个人会员" value="个人会员"></el-option>
+                                <el-option label="管理员" value="管理员"></el-option>
+                            </el-select>
+                        </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="submitEditForm">提交</el-button>
                             <el-button @click="resetDialog">取消</el-button>
@@ -182,7 +189,8 @@ export default {
                 id: null,
                 name: '',
                 phone: '',
-                status: '待审核'
+                status: '待审核',
+                type: '个人会员'
             },
             showSearchSection: false, // 控制搜索部分的显示
             searchQuery: '', // 搜索框输入的内容
