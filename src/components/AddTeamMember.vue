@@ -9,19 +9,22 @@
             </div>
             <el-form :model="teamMember" :rules="rules" ref="teamMemberForm" label-width="100px">
                 <el-form-item label="名称" prop="name">
-                    <el-input v-model="teamMember.name"></el-input>
+                    <el-input v-model="teamMember.name" placeholder="请输入名称"></el-input>
                 </el-form-item>
                 <el-form-item label="电话" prop="phone">
-                    <el-input v-model="teamMember.phone"></el-input>
+                    <el-input v-model="teamMember.phone" placeholder="请输入电话号码"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="teamMember.email" placeholder="请输入邮箱"></el-input>
                 </el-form-item>
                 <el-form-item label="简介" prop="description">
-                    <el-input type="textarea" v-model="teamMember.description"></el-input>
+                    <el-input type="textarea" v-model="teamMember.description" placeholder="请输入简介"></el-input>
                 </el-form-item>
                 <el-form-item label="官网" prop="website">
-                    <el-input v-model="teamMember.website"></el-input>
+                    <el-input v-model="teamMember.website" placeholder="请输入官网链接"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                    <el-input type="password" v-model="teamMember.password"></el-input>
+                    <el-input type="password" v-model="teamMember.password" placeholder="请输入密码"></el-input>
                 </el-form-item>
                 <el-form-item label="上传图片" prop="image_url">
                     <el-upload
@@ -59,6 +62,7 @@ export default {
             teamMember: {
                 name: '',
                 phone: '',
+                email: '',
                 description: '',
                 website: '',
                 password: '',
@@ -74,10 +78,23 @@ export default {
                         trigger: 'blur'
                     }
                 ],
-                description: [{ required: true, message: '请输入团队简介', trigger: 'blur' }],
-                website: [{ required: true, message: '请输入官网地址', trigger: 'blur' }],
-                password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-                image_url: [{ required: true, message: '请上传图片', trigger: 'change' }]
+                description: [
+                    { required: true, message: '请输入团队简介', trigger: 'blur' }
+                ],
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' },
+                    { pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: '邮箱格式不正确', trigger: 'blur' }
+                ],
+                website: [
+                    { required: true, message: '请输入官网地址', trigger: 'blur'
+                    }],
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'blur' }
+                ],
+                image_url: [
+                    { required: true, message: '请上传图片', trigger: 'change' }
+                ]
             },
             isAdmin: false,
         };
@@ -152,20 +169,23 @@ export default {
     max-width: 200px;
     height: auto;
 }
+
 .add-team-member {
     padding: 20px;
     max-width: 100%;
     margin: 0 auto;
 }
-.upload-button{
+
+.upload-button {
     margin-bottom: 20px;
 }
+
 .no-access {
     text-align: center;
     margin: 20px 0;
 }
 
-.submit-buttton {
+.submit-button {
     background-color: rgb(85,156,122);
     border-color: rgb(85,156,122);
 }
@@ -173,11 +193,11 @@ export default {
 .reset-button {
     background-color: rgb(85,156,122);
     border-color: yellow;
-    text-decoration:none ;
+    text-decoration: none;
     color: white;
 }
 
-.el-button:hover.submit-buttton {
+.el-button:hover.submit-button {
     background-color: #45a049;
     border-color: #45a049;
 }
@@ -186,4 +206,21 @@ export default {
     background-color: #45a049;
     border-color: #45a049;
 }
+
+@media (max-width: 768px) {
+    .add-team-member {
+        padding: 10px;
+    }
+
+    .image-container {
+        margin: 10px 0;
+    }
+
+    .submit-button,
+    .reset-button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
 </style>
+

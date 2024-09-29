@@ -20,7 +20,7 @@
             </el-card>
         </div>
 
-        <el-dialog :visible.sync="dialogVisible" title="团队会员详情" width="50%">
+        <el-dialog :visible.sync="dialogVisible" title="团队会员详情">
             <div style="max-height: 400px; overflow-y: auto;">
                 <img :src="selectedTeam.image_url" alt="团队图片" style="width: 100%; height: auto; margin-bottom: 10px;" />
                 <p><strong>名称:</strong> {{ selectedTeam.name }}</p>
@@ -117,9 +117,8 @@ export default {
 .card-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 30px;
+    gap: 10px;
     justify-content: center;
-    scale: 0.9;
 }
 
 .box-card {
@@ -130,9 +129,10 @@ export default {
     scale: 0.9;
 }
 
-.box-card:hover{
+.box-card:hover {
     transform: translateY(-10px);
 }
+
 .card-header {
     font-size: 22px;
     color: #333;
@@ -178,15 +178,70 @@ export default {
 }
 
 .details-button:hover {
-    padding: 10px 20px;
-    border-radius: 20px;
     background-color: rgb(147,181,165);
-    border-color: rgb(147,181,165);
-    cursor: pointer;
 }
 
 .dialog-footer {
     text-align: right;
 }
+
+@media (max-width: 768px) {
+    .section-header {
+        margin-left: 20px;
+        font-size: 24px;
+    }
+
+    .section-subheader {
+        margin-left: 20px;
+        font-size: 16px;
+    }
+
+    .card-container {
+        gap: 20px;
+    }
+
+    .box-card {
+        flex: 1 1 100%;
+    }
+
+    .team-image {
+        height: 200px;
+    }
+
+    .website-link {
+        font-size: 18px;
+    }
+
+    .details-button {
+        padding: 8px 16px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-header {
+        font-size: 22px;
+    }
+
+    .section-subheader {
+        font-size: 14px;
+    }
+
+    .button-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .details-button {
+        width: 100%;
+    }
+
+    .el-dialog {
+        width: 90%;
+        max-width: none;
+    }
+}
 </style>
+
+
 

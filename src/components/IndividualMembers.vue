@@ -1,5 +1,5 @@
 <template>
-    <div class="layout-wrapper">
+    <div class="layout-wrapper" v-if="!isMobile">
         <!-- 左侧导航栏 -->
         <el-aside width="240px" class="sidebar">
             <el-menu
@@ -145,6 +145,9 @@
                         <el-form-item label="电话">
                             <el-input v-model="currentMember.phone" placeholder="请输入电话"></el-input>
                         </el-form-item>
+                        <el-form-item label="QQ邮箱">
+                            <el-input v-model="currentMember.email" placeholder="请输入QQ邮箱"></el-input>
+                        </el-form-item>
                         <el-form-item label="状态" v-if="isAdmin">
                             <el-select v-model="currentMember.status" placeholder="请选择状态">
                                 <el-option label="待审核" value="待审核"></el-option>
@@ -167,6 +170,116 @@
             </div>
         </el-main>
     </div>
+    <div class="mobile-layout-wrapper" v-else>
+        <!-- 顶部导航 -->
+        <header class="mobile-header">
+            <h1>个人会员管理</h1>
+            <el-button class="back-button" @click="goBack">返回</el-button>
+        </header>
+        <nav class="mobile-menu">
+            <el-menu
+                :default-active="activeMenu"
+                class="el-menu-vertical"
+                background-color="#fff"
+                text-color="#000"
+                active-text-color="#67c23a"
+                @select="handleMenuSelect"
+            >
+                <el-menu-item index="default">
+                    <i class="el-icon-user"></i>
+                    <span>个人会员管理</span>
+                </el-menu-item>
+                <el-submenu index="2">
+                    <template #title>
+                        <i class="el-icon-plus"></i>
+                        <span>新增会员</span>
+                    </template>
+                    <el-menu-item index="2-1">个人会员</el-menu-item>
+                </el-submenu>
+                <el-submenu index="3">
+                    <template #title>
+                        <i class="el-icon-document"></i>
+                        <span>会员审核</span>
+                    </template>
+                    <el-menu-item index="3-1">待审核</el-menu-item>
+                    <el-menu-item index="3-2">已审核</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="4">
+                    <i class="el-icon-message"></i>
+                    <span>消息中心</span>
+                </el-menu-item>
+            </el-menu>
+        </nav>
+
+        <!-- 搜索区域 -->
+        <div class="mobile-search-section">
+            <el-select v-model="searchType" placeholder="搜索条件">
+                <el-option label="姓名" value="name"></el-option>
+                <el-option label="电话" value="phone"></el-option>
+                <el-option label="状态" value="status"></el-option>
+            </el-select>
+            <el-input
+                v-model="searchQuery"
+                placeholder="搜索内容"
+                prefix-icon="el-icon-search"
+                class="mobile-search-input"
+            ></el-input>
+            <el-button type="primary" @click="handleSearch">搜索</el-button>
+        </div>
+
+        <add-personal v-if="activeMenu === '2-1'" />
+        <individual-member-review v-if="activeMenu === '3-1'" />
+        <checked-person v-if="activeMenu === '3-2'" />
+        <!-- 会员列表 -->
+        <div class="mobile-member-list">
+            <el-card v-for="member in members" :key="member.id" class="mobile-member-card">
+                <div class="member-info">
+                    <p>姓名: {{ member.name }}</p>
+                    <p>电话: {{ member.phone }}</p>
+                    <p>状态: {{ member.status }}</p>
+                </div>
+                <div class="member-actions">
+                    <el-button @click="openEditDialog(member)">编辑</el-button>
+                    <el-button type="danger" @click="deleteMember(member.id)">删除</el-button>
+                </div>
+            </el-card>
+        </div>
+
+        <!-- 分页 -->
+        <div class="mobile-pagination">
+            <el-pagination
+                @size-change="handlePageSizeChange"
+                @current-change="handlePageChange"
+                :current-page="currentPage"
+                :page-size="pageSize"
+                :total="total"
+                layout="total, sizes, prev, pager, next, jumper"
+            ></el-pagination>
+        </div>
+
+        <!-- 编辑会员对话框 -->
+        <el-dialog title="编辑个人会员" :visible.sync="dialogVisible" width="90%">
+            <el-form :model="currentMember" ref="editForm" label-width="80px">
+                <el-form-item label="姓名">
+                    <el-input v-model="currentMember.name" placeholder="请输入姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="电话">
+                    <el-input v-model="currentMember.phone" placeholder="请输入电话"></el-input>
+                </el-form-item>
+                <el-form-item label="状态">
+                    <el-select v-model="currentMember.status" placeholder="请选择状态">
+                        <el-option label="待审核" value="待审核"></el-option>
+                        <el-option label="已审核" value="已审核"></el-option>
+                        <el-option label="已拒绝" value="已拒绝"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitEditForm">提交</el-button>
+                    <el-button @click="resetDialog">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+    </div>
 </template>
 
 
@@ -185,10 +298,12 @@ export default {
         return {
             members: [],
             dialogVisible: false,
+            isMobile: false,
             currentMember: { // 当前编辑的会员信息
                 id: null,
                 name: '',
                 phone: '',
+                mail: '',
                 status: '待审核',
                 type: '个人会员'
             },
@@ -374,26 +489,72 @@ export default {
         },
         goBack() {
             this.$router.go(-1)
-        }
+        },
+        checkIfMobile() {
+            this.isMobile = window.innerWidth < 700;
+        },
     },
     created() {
         this.fetchMembers();
         this.checkIfAdmin();
         this.getCurrentUserId();
         this.handleMenuSelect('default');
+    },
+    mounted() {
+        this.checkIfMobile();
+        window.addEventListener('resize', this.checkIfMobile);
     }
 };
 </script>
 
-
 <style scoped>
-.back-button{
+.mobile-search-section {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background-color: #f2f2f2;
+}
+
+.mobile-search-select,
+.mobile-search-input {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.mobile-search-input {
+    flex: 1;
+}
+.mobile-layout {
+    padding: 20px;
+    background-color: #f5f7fa;
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #67c23a;
+    color: white;
+}
+
+.mobile-menu {
+    background-color: #fff;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.back-button {
+    background-color: rgb(101, 172, 140);
+    color: #fff;
+    font-size: 16px;
+}
+.back-button {
     background-color: rgb(101, 172, 140);
     border-color: rgb(101, 172, 140);
     color: #fff;
     font-size: 18px;
 }
-.back-button :hover{
+.back-button:hover {
     background-color: rgb(85, 145, 118);
     border-color: rgb(85, 145, 118);
 }
@@ -405,6 +566,7 @@ export default {
     background-color: #fff;
     width: 400px;
 }
+
 .layout-wrapper {
     display: flex;
     height: 100vh;
@@ -423,38 +585,11 @@ export default {
     padding-left: 20px;
 }
 
-.individual-member-review {
-    padding: 20px;
-    background-color: #f5f7fa;
+
+.el-main {
     flex-grow: 1;
-}
-
-.top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.page-title {
-    font-size: 28px;
-    font-weight: bold;
-    margin-right: 20px;
-    text-align: center;
-    color: rgb(101,172,140);
-}
-
-.go-back-btn {
-    color: #67c23a;
-}
-
-.search-input {
-    width: 300px;
-}
-
-.add-member-btn {
-    background-color: #67c23a;
-    color: #fff;
+    overflow-y: auto;
+    background-color: #f5f7fa;
 }
 
 .box-card {
@@ -470,16 +605,13 @@ export default {
     margin-bottom: 10px;
 }
 
-.filter-btn {
-    color: #409eff;
-}
-
 .el-table {
     border-radius: 8px;
     overflow: hidden;
 }
 
-.edit-btn, .delete-btn {
+.edit-btn,
+.delete-btn {
     color: #67c23a;
     margin-right: 10px;
 }
@@ -488,9 +620,5 @@ export default {
     display: flex;
     justify-content: flex-end;
     margin-top: 20px;
-}
-
-.pagination-bar {
-    background-color: transparent;
 }
 </style>

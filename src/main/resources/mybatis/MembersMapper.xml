@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mapper.MembersMapper">
+<mapper namespace="com.project.mapper.MembersMapper">
 
     <delete id="deleteAllByIdIn" parameterType="java.util.List">
         DELETE FROM members
@@ -12,16 +12,20 @@
         </foreach>
     </delete>
 
-    <select id="findByUsername" parameterType="java.lang.String" resultType="com.bean.Member">
+    <select id="findByUsername" parameterType="java.lang.String" resultType="com.project.bean.Member">
         select * from members where name = #{name}
     </select>
 
-    <select id="findByEmail" parameterType="java.lang.String" resultType="com.bean.Member">
+<!--    查找相同邮箱的用户，返回一个集合-->
+    <select id="findMemberByEmail" parameterType="java.lang.String" resultType="com.project.bean.Member">
         select * from members where email = #{email}
-        LIMIT 1
     </select>
 
-    <select id="findAllUnChecked" parameterType="map" resultType="com.bean.Member">
+    <select id="findByEmail" parameterType="java.lang.String" resultType="com.project.bean.Member">
+        select * from members where email = #{email}
+    </select>
+
+    <select id="findAllUnChecked" parameterType="map" resultType="com.project.bean.Member">
         SELECT *
         FROM members
         WHERE type = '个人会员'
@@ -30,7 +34,7 @@
         OFFSET #{offset}
     </select>
 
-    <select id="findAll" parameterType="map" resultType="com.bean.Member">
+    <select id="findAll" parameterType="map" resultType="com.project.bean.Member">
         SELECT *
         FROM members
         WHERE type = '个人会员'
@@ -38,7 +42,7 @@
         OFFSET #{offset}
     </select>
 
-    <select id="findAllChecked" parameterType="map" resultType="com.bean.Member">
+    <select id="findAllChecked" parameterType="map" resultType="com.project.bean.Member">
         SELECT *
         FROM members
         WHERE type = '个人会员'
@@ -47,7 +51,7 @@
         OFFSET #{offset}
     </select>
 
-    <select id="searchMembers" resultType="com.bean.Member">
+    <select id="searchMembers" resultType="com.project.bean.Member">
         SELECT * FROM members
         WHERE 1 = 1
         <if test="select == 'name' and query != null and query != ''">
@@ -109,28 +113,28 @@
     </insert>
 
     <!-- 查询个人会员 -->
-    <select id="findById" parameterType="int" resultType="com.bean.Member">
+    <select id="findById" parameterType="int" resultType="com.project.bean.Member">
         SELECT * FROM members
         WHERE id = #{id};
     </select>
 
-    <select id="listIndividuals" resultType="com.bean.Member">
+    <select id="listIndividuals" resultType="com.project.bean.Member">
         SELECT * FROM members
         WHERE type = '个人会员';
     </select>
 
-    <select id="selectByName" parameterType="String" resultType="com.bean.Member">
+    <select id="selectByName" parameterType="String" resultType="com.project.bean.Member">
         SELECT * FROM members
         WHERE name = #{name};
     </select>
 
-    <select id="findByNameAndPassword" parameterType="map" resultType="com.bean.Member">
+    <select id="findByNameAndPassword" parameterType="map" resultType="com.project.bean.Member">
         SELECT * FROM members
         WHERE name = #{name} AND password = #{password} AND type = '个人会员';
     </select>
 
 <!--    编辑个人会员信息，支持授权管理员-->
-    <update id="updateIndividual" parameterType="com.bean.Member">
+    <update id="updateIndividual" parameterType="com.project.bean.Member">
         UPDATE members
         <set>
             <if test="name != null">name = #{name},</if>
@@ -144,7 +148,7 @@
         WHERE id = #{id} AND type = '个人会员';
     </update>
 
-    <update id="update" parameterType="com.bean.Member">
+    <update id="update" parameterType="com.project.bean.Member">
         UPDATE members
         <set>
             <if test="name != null">name = #{name},</if>
@@ -159,7 +163,7 @@
     </update>
 
 
-    <update id="changePwdByName" parameterType="com.bean.Member">
+    <update id="changePwdByName" parameterType="com.project.bean.Member">
         UPDATE members
         SET password = #{password}
         WHERE name = #{name}
@@ -171,7 +175,7 @@
     </delete>
 
     <!-- 根据状态查询个人会员 -->
-    <select id="selectMembersByStatus" resultType="com.bean.Member">
+    <select id="selectMembersByStatus" resultType="com.project.bean.Member">
         SELECT
         id,
         name,
@@ -196,22 +200,22 @@
     </update>
 
     <!-- 查询团体会员 -->
-    <select id="findGroupById" parameterType="int" resultType="com.bean.Member">
+    <select id="findGroupById" parameterType="int" resultType="com.project.bean.Member">
         SELECT * FROM members
         WHERE id = #{id} AND type = '团体会员';
     </select>
 
-    <select id="listGroups" resultType="com.bean.Member">
+    <select id="listGroups" resultType="com.project.bean.Member">
         SELECT * FROM members
         WHERE type = '团体会员';
     </select>
 
-    <select id="selectGroupByName" parameterType="String" resultType="com.bean.Member">
+    <select id="selectGroupByName" parameterType="String" resultType="com.project.bean.Member">
         SELECT * FROM members
         WHERE name = #{name} AND type = '团体会员';
     </select>
 
-    <update id="updateGroup" parameterType="com.bean.Member">
+    <update id="updateGroup" parameterType="com.project.bean.Member">
         UPDATE members
         <set>
             <if test="name != null">name = #{name},</if>
@@ -232,7 +236,7 @@
         WHERE id = #{id} AND type = '团体会员';
     </delete>
 
-    <select id="getMembersByType" resultType="com.bean.Member">
+    <select id="getMembersByType" resultType="com.project.bean.Member">
         SELECT * FROM members
         WHERE type = #{type};
     </select>
@@ -243,7 +247,7 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null">name,</if>
             <if test="type != null">type,</if>
-            <if test="email != email">email,</if>
+            <if test="email != null">email,</if>
             <if test="phone != null">phone,</if>
             <if test="password != null">password,</if>
             <if test="status != null">status,</if>
@@ -268,7 +272,7 @@
         </trim>
     </insert>
 
-    <select id="findAllUnCheckedTeams" parameterType="map" resultType="com.bean.Member">
+    <select id="findAllUnCheckedTeams" parameterType="map" resultType="com.project.bean.Member">
         SELECT *
         FROM members
         WHERE type = '团体会员'
@@ -277,7 +281,7 @@
         OFFSET #{offset}
     </select>
 
-    <select id="findAllTeams" parameterType="map" resultType="com.bean.Member">
+    <select id="findAllTeams" parameterType="map" resultType="com.project.bean.Member">
         SELECT *
         FROM members
         WHERE type = '团体会员'
@@ -285,7 +289,7 @@
         OFFSET #{offset}
     </select>
 
-    <select id="findAllCheckedTeams" parameterType="map" resultType="com.bean.Member">
+    <select id="findAllCheckedTeams" parameterType="map" resultType="com.project.bean.Member">
         SELECT *
         FROM members
         WHERE type = '团体会员'
@@ -322,7 +326,7 @@
         </foreach>
     </delete>
 
-    <select id="searchTeamMembers" resultType="com.bean.Member">
+    <select id="searchTeamMembers" resultType="com.project.bean.Member">
         SELECT * FROM members
         WHERE 1 = 1
         <if test="select == 'name' and query != null and query != ''">

@@ -57,6 +57,18 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
             <version>2.1.10.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -66,7 +78,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.1.10.RELEASE</version>
                 <configuration>
-                    <mainClass>com.RunSpringBoot</mainClass>
+                    <mainClass>com.project.RunSpringBoot</mainClass>
                 </configuration>
                 <executions>
                     <execution>

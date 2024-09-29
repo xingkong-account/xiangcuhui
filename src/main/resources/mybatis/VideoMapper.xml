@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mapper.VideoMapper">
+<mapper namespace="com.project.mapper.VideoMapper">
     <!-- 插入视频 -->
-    <insert id="insertVideo" parameterType="com.bean.Video">
+    <insert id="insertVideo" parameterType="com.project.bean.Video">
         INSERT INTO videos
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="title != null">title,</if>
@@ -27,7 +27,7 @@
 
 
     <!-- 更新视频 -->
-    <update id="updateVideo" parameterType="com.bean.Video">
+    <update id="updateVideo" parameterType="com.project.bean.Video">
         UPDATE videos
         <set>
             <if test="title != null">title = #{title},</if>
@@ -44,22 +44,22 @@
     </update>
 
     <!-- 根据ID获取视频 -->
-    <select id="getVideoById" parameterType="Integer" resultType="com.bean.Video">
+    <select id="getVideoById" parameterType="Integer" resultType="com.project.bean.Video">
         SELECT * FROM videos WHERE id = #{id}
     </select>
 
     <!-- 获取所有待审核的视频 -->
-    <select id="getVideosByStatus" parameterType="String" resultType="com.bean.Video">
+    <select id="getVideosByStatus" parameterType="String" resultType="com.project.bean.Video">
         SELECT * FROM videos WHERE status = #{status}
     </select>
 
     <!-- 获取所有视频 -->
-    <select id="getAllVideos" resultType="com.bean.Video">
+    <select id="getAllVideos" resultType="com.project.bean.Video">
         SELECT * FROM videos
     </select>
 
     <!-- 获取所有已审核视频 -->
-    <select id="getAllCheckedVideos" resultType="com.bean.Video">
+    <select id="getAllCheckedVideos" resultType="com.project.bean.Video">
         SELECT * FROM videos
         WHERE status = '已审核'
     </select>
@@ -69,7 +69,7 @@
         DELETE FROM videos WHERE id = #{id}
     </delete>
 
-    <select id="getAllUnReviewVideos" resultType="com.bean.Video">
+    <select id="getAllUnReviewVideos" resultType="com.project.bean.Video">
         SELECT * FROM videos
         WHERE status = '待审核'
     </select>
@@ -86,7 +86,7 @@
     </update>
 
     <!-- 根据输入的query参数搜索视频 -->
-    <select id="searchVideos" resultType="com.bean.Video">
+    <select id="searchVideos" resultType="com.project.bean.Video">
         SELECT * FROM videos
         WHERE 1=1
         <if test="query != null and query != ''">
@@ -99,7 +99,7 @@
         ORDER BY created_at DESC
     </select>
 
-    <select id="findVideosByUsername" resultType="com.bean.Video">
+    <select id="findVideosByUsername" resultType="com.project.bean.Video">
         SELECT * FROM videos WHERE uploader = #{uploader}
     </select>
 

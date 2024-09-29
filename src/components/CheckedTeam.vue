@@ -160,6 +160,8 @@ export default {
         viewDetails(member) {
             this.dialogContent = `
                 <p><strong>团体名称:</strong> ${member.name}</p>
+                 <p><strong>图片:</strong></p>
+                <img src="${member.image_url}" alt="Team Image" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                 <p><strong>联系方式:</strong> ${member.phone}</p>
                 <a :href="${member.website}"><strong>官网:</strong> ${member.website}</a>
                 <p><strong>注册日期:</strong> ${this.formatDate(member.created_at)}</p>

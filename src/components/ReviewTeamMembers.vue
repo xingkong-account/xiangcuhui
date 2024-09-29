@@ -55,7 +55,6 @@
                             拒绝
                         </el-button>
                         <el-button
-                            v-else
                             size="small"
                             @click="openDialog(scope.row)"
                         >
@@ -226,13 +225,13 @@ export default {
         openDialog(member) {
             this.dialogContent = `
                 <p><strong>团队名称:</strong> ${member.name}</p>
+                <p><strong>图片:</strong></p>
+                <img src="${member.image_url}" alt="Team Image" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                 <p><strong>联系电话:</strong> ${member.phone}</p>
                 <p><strong>注册日期:</strong> ${this.formatDate(member.created_at)}</p>
                 <p><strong>审核状态:</strong> ${member.status}</p>
                 <p><strong>简介:</strong> ${member.description}</p>
                 <p><strong>官网链接:</strong> <a href="${member.website}" target="_blank">${member.website}</a></p>
-                <p><strong>图片:</strong></p>
-                <img src="${member.image_url}" alt="Team Image" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             `;
             this.dialogVisible = true;
         },

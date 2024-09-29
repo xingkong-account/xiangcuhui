@@ -28,7 +28,6 @@ import GroupMemberManage from "@/components/GroupMemberManage.vue";
 import CheckedTeam from "@/components/CheckedTeam.vue";
 import MoreArticles from "@/components/MoreArticles.vue";
 import EditVideo from "@/components/EditVideo.vue";
-import MainP from "@/components/MainP.vue";
 import TestMain from "@/components/TestMain.vue";
 
 Vue.use(Router);
@@ -198,11 +197,6 @@ export default new Router({
             path: '/videos/edit/:id',
             name: 'EditVideo',
             component: EditVideo
-        },
-        {
-            path: '/main',
-            name: 'MainP',
-            component: MainP
         },
         {
             path: '/test',

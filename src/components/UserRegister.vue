@@ -170,6 +170,7 @@ export default {
         refreshCode() {
             this.$refs.validCode.refreshCode();
         },
+        // TODO 发送手机验证码（可选功能）
         sendSmsCode() {
             axios.post(this.$baseUrl + '/api/sendSms', { phone: this.form.phone })
                 .then(() => {

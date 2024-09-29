@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-main>
-            <div class="form-container" style="width: 100%">
+            <div class="form-container">
                 <el-form
                     :model="form"
                     ref="form"
@@ -9,37 +9,31 @@
                     class="change-password-form"
                     :rules="rules"
                 >
-                    <el-form-item
-                        label="旧密码"
-                        prop="oldPassword"
-                    >
+                    <el-form-item label="旧密码" prop="oldPassword">
                         <el-input
                             type="password"
                             v-model="form.oldPassword"
                             auto-complete="off"
                             placeholder="请输入旧密码"
+                            prefix-icon="el-icon-lock"
                         />
                     </el-form-item>
-                    <el-form-item
-                        label="新密码"
-                        prop="newPassword"
-                    >
+                    <el-form-item label="新密码" prop="newPassword">
                         <el-input
                             type="password"
                             v-model="form.newPassword"
                             auto-complete="off"
                             placeholder="请输入新密码"
+                            prefix-icon="el-icon-lock"
                         />
                     </el-form-item>
-                    <el-form-item
-                        label="确认密码"
-                        prop="confirmPassword"
-                    >
+                    <el-form-item label="确认密码" prop="confirmPassword">
                         <el-input
                             type="password"
                             v-model="form.confirmPassword"
                             auto-complete="off"
                             placeholder="请确认新密码"
+                            prefix-icon="el-icon-lock"
                         />
                     </el-form-item>
                     <el-form-item>
@@ -66,8 +60,12 @@ export default {
             },
             username: this.$route.query.username,
             rules: {
-                oldPassword: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
-                newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
+                oldPassword: [
+                    { required: true, message: '请输入旧密码', trigger: 'blur' }
+                ],
+                newPassword: [
+                    { required: true, message: '请输入新密码', trigger: 'blur' }
+                ],
                 confirmPassword: [
                     { required: true, message: '请确认新密码', trigger: 'blur' },
                     { validator: this.validateConfirmPassword, trigger: 'blur' }
@@ -115,32 +113,81 @@ export default {
 </script>
 
 <style scoped>
-
-.form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
-.change-password-form {
-    width: 100%;
-    max-width: 400px;
-    background-color: #fff;
-    padding: 30px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-/*登录按钮颜色*/
 .el-button--primary {
     background-color: #4CAF50;
     border-color: #4CAF50;
     color: #fff;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .el-button--primary:hover {
     background-color: #45A049;
     border-color: #45A049;
 }
+
+.el-button--primary:active {
+    transform: scale(0.95);
+}
+
+.el-button--default {
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.el-button--default:hover {
+    background-color: #f0f0f0;
+}
+
+.el-button--default:active {
+    transform: scale(0.95);
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.change-password-form {
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 50px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+@media (max-width: 1200px) {
+    .change-password-form {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 992px) {
+    .form-container {
+        padding: 20px;
+    }
+    .change-password-form {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-container {
+        padding: 10px;
+    }
+    .change-password-form {
+        font-size: 14px;
+        padding: 15px;
+    }
+    .el-form-item {
+        label-width: 80px;
+    }
+}
+
 </style>
 

@@ -35,7 +35,7 @@
                 </template>
             </el-table-column>
             <el-table-column prop="reviewer" label="审核员"></el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" width="180">
                 <template slot-scope="scope">
                     <el-button @click="editVideo(scope.row)" type="warning" class="edit-button">编辑</el-button>
                     <el-button @click="confirmDelete(scope.row)" type="danger" class="delete-button">删除</el-button>
@@ -395,6 +395,7 @@ export default {
     cursor: pointer;
     transform: scale(1.05);
 }
+
 .update-btn:active {
     background-color: rgb(101,172,140);
     transform: scale(0.98);
@@ -435,6 +436,7 @@ export default {
     text-align: right;
     padding-top: 20px;
 }
+
 .approved-video-page {
     height: 100vh;
     width: 100vw;
@@ -526,5 +528,23 @@ export default {
 
 .delete-button:active {
     background-color: rgb(120, 60, 60);
+}
+
+@media (max-width: 768px) {
+    .video-title {
+        font-size: 20px;
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .back-button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 }
 </style>

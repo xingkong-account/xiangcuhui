@@ -8,14 +8,30 @@
                 <span class="header-title">新增个人会员</span>
             </div>
             <el-form :model="form" :rules="rules" ref="form" label-width="100px">
-                <el-form-item label="姓名" prop="name">
-                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                <el-form-item label="用户名" prop="name">
+                    <el-input v-model="form.name"
+                              autocomplete="off"
+                              placeholder="请输入用户名">
+                    </el-input>
                 </el-form-item>
                 <el-form-item label="电话" prop="phone">
-                    <el-input v-model="form.phone" autocomplete="off"></el-input>
+                    <el-input v-model="form.phone"
+                              autocomplete="off"
+                              placeholder="请输入电话"
+                    ></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                    <el-input type="password" v-model="form.password" autocomplete="off"></el-input>
+                    <el-input type="password"
+                              v-model="form.password"
+                              autocomplete="off"
+                              placeholder="请输入密码"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="form.email"
+                              placeholder="请输入QQ邮箱"
+                              autocomplete="off"
+                    ></el-input>
                 </el-form-item>
                 <el-form-item label="状态" prop="status">
                     <el-select v-model="form.status" placeholder="请选择状态">
@@ -33,7 +49,7 @@
     </div>
     <div class="image-container" v-else>
         <p>您没有权限访问此页面。</p>
-        <img src="@/assets/images/403.png">
+        <img src="@/assets/images/403.png" alt="403 Forbidden">
     </div>
 </template>
 
@@ -47,6 +63,7 @@ export default {
                 name: '',
                 phone: '',
                 password: '',
+                email: '',
                 status: '待审核',
             },
             isAdmin: false,
@@ -61,6 +78,14 @@ export default {
                 ],
                 password: [
                     { required: true, message: '请输入密码', trigger: 'blur' }
+                ],
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' },
+                    {
+                        pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: '邮箱格式不正确',
+                        trigger: 'blur'
+                    }
                 ]
             }
         };
@@ -104,7 +129,6 @@ export default {
     }
 };
 </script>
-
 <style scoped>
 .add-personal {
     padding: 20px;
@@ -114,6 +138,9 @@ export default {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .card-header {
@@ -188,11 +215,6 @@ export default {
     color: #ff4d4f;
 }
 
-.image-container {
-    text-align: center;
-    margin: 20px 0;
-}
-
 .image-container img {
     max-width: 100%;
     height: auto;
@@ -209,4 +231,25 @@ export default {
     max-width: 200px;
     height: auto;
 }
+
+@media (max-width: 768px) {
+    .custom-card {
+        padding: 10px;
+    }
+
+    .header-title {
+        font-size: 16px;
+    }
+
+    .el-form-item {
+        font-size: 14px;
+    }
+
+    .custom-submit-button,
+    .custom-reset-button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
 </style>
+

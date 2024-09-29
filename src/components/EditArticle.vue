@@ -15,7 +15,14 @@
                     <div ref="editorContainer" class="editor-container"></div>
                 </el-form-item>
                 <el-form-item label="分类" prop="category">
-                    <el-input v-model="article.category"></el-input>
+                    <el-select v-model="article.category" placeholder="请选择分类">
+                        <el-option label="农村党建" value="农村党建"></el-option>
+                        <el-option label="集体经济" value="集体经济"></el-option>
+                        <el-option label="产业发展" value="产业发展"></el-option>
+                        <el-option label="乡土文化" value="乡土文化"></el-option>
+                        <el-option label="青山绿水" value="青山绿水"></el-option>
+                        <el-option label="青年农人" value="青年农人"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="状态" prop="status" v-if="isAdmin">
                     <el-select v-model="article.status">

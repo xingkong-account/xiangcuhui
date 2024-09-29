@@ -62,27 +62,50 @@
         </div>
 
         <!-- 忘记密码弹窗 -->
-        <el-dialog title="忘记密码" :visible.sync="dialogVisible" :modal="false" :close-on-click-modal="false">
-            <el-form :model="forgotPasswordForm" :rules="forgotPasswordRules" ref="forgotPasswordForm">
+        <el-dialog
+            title="忘记密码"
+            :visible.sync="dialogVisible"
+            :modal="false"
+            :close-on-click-modal="false"
+            class="responsive-dialog"
+        >
+            <el-form
+                :model="forgotPasswordForm"
+                :rules="forgotPasswordRules"
+                ref="forgotPasswordForm"
+                class="responsive-form"
+            >
                 <el-form-item prop="name">
-                    <el-input placeholder="请输入用户名" v-model="forgotPasswordForm.name"></el-input>
+                    <el-input
+                        placeholder="请输入用户名"
+                        v-model="forgotPasswordForm.name"
+                        class="input-field"
+                        prefix-icon="el-icon-user"
+                    ></el-input>
                 </el-form-item>
                 <el-form-item prop="email">
-                    <el-input placeholder="请输入邮箱" v-model="forgotPasswordForm.email" maxlength="20"></el-input>
+                    <el-input
+                        placeholder="请输入邮箱"
+                        v-model="forgotPasswordForm.email"
+                        maxlength="20"
+                        class="input-field"
+                        prefix-icon="el-icon-message"
+                    ></el-input>
                 </el-form-item>
                 <el-form-item prop="code">
-                    <div style="display: flex; align-items: center;">
+                    <div class="code-input">
                         <el-input
                             placeholder="请输入验证码"
                             v-model="forgotPasswordForm.code"
                             @input="validateEmailCode"
                             maxlength="4"
-                            style="flex: 1;">
-                        </el-input>
+                            class="flex-input"
+                            prefix-icon="el-icon-message"
+                        ></el-input>
                         <el-button
                             type="primary"
                             @click="handleSendCode"
-                            style="margin-left: 10px;"
+                            class="send-button"
                             :disabled="!canSend()"
                         >
                             发送验证码
@@ -92,17 +115,21 @@
                 <el-form-item prop="password">
                     <el-input
                         placeholder="请输入新密码"
+                        :disabled="!codeVerified"
                         v-model="forgotPasswordForm.password"
                         maxlength="20"
-                        style="flex: 1;">
-                    </el-input>
+                        class="flex-input"
+                        prefix-icon="el-icon-lock"
+                        show-password
+                    ></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-        <el-button @click="handleCancel">取消</el-button>
+        <el-button @click="handleCancel" class="dialog-cancel">取消</el-button>
         <el-button
             type="primary"
             @click="handleResetPassword"
+            class="confirm-button"
             :disabled="false"
         >
             确认
@@ -306,6 +333,7 @@ export default {
         submitForm() {
             this.$refs.submitForm.validate((valid) => {
                 if (valid) {
+                    sessionStorage.clear();
                     axios.post(this.$baseUrl + '/api/login', {
                         name: this.user.name,
                         password: this.user.password,
@@ -361,6 +389,91 @@ export default {
 </script>
 
 <style scoped>
+.responsive-dialog {
+    max-width: 100%;
+    width: 1400px;
+    height: auto;
+    border-radius: 15px;
+}
+
+.input-field {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.code-input {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.flex-input {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.send-button,
+.confirm-button,
+.dialog-cancel{
+    transition: background-color 0.3s, transform 0.3s;
+    border-radius: 10px;
+    padding: 10px 15px;
+}
+
+.send-button {
+    background-color: rgb(101,172,140);
+    border-color: rgb(101,172,140);
+    color: white;
+}
+
+.send-button:hover {
+    background-color: rgb(85, 145, 118);
+    border-color: rgb(85, 145, 118);
+}
+
+.send-button:active {
+    transform: scale(0.95);
+}
+
+.confirm-button {
+    background-color: rgb(101,172,140);
+    color: white;
+}
+
+.confirm-button:hover {
+    background-color: rgb(85, 145, 118);
+    border-color: rgb(85, 145, 118);
+}
+
+.confirm-button:active {
+    transform: scale(0.95);
+}
+.dialog-cancel{
+    background-color: rgb(101,172,140);
+    border-color: rgb(101,172,140);
+    color: white;
+}
+.dialog-cancel :hover{
+    background-color: rgb(85, 145, 118);
+    border-color: rgb(85, 145, 118);
+}
+@media (max-width: 520px) {
+    .responsive-dialog {
+        width: 100%;
+        height: auto;
+    }
+    .code-input {
+        flex-direction: column;
+    }
+    .flex-input {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    .send-button {
+        width: 100%;
+    }
+}
+
 .page-container {
     display: flex;
     flex-direction: column;

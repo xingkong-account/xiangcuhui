@@ -14,7 +14,7 @@
                         <div class="article-info">
                             <h2 class="article-title">{{ article.title }}</h2>
                             <p class="article-meta">发布于: {{ formatDate(article.created_at) }} 作者: {{ article.author }}</p>
-                            <p class="article-snippet">{{ getSnippet(article.content) }}</p>
+<!--                            <p class="article-snippet">{{ getSnippet(article.content) }}</p>-->
                         </div>
                     </div>
                 </router-link>
@@ -90,17 +90,17 @@ export default {
 .category-title {
     font-size: 2.5rem;
     font-weight: 300;
-    color: rgb(101,172,138);
+    color: rgb(101, 172, 138);
 }
 
 .list-subtitle {
     font-size: 1rem;
-    color: rgb(101,172,138);
+    color: rgb(101, 172, 138);
     margin-left: 20px;
 }
 
 .back-button {
-    background-color: rgb(101,172,138);
+    background-color: rgb(101, 172, 138);
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -118,7 +118,7 @@ export default {
 .divider {
     margin-top: 20px;
     margin-bottom: 30px;
-    border: 3px solid rgb(101,172,138);
+    border: 3px solid rgb(101, 172, 138);
 }
 
 .article-list {
@@ -153,7 +153,7 @@ export default {
 }
 
 .article-index {
-    background-color: rgb(101,172,138);
+    background-color: rgb(101, 172, 138);
     color: white;
     font-size: 1.5rem;
     width: 50px;
@@ -177,7 +177,7 @@ export default {
 .article-title {
     font-size: 1.25rem;
     margin: 0;
-    color: rgb(111,111,111);
+    color: rgb(111, 111, 111);
 }
 
 .article-meta {
@@ -193,4 +193,29 @@ export default {
     margin-top: 5px;
     max-width: 50%;
 }
+
+@media (max-width: 768px) {
+    .category-title {
+        font-size: 2rem;
+    }
+
+    .list-subtitle,
+    .article-meta {
+        font-size: 0.75rem;
+    }
+
+    .article-title {
+        font-size: 1rem;
+    }
+
+    .article-snippet {
+        max-width: 100%;
+    }
+
+    .article-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
 </style>
+

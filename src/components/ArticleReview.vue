@@ -300,23 +300,37 @@ export default {
     max-width: 80%;
 }
 
+@media (max-width: 768px) {
+    .el-dialog {
+        width: 90%;
+    }
+}
+
 .approve-button {
-    background-color: #4CAF50; /* 绿色背景色 */
-    border-color: #4CAF50; /* 同样的边框颜色 */
+    background-color: #4CAF50;
+    border-color: #4CAF50;
 }
 
 .reject-button {
-    background-color: #FF5722; /* 红色背景色 */
-    border-color: #FF5722; /* 同样的边框颜色 */
+    background-color: #FF5722;
+    border-color: #FF5722;
 }
-/* 为按钮添加 hover 效果 */
+
 .el-button:hover.approve-button {
-    background-color: #45a049; /* 绿色背景色 hover 效果 */
-    border-color: #45a049; /* 同样的边框颜色 */
+    background-color: #45a049;
+    border-color: #45a049;
 }
 
 .el-button:hover.reject-button {
-    background-color: #e64a19; /* 红色背景色 hover 效果 */
-    border-color: #e64a19; /* 同样的边框颜色 */
+    background-color: #e64a19;
+    border-color: #e64a19;
+}
+
+.dialog-content p img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }
 </style>
+

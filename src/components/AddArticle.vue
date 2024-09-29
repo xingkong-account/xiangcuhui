@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header style="background-color: rgb(101,172,140); color: white; text-align: center; padding: 13px;">
-            <span style="margin-top: 30px; font-size: 26px">添加文章</span>
+            <span style="font-size: 26px">添加文章</span>
         </el-header>
         <el-main style="padding: 20px;">
             <el-form :model="article" :rules="rules" ref="form" label-width="100px" class="article-form">
@@ -27,15 +27,14 @@
                         <el-option label="青年农人" value="青年农人"></el-option>
                     </el-select>
                 </el-form-item>
-
                 <el-form-item>
-                    <el-button class="submit-buttton" type="primary" @click="submitForm">提交</el-button>
+                    <el-button class="submit-button" type="primary" @click="submitForm">提交</el-button>
                     <el-button @click="resetForm" class="reset-button" style="margin-left: 10px;">重置</el-button>
                 </el-form-item>
             </el-form>
         </el-main>
 
-        <el-footer class="custom-footer">
+        <el-footer class="custom-footer" v-if="!isMobile">
             <div class="footer-content">
                 <div class="footer-left">
                     <img src="@/assets/images/icon.jpg" class="foot-img">
@@ -48,6 +47,24 @@
                 <div class="footer-right">
                     <img src="" alt="Security" class="security-logo">
                     <p>甘公网安备 235487154313号</p>
+                    <p>网站标识码：0000000000</p>
+                </div>
+            </div>
+        </el-footer>
+
+        <el-footer class="mobile-footer" v-show="isMobile">
+            <div class="mobile-footer-content">
+                <div class="">
+                    <img src="@/assets/images/icon.jpg" class="foot-img" alt="">
+                </div>
+                <div>
+                    <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
+                    <p>主办单位: 乡促会&nbsp;&nbsp;&nbsp; 备案号：</p>
+                    <p>地址: XX省XX市XXX区XXX</p>
+                </div>
+                <div class="">
+                    <img src="" alt="Security" class="security-logo">
+                    <p>公网安备 235487154313号</p>
                     <p>网站标识码：0000000000</p>
                 </div>
             </div>
@@ -72,6 +89,7 @@ export default {
                 views: ''
             },
             isAdmin: false,
+            isMobile: false,
             rules: {
                 title: [
                     { required: true, message: '请输入标题', trigger: 'blur' }
@@ -86,7 +104,7 @@ export default {
                     { required: true, message: '请输入内容', trigger: 'blur' }
                 ],
                 category: [
-                    { required: true, message: '请输入分类', trigger: 'blur' }
+                    { required: true, message: '请选择分类', trigger: 'blur' }
                 ]
             },
             editor: null
@@ -120,7 +138,19 @@ export default {
         canEdit(member){
             this.isAdmin = (sessionStorage.getItem("usertype") === "管理员");
             return this.isAdmin || this.article.author === member.name;
-        }
+        },
+        checkIfMobile() {
+            this.isMobile = window.innerWidth <= 768;
+        },
+        changeChunkSize(){
+            if (window.innerWidth < 480) {
+                this.chunkSize = 1;
+            } else if (window.innerWidth < 768) {
+                this.chunkSize = 1;
+            } else {
+                this.chunkSize = 3;
+            }
+        },
     },
     mounted() {
         this.$nextTick(() => {
@@ -167,91 +197,87 @@ export default {
 
             this.editor.create();
         });
+        this.checkIfMobile();
+        this.changeChunkSize();
+        window.addEventListener('resize', this.changeChunkSize);
+        window.addEventListener('resize', this.checkIfMobile);
+    },
+    created() {
+        this.article.author = sessionStorage.getItem("username");
     },
     beforeDestroy() {
         if (this.editor) {
             this.editor.destroy();
         }
-    },
-    created() {
-        this.article.author = sessionStorage.getItem("username");
+        window.removeEventListener('resize', this.checkIfMobile);
+        window.removeEventListener('resize', this.changeChunkSize);
     }
 };
 </script>
 
 
 <style scoped>
-/* 基本样式设置 */
+.mobile-footer {
+    background: linear-gradient(45deg, rgb(8, 13, 9), rgb(33, 54, 39));
+    background-size: cover;
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+    min-height: 300px;
+}
+
+.mobile-footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.foot-img {
+    width: 80px;
+    margin-bottom: 10px;
+}
+
+.mobile-footer a {
+    color: white;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+.mobile-footer a:hover {
+    text-decoration: underline;
+}
+
+.mobile-footer p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: white;
+}
+
+.security-logo {
+    width: 50px;
+    margin-bottom: 5px;
+}
+
+@media screen and (max-width: 480px) {
+    .mobile-footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .mobile-footer p {
+        font-size: 12px;
+    }
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
 }
 
-/* 全局容器样式 */
 .el-container {
     min-height: 100%;
     display: flex;
     flex-direction: column;
-}
-
-/* 大屏平板设备，宽度在992px到1200px之间 */
-@media (max-width: 1200px) and (min-width: 992px) {
-    .container {
-        padding: 20px;
-    }
-
-    .header, .footer {
-        flex-direction: row; /* 保持水平布局 */
-    }
-
-    .main-content {
-        padding: 20px;
-    }
-}
-
-/* 小屏平板和大屏手机，宽度在768px到992px之间 */
-@media (max-width: 992px) and (min-width: 768px) {
-    .container {
-        padding: 15px;
-    }
-
-    .header, .footer {
-        flex-direction: column; /* 垂直布局 */
-    }
-
-    .main-content {
-        padding: 15px;
-    }
-}
-
-/* 小屏手机，宽度在480px到768px之间 */
-@media (max-width: 768px) and (min-width: 480px) {
-    .container {
-        padding: 10px;
-    }
-
-    .header, .footer {
-        flex-direction: column; /* 垂直布局 */
-    }
-
-    .main-content {
-        padding: 10px;
-    }
-}
-
-/* 超小屏手机，宽度在480px以下 */
-@media (max-width: 480px) {
-    .container {
-        padding: 5px;
-    }
-
-    .header, .footer {
-        flex-direction: column; /* 垂直布局 */
-    }
-
-    .main-content {
-        padding: 5px;
-    }
 }
 
 .submit-buttton {
@@ -277,7 +303,7 @@ body {
 }
 
 .custom-footer {
-    background-image: url("@/assets/images/footer.png");
+    background: linear-gradient(45deg, rgb(8, 13, 9), rgb(33, 54, 39));
     background-size: cover;
     color: #ffffff;
     padding: 20px 0;
@@ -330,71 +356,21 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
-/* 大屏平板设备，宽度在992px到1200px之间 */
-@media (max-width: 1200px) and (min-width: 992px) {
-    .footer-content {
-        flex-direction: row; /* 保持三列布局 */
-    }
 
-    .footer-left, .footer-right {
-        align-items: center;
-    }
-
-    .footer-center {
-        flex: 2;
-    }
-
-    .foot-img {
-        width: 250px; /* 调整图片宽度 */
-        height: 60px;  /* 调整图片高度 */
-    }
-}
-
-/* 小屏平板和大屏手机，宽度在768px到992px之间 */
 @media (max-width: 992px) and (min-width: 768px) {
+    .custom-footer{
+        min-height: 300px;
+    }
     .footer-content {
-        flex-direction: column; /* 变为竖直布局 */
+        flex-direction: column;
+        height: 100px;
     }
-
     .footer-left, .footer-right {
-        margin-bottom: 20px; /* 增加底部间距 */
+        margin-bottom: 20px;
     }
-
     .foot-img {
-        width: 200px; /* 调整图片宽度 */
-        height: 50px;  /* 调整图片高度 */
-    }
-}
-
-/* 小屏手机，宽度在480px到768px之间 */
-@media (max-width: 768px) and (min-width: 480px) {
-    .footer-content {
-        flex-direction: column; /* 保持竖直布局 */
-    }
-
-    .footer-left, .footer-right {
-        margin-bottom: 15px; /* 调整底部间距 */
-    }
-
-    .foot-img {
-        width: 150px; /* 调整图片宽度 */
-        height: 40px;  /* 调整图片高度 */
-    }
-}
-
-/* 超小屏手机，宽度在480px以下 */
-@media (max-width: 480px) {
-    .footer-content {
-        flex-direction: column; /* 保持竖直布局 */
-    }
-
-    .footer-left, .footer-right {
-        margin-bottom: 10px; /* 调整底部间距 */
-    }
-
-    .foot-img {
-        width: 120px; /* 调整图片宽度 */
-        height: 30px;  /* 调整图片高度 */
+        width: 200px;
+        height: 50px;
     }
 }
 </style>

@@ -282,7 +282,6 @@ export default {
     background-color: #4CAF50;
 }
 
-/* 自适应样式配置 */
 /* 大屏平板设备，宽度在992px到1200px之间 */
 @media (max-width: 1200px) and (min-width: 992px) {
     .article-container {
@@ -330,14 +329,13 @@ export default {
         width: 100%;
     }
     .article-header {
-        flex-direction: column;
-        align-items: flex-start;
+        padding: 20px 0;
     }
 
     .header-right .article-meta {
         flex-direction: row;
         gap: 20px;
-        font-size: 12px;
+        font-size: 15px;
     }
 
     .ncdt-bottom-tool {
@@ -357,19 +355,18 @@ export default {
         flex-direction: column;
         align-items: center;
         margin: 20px 0;
-        justify-content: flex-start; /* 保持顶部布局 */
-        min-height: auto; /* 高度根据内容调整 */
+        justify-content: flex-start;
+        min-height: auto;
         width: 100%;
     }
     .article-content {
         flex-grow: 1;
         width: 100%;
-        background-color: #4CAF50;
     }
     .article-content p img{
-        width: 10px; /* 改变图片宽度为容器的 90% */
-        height: 10px; /* 高度自动调整 */
-        margin: 10px 0; /* 添加上下外边距 */
+        width: 10px;
+        height: 10px;
+        margin: 10px 0;
     }
     .article-header {
         flex-direction: row;
@@ -383,7 +380,7 @@ export default {
     /* 控制间距和字体大小 */
     .article-meta {
         gap: 10px;
-        font-size: 12px;
+        font-size: 14px;
     }
     .header-right .article-meta {
         flex-direction: row;
@@ -407,20 +404,18 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start; /* 保持顶部布局 */
-        min-height: 100vh; /* 高度自适应 */
+        justify-content: flex-start;
+        min-height: 100vh;
         width: 100%;
     }
     .article-content {
         width: 100%;
-        /*background-color: #3a8ee6;*/
         flex-grow: 1;
     }
     .article-content img {
         width: 100px;
         height: auto;
     }
-    /* 顶部文章头部样式 */
     .article-header {
         flex-direction: row;
         align-items: center;
@@ -442,7 +437,7 @@ export default {
     .header-right .article-meta {
         flex-direction: row;
         gap: 10px;
-        font-size: 8px;
+        font-size: 10px;
         text-align: center; /* 日期和信息来源居中 */
     }
 
