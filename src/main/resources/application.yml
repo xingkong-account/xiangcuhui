@@ -15,7 +15,7 @@ spring:
     host: smtp.qq.com            # QQ 邮箱的 SMTP 服务器地址
     port: 587
     username: 3230144337@qq.com  # QQ邮箱地址
-    password: boiurxjvfrvlcjfc  # 授申请得到的授权码，不是邮箱密码
+    password: wodmybcfrjlrdbbi  # 授申请得到的授权码，不是邮箱密码
     properties:
       mail.smtp.auth: true        # 开启 SMTP 身份验证
       mail.smtp.starttls.enable: true  # 开启 STARTTLS 加密

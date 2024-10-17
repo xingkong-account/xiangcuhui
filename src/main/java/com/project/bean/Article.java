@@ -30,4 +30,6 @@ public class Article {
     public enum FontSize {
         大, 中, 小
     }
+    // 文章置顶状态（0：未置顶 1：置顶）
+    private Integer isTop;
 }

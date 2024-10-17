@@ -1,7 +1,10 @@
 <template>
     <div class="video-review-page">
         <h1 class="video-check-title">视频审核</h1>
-        <el-table
+
+        <!-- 桌面端布局 -->
+        <el-table v-show="!isMobile"
+            v-if="!isMobile"
             :data="videos"
             style="width: 100%"
             :highlight-current-row="true"
@@ -21,13 +24,39 @@
                     </video>
                 </template>
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" width="160">
                 <template slot-scope="scope">
-                    <el-button @click="approveVideo(scope.row)" type="success">通过</el-button>
-                    <el-button @click="confirmRejectVideo(scope.row)" type="danger">拒绝</el-button>
+                    <el-button @click="approveVideo(scope.row)" type="success" size="mini">通过</el-button>
+                    <el-button @click="confirmRejectVideo(scope.row)" type="danger" size="mini">拒绝</el-button>
                 </template>
             </el-table-column>
         </el-table>
+
+        <!-- 手机端布局 -->
+        <div v-show="isMobile" class="mobile-card-list">
+            <el-card
+                v-for="(video, index) in videos"
+                :key="index"
+                class="mobile-card"
+                shadow="hover">
+                <div class="mobile-card-content">
+                    <h3 class="mobile-card-title">{{ video.title }}</h3>
+                    <p class="mobile-card-uploader">上传人: {{ video.uploader }}</p>
+                    <p class="mobile-card-description">{{ video.description }}</p>
+                    <div class="mobile-thumbnail-container">
+                        <img :src="video.thumbnail" alt="缩略图" class="mobile-thumbnail-img" />
+                    </div>
+                    <video v-if="video.url" controls :src="video.url" class="mobile-video-preview">
+                        您的浏览器不支持播放此视频。
+                    </video>
+                    <div class="mobile-card-actions" v-if="isAdmin">
+                        <el-button @click="approveVideo(video)" type="success" size="mini">通过</el-button>
+                        <el-button @click="confirmRejectVideo(video)" type="danger" size="mini">拒绝</el-button>
+                    </div>
+                </div>
+            </el-card>
+        </div>
+
         <el-button @click="goBack" type="default">返回</el-button>
     </div>
 </template>
@@ -39,10 +68,18 @@ export default {
     data() {
         return {
             videos: [],
-            selectedVideo: null
+            selectedVideo: null,
+            isAdmin: false,
+            isMobile: false
         };
     },
     methods: {
+        checkIfMobile(){
+            this.isMobile = window.innerWidth <= 768;
+        },
+        checkIfAdmin(){
+            this.isAdmin = sessionStorage.getItem("usertype") === "管理员";
+        },
         async fetchVideos() {
             try {
                 const response = await axios.get(this.$baseUrl + '/api/videos/review-video');
@@ -103,11 +140,62 @@ export default {
     },
     created() {
         this.fetchVideos();
+        this.checkIfAdmin();
+    },
+    mounted() {
+        this.checkIfMobile();
+        window.addEventListener('resize', this.checkIfMobile);
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.checkIfMobile);
     }
 };
 </script>
 
 <style scoped>
+.mobile-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mobile-card-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-card-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.mobile-card-uploader,
+.mobile-card-description {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.mobile-thumbnail-container {
+    margin-bottom: 10px;
+}
+
+.mobile-thumbnail-img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.mobile-video-preview {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.mobile-card-actions {
+    display: flex;
+    justify-content: space-between;
+}
 .video-check-title{
     text-align: center;
     font-size: 2rem;

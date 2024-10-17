@@ -1,151 +1,230 @@
 <template>
     <el-container>
-        <el-header class="header">
-            <div class="header-container">
-                <h1>{{isAdmin ? "文章管理" : "我发表的文章"}}</h1>
-            </div>
-            <div class="button-group">
-                <el-button class="add-article" v-if="check" style="margin-left: 10%" type="primary" @click="navigateToAddArticle">添加文章</el-button>
-                <el-button @click="navigateBack" type="default">返回</el-button>
-            </div>
-        </el-header>
+        <div class="desktop-layout" v-show="!isMobile">
+            <el-header class="header">
+                <div class="header-container">
+                    <h1>{{isAdmin ? "文章管理" : "我发表的文章"}}</h1>
+                </div>
+                <div class="button-group">
+                    <el-button class="add-article" v-if="check" style="margin-left: 10%" type="primary" @click="navigateToAddArticle">添加文章</el-button>
+                    <el-button @click="navigateBack" type="default">返回</el-button>
+                </div>
+            </el-header>
+            <el-main style="width: 100%; margin: 10px auto">
+                <el-container class="content-container">
+                    <el-row>
+                        <el-col :span="24">
+                            <!--管理员展示全部文章-->
+                            <el-table :data="articles" stripe v-if="isAdmin" style="width: 1500px">
+                                <el-table-column prop="title" label="标题" width="180">
+                                    <template #default="{ row }">
+                                        {{ truncateText(row.title, 30) }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="category" label="分类" width="100"></el-table-column>
+                                <el-table-column prop="author" label="作者" width="100"></el-table-column>
+                                <el-table-column prop="content" label="内容" width="300">
+                                    <template #default="{ row }">
+                                        <div class="article-content">
+                                            {{ row.content }}
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="created_at" label="创建时间" width="180">
+                                    <template #default="{ row }">
+                                        {{ formatDate(row.created_at) }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="updated_at" label="修改时间" width="180">
+                                    <template #default="{ row }">
+                                        {{ formatDate(row.updated_at) }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="操作" width="260">
+                                    <template #default="{ row }">
+                                        <el-button
+                                            :disabled="!canEdit(row.author)"
+                                            @click="navigateToEditArticle(row.id)"
+                                            type="primary"
+                                            size="small"
+                                            class="edit-button"
+                                        >
+                                            编辑
+                                        </el-button>
+                                        <el-button
+                                            :disabled="!canEdit(row.author)"
+                                            @click="deleteArticle(row.id)"
+                                            type="danger"
+                                            size="small"
+                                            class="delete-button"
+                                        >
+                                            删除
+                                        </el-button>
+                                        <el-button
+                                            @click="navigateToDetailPage(row.id)"
+                                            type="primary"
+                                            size="small"
+                                            class="detail-button"
+                                        >
+                                            查看详情
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <!-- 根据文章作者展示文章列表 -->
+                            <el-table :data="myArticles" stripe v-else-if="username">
+                                <el-table-column prop="title" label="标题" width="180"></el-table-column>
+                                <el-table-column prop="author" label="作者" width="100"></el-table-column>
+                                <el-table-column prop="category" label="分类" width="120"></el-table-column>
+                                <el-table-column prop="content" label="内容" width="300">
+                                    <template #default="{ row }">
+                                        <div class="article-content">
+                                            {{ row.content }}
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="created_at" label="创建时间" width="180">
+                                    <template #default="{ row }">
+                                        {{ formatDate(row.created_at) }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="updated_at" label="修改时间" width="180">
+                                    <template #default="{ row }">
+                                        {{ formatDate(row.updated_at) }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="操作" width="300">
+                                    <template #default="{ row }">
+                                        <el-button
+                                            :disabled="!canEdit(row.author)"
+                                            @click="navigateToEditArticle(row.id)"
+                                            type="primary"
+                                            size="small"
+                                            class="edit-button"
+                                        >
+                                            编辑
+                                        </el-button>
+                                        <el-button
+                                            :disabled="!canEdit(row.author)"
+                                            @click="deleteArticle(row.id)"
+                                            type="danger"
+                                            size="small"
+                                            class="delete-button"
+                                        >
+                                            删除
+                                        </el-button>
+                                        <el-button
+                                            @click="navigateToDetailPage(row.id)"
+                                            type="primary"
+                                            size="small"
+                                            class="detail-button"
+                                        >
+                                            查看详情
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-col>
+                    </el-row>
 
-        <el-main>
-            <el-container class="content-container">
-                <el-row>
-                    <el-col :span="24">
-                        <!--管理员展示全部文章-->
-                        <el-table :data="articles" stripe v-if="isAdmin">
-                            <el-table-column prop="title" label="标题" width="180"></el-table-column>
-                            <el-table-column prop="author" label="作者" width="150"></el-table-column>
-                            <el-table-column prop="status" label="状态" width="100"></el-table-column>
-                            <el-table-column prop="category" label="分类" width="120"></el-table-column>
-                            <el-table-column prop="content" label="内容" width="300">
-                                <template #default="{ row }">
-                                    <div class="article-content">
-                                        {{ row.content }}
-                                    </div>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="created_at" label="创建时间" width="180">
-                                <template #default="{ row }">
-                                    {{ formatDate(row.created_at) }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="updated_at" label="修改时间" width="180">
-                                <template #default="{ row }">
-                                    {{ formatDate(row.updated_at) }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="操作" width="300">
-                                <template #default="{ row }">
-                                    <el-button
-                                        :disabled="!canEdit(row.author)"
-                                        @click="navigateToEditArticle(row.id)"
-                                        type="primary"
-                                        size="small"
-                                        class="edit-button"
-                                    >
-                                        编辑
-                                    </el-button>
-                                    <el-button
-                                        :disabled="!canEdit(row.author)"
-                                        @click="deleteArticle(row.id)"
-                                        type="danger"
-                                        size="small"
-                                        class="delete-button"
-                                    >
-                                        删除
-                                    </el-button>
-                                    <el-button
-                                        @click="navigateToDetailPage(row.id)"
-                                        type="primary"
-                                        size="small"
-                                        class="detail-button"
-                                    >
-                                        查看详情
-                                    </el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                        <!-- 根据文章作者展示文章列表 -->
-                        <el-table :data="myArticles" stripe v-else-if="username">
-                            <el-table-column prop="title" label="标题" width="180"></el-table-column>
-                            <el-table-column prop="author" label="作者" width="100"></el-table-column>
-                            <el-table-column prop="category" label="分类" width="120"></el-table-column>
-                            <el-table-column prop="content" label="内容" width="300">
-                                <template #default="{ row }">
-                                    <div class="article-content">
-                                        {{ row.content }}
-                                    </div>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="created_at" label="创建时间" width="180">
-                                <template #default="{ row }">
-                                    {{ formatDate(row.created_at) }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="updated_at" label="修改时间" width="180">
-                                <template #default="{ row }">
-                                    {{ formatDate(row.updated_at) }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="操作" width="300">
-                                <template #default="{ row }">
-                                    <el-button
-                                        :disabled="!canEdit(row.author)"
-                                        @click="navigateToEditArticle(row.id)"
-                                        type="primary"
-                                        size="small"
-                                        class="edit-button"
-                                    >
-                                        编辑
-                                    </el-button>
-                                    <el-button
-                                        :disabled="!canEdit(row.author)"
-                                        @click="deleteArticle(row.id)"
-                                        type="danger"
-                                        size="small"
-                                        class="delete-button"
-                                    >
-                                        删除
-                                    </el-button>
-                                    <el-button
-                                        @click="navigateToDetailPage(row.id)"
-                                        type="primary"
-                                        size="small"
-                                        class="detail-button"
-                                    >
-                                        查看详情
-                                    </el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-col>
-                </el-row>
+                </el-container>
+            </el-main>
+            <el-row class="filter-row">
+                <el-col :span="24" >
+                    <span style="margin-left: 10%">请选择单页展示的记录条数:</span>
+                    <el-select style="width: 10%" v-model="pageSize" @change="handlePageSizeChange" class="page-size-selector">
+                        <el-option label="10条/页" value="10"></el-option>
+                        <el-option label="20条/页" value="20"></el-option>
+                        <el-option label="50条/页" value="50"></el-option>
+                    </el-select>
+                    <!-- 分页组件 -->
+                    <el-pagination
+                        class="pagination"
+                        background
+                        layout="prev, pager, next, total"
+                        :total="total"
+                        :page-size="pageSize"
+                        :current-page="currentPage"
+                        @current-change="handlePageChange"
+                    ></el-pagination>
+                </el-col>
+            </el-row>
+        </div>
+        <!-- 手机端布局 -->
+        <div class="mobile-layout" v-show="isMobile">
+            <el-header class="mobile-header">
+                <div class="mobile-header-container">
+                    <h1>{{isAdmin ? "文章管理" : "我的文章"}}</h1>
+                    <el-button v-if="check" type="primary" @click="navigateToAddArticle">添加文章</el-button>
+                    <el-button type="default" @click="navigateBack">返回</el-button>
+                </div>
+            </el-header>
 
-            </el-container>
-        </el-main>
-        <el-row class="filter-row">
-            <el-col :span="24" >
-                <span style="margin-left: 10%">请选择单页展示的记录条数:</span>
-                <el-select style="width: 10%" v-model="pageSize" @change="handlePageSizeChange" class="page-size-selector">
-                    <el-option label="10条/页" value="10"></el-option>
-                    <el-option label="20条/页" value="20"></el-option>
-                    <el-option label="50条/页" value="50"></el-option>
-                </el-select>
-                <!-- 分页组件 -->
-                <el-pagination
-                    class="pagination"
-                    background
-                    layout="prev, pager, next, total"
-                    :total="total"
-                    :page-size="pageSize"
-                    :current-page="currentPage"
-                    @current-change="handlePageChange"
-                ></el-pagination>
-            </el-col>
-        </el-row>
+            <el-main>
+                <el-container class="mobile-content-container">
+                    <el-row>
+                        <el-col :span="24">
+                            <!-- 管理员展示全部文章 -->
+                            <div v-if="isAdmin">
+                                <el-card v-for="article in articles" :key="article.id" class="mobile-article-card">
+                                    <h3>{{ article.title }}</h3>
+                                    <p><strong>来源:</strong> {{ article.source }}</p>
+                                    <p><strong>浏览次数:</strong> {{ article.views + '次' }}</p>
+                                    <p><strong>作者:</strong> {{ article.author }}</p>
+                                    <p><strong>状态:</strong> {{ article.status }}</p>
+                                    <p><strong>分类:</strong> {{ article.category }}</p>
+                                    <p><strong>置顶状态:</strong> {{ article.isTop ? '已置顶' : '未置顶' }}</p>
+                                    <p class="mobile-article-content">{{ truncateText(article.content, 100) }}</p>
+                                    <p><strong>创建时间:</strong> {{ formatDate(article.created_at) }}</p>
+                                    <p><strong>修改时间:</strong> {{ formatDate(article.updated_at) }}</p>
+                                    <div class="article-actions">
+                                        <el-button size="mini" @click="navigateToDetailPage(article.id)">详情</el-button>
+                                        <el-button size="mini" :disabled="!canEdit(article.author)" @click="navigateToEditArticle(article.id)">编辑</el-button>
+                                        <el-button size="mini" :disabled="!canEdit(article.author)" type="danger" @click="deleteArticle(article.id)">删除</el-button>
+                                    </div>
+                                </el-card>
+                            </div>
+
+                            <!-- 用户文章展示 -->
+                            <div v-else-if="username">
+                                <el-card v-for="article in myArticles" :key="article.id" class="mobile-article-card">
+                                    <h3>{{ article.title }}</h3>
+                                    <p><strong>作者:</strong> {{ article.author }}</p>
+                                    <p><strong>分类:</strong> {{ article.category }}</p>
+                                    <p class="article-content">{{ article.content }}</p>
+                                    <p><strong>创建时间:</strong> {{ formatDate(article.created_at) }}</p>
+                                    <p><strong>修改时间:</strong> {{ formatDate(article.updated_at) }}</p>
+                                    <div class="article-actions">
+                                        <el-button size="mini" @click="navigateToDetailPage(article.id)">详情</el-button>
+                                        <el-button size="mini" :disabled="!canEdit(article.author)" @click="navigateToEditArticle(article.id)">编辑</el-button>
+                                        <el-button size="mini" :disabled="!canEdit(article.author)" type="danger" @click="deleteArticle(article.id)">删除</el-button>
+                                    </div>
+                                </el-card>
+                            </div>
+                        </el-col>
+                    </el-row>
+                </el-container>
+            </el-main>
+
+            <el-row class="mobile-filter-row">
+                <el-col :span="24">
+                    <span>每页展示条数:</span>
+                    <el-select style="width: 30%" v-model="pageSize" @change="handlePageSizeChange">
+                        <el-option label="10条/页" value="10"></el-option>
+                        <el-option label="20条/页" value="20"></el-option>
+                        <el-option label="50条/页" value="50"></el-option>
+                    </el-select>
+                    <el-pagination
+                        background
+                        layout="prev, pager, next, total"
+                        :total="total"
+                        :page-size="pageSize"
+                        :current-page="currentPage"
+                        @current-change="handlePageChange"
+                    ></el-pagination>
+                </el-col>
+            </el-row>
+        </div>
     </el-container>
 </template>
 
@@ -162,12 +241,16 @@ export default {
             currentPage: 1,
             pageSize: 10,
             isAdmin: false,
+            isMobile: false,
             username: '',
             usertype: '',
             author: ''
         };
     },
     methods: {
+        checkIfMobile() {
+            this.isMobile = window.innerWidth <= 768;
+        },
         checkUserRole() {
             const username = sessionStorage.getItem('username');
             if (!username) {
@@ -213,7 +296,7 @@ export default {
             }).catch(() => {});
         },
         fetchArticles() {
-            axios.get(this.$baseUrl + '/api/articles/articleList', {
+            axios.get(this.$baseUrl + '/api/articles/allArticles', {
                 params: {
                     pageNum: this.currentPage,
                     pageSize: this.pageSize
@@ -275,7 +358,13 @@ export default {
         },
         navigateBack() {
             this.$router.push("/")
-        }
+        },
+        truncateText(text, maxLength) {
+            if (text.length > maxLength) {
+                return text.substring(0, maxLength) + '...';
+            }
+            return text;
+        },
     },
     created() {
         this.usertype = sessionStorage.getItem('usertype');
@@ -299,15 +388,93 @@ export default {
             // this.fetchArticles();
             this.total = 0;
         }
+    },
+    mounted() {
+        this.checkIfMobile();
+        window.addEventListener('resize', this.checkIfMobile);
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.checkIfMobile);
     }
 };
 </script>
 
 <style scoped>
-.pagination {
-    padding: 20px;
+.mobile-layout {
+    padding: 10px;
+}
+
+.mobile-header {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.mobile-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mobile-header h1 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.mobile-content-container {
+    margin-top: 10px;
+}
+
+.mobile-article-card {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    background-color: #ffffff;
+}
+
+.mobile-article-card h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+}
+
+.mobile-article-card p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.mobile-article-content {
+    color: #666;
+}
+
+.article-actions {
+    margin-top: 10px;
+}
+
+.mobile-filter-row {
+    margin-top: 15px;
     text-align: center;
 }
+
+.mobile-filter-row span {
+    margin-right: 10px;
+}
+
+.mobile-filter-row .el-select {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.el-pagination {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.mobile-layout {
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
 .page-size-selector {
     margin-bottom: 20px;
 }
@@ -382,15 +549,13 @@ export default {
 }
 
 .content-container {
-    padding: 20px;
-    margin: 0 auto;
-    max-width: 1400px;
+    margin: 10px auto;
+    width: 100%;
     justify-content: center;
 }
 
 .article-content {
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
 }
 

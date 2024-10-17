@@ -13,11 +13,20 @@
 <!--        </div>-->
         <div class="table-container">
             <el-table :data="members" style="width: 100%;" border>
-                <el-table-column prop="name" label="姓名" width="150"></el-table-column>
+                <el-table-column
+                    prop="name"
+                    label="姓名"
+                    width="150">
+                </el-table-column>
+                <el-table-column
+                    prop="email"
+                    label="邮箱"
+                    width="180"
+                ></el-table-column>
                 <el-table-column
                     prop="type"
                     label="会员类型"
-                    width="180"
+                    width="100"
                 ></el-table-column>
                 <el-table-column prop="phone" label="联系方式" width="150"></el-table-column>
                 <el-table-column
@@ -39,7 +48,7 @@
                         </el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="100">
                     <template slot-scope="scope">
                         <el-button
                             size="small"

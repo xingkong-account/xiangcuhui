@@ -47,7 +47,7 @@ public class MembersService {
     public boolean validateUsernameEmail(String username, String email) {
         // 查询用户是否存在
         Optional<Member> user = memberMapper.findByUsername(username);
-        return user.map(value -> value.getEmail().equals(email)).orElse(false);
+        return user.map(value -> Objects.equals(value.getEmail(), email)).orElse(false);
     }
     public int addPersonal(Member member){
         String encodedPassword = DigestUtils.md5DigestAsHex(member.getPassword().getBytes());
@@ -239,6 +239,7 @@ public class MembersService {
 
         try {
             javaMailSender.send(message);
+            System.out.println("邮件发送成功");
         } catch (Exception e) {
             System.out.println("邮件发送失败: " + e.getMessage());
         }
@@ -247,7 +248,7 @@ public class MembersService {
 
     public String generateVerificationCode() {
         Random random = new Random();
-        int code = 1000 + random.nextInt(9000);
+        int code = 1000 + random.nextInt(9000);  // 1000 ~ 9999
         return String.valueOf(code);
     }
 

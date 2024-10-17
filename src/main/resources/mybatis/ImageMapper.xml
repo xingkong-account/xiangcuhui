@@ -4,27 +4,46 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.project.mapper.ImageMapper">
 
-    <!-- 查询指定文章的图片 -->
-    <select id="findByArticleId" parameterType="java.lang.Integer" resultType="com.project.bean.Image">
-        SELECT
-        id,
-        article_id,
-        url,
-        description,
-        created_at
-        FROM images
-        WHERE article_id = #{articleId}
-    </select>
+    <resultMap id="AdvertisementResultMap" type="com.project.bean.Advertisement">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="image_url" property="imageUrl"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
 
-    <!-- 插入图片信息 -->
-    <insert id="insert" parameterType="com.project.bean.Image">
-        INSERT INTO images (article_id, url, description, created_at)
-        VALUES (#{articleId}, #{url}, #{description}, #{createdAt})
+    <!-- 插入广告信息 -->
+    <insert id="insertAdvertisement" parameterType="com.project.bean.Advertisement">
+        INSERT INTO advertisements
+        (
+        <if test="title != null">title,</if>
+        <if test="description != null">description,</if>
+        <if test="imageUrl != null">image_url,</if>
+        start_date,
+        end_date,
+        created_at,
+        updated_at
+        )
+        VALUES
+        (
+        <if test="title != null">#{title},</if>
+        <if test="description != null">#{description},</if>
+        <if test="imageUrl != null">#{imageUrl},</if>
+        NOW(),
+        NOW() + INTERVAL 30 DAY,
+        NOW(),
+        NOW()
+        )
     </insert>
 
-    <!-- 根据文章 ID 删除所有图片 -->
-    <delete id="deleteByArticleId" parameterType="java.lang.Integer">
-        DELETE FROM images WHERE article_id = #{articleId}
-    </delete>
+    <select id="selectAllAdvertisements" resultMap="AdvertisementResultMap">
+        SELECT * FROM advertisements
+    </select>
 
+    <delete id="deleteAdvertisement" parameterType="int">
+        DELETE FROM advertisements WHERE id = #{adId}
+    </delete>
 </mapper>

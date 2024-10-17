@@ -17,8 +17,26 @@
                 <el-form-item label="内容" prop="content">
                     <div ref="editorContainer" class="editor-container"></div>
                 </el-form-item>
+<!--                <el-form-item label="分类" prop="category">-->
+<!--                    <el-dropdown @command="handleCommand" ref="categoryDropdown" trigger="click">-->
+<!--                        <el-button type="primary">-->
+<!--                            {{ selectedCategory ? selectedCategory : '请选择分类' }}<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
+<!--                        </el-button>-->
+<!--                        <template #dropdown>-->
+<!--                            <el-dropdown-menu>-->
+<!--                                <el-dropdown-item command="农村党建">农村党建</el-dropdown-item>-->
+<!--                                <el-dropdown-item command="集体经济">集体经济</el-dropdown-item>-->
+<!--                                <el-dropdown-item command="产业发展">产业发展</el-dropdown-item>-->
+<!--                                <el-dropdown-item command="乡土文化">乡土文化</el-dropdown-item>-->
+<!--                                <el-dropdown-item command="青山绿水">青山绿水</el-dropdown-item>-->
+<!--                                <el-dropdown-item command="青年农人">青年农人</el-dropdown-item>-->
+<!--                            </el-dropdown-menu>-->
+<!--                        </template>-->
+<!--                    </el-dropdown>-->
+<!--                </el-form-item>-->
+
                 <el-form-item label="分类" prop="category">
-                    <el-select v-model="article.category" placeholder="请选择分类">
+                    <el-select v-model="article.category" placeholder="请选择分类" popper-class="custom-dropdown">
                         <el-option label="农村党建" value="农村党建"></el-option>
                         <el-option label="集体经济" value="集体经济"></el-option>
                         <el-option label="产业发展" value="产业发展"></el-option>
@@ -36,18 +54,29 @@
 
         <el-footer class="custom-footer" v-if="!isMobile">
             <div class="footer-content">
+                <!-- 左侧导航链接 -->
                 <div class="footer-left">
-                    <img src="@/assets/images/icon.jpg" class="foot-img">
+                    <p>
+                        <a href="#">网站地图</a> |
+                        <a href="#">联系方式</a> |
+                        <a href="#">隐私声明</a>
+                    </p>
                 </div>
+
+                <!-- 中间部分：主办单位和地址信息 -->
                 <div class="footer-center">
-                    <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
-                    <p>主办单位:  乡促会&nbsp;&nbsp;&nbsp; 备案号：</p>
-                    <p>地址: 甘肃省兰州市XXXXXX</p>
+                    <p>主办单位: 乡促会</p>
+                    <p>赞助：玄易文化有限公司</p>
+                    <p>地址: 甘肃省兰州市七里河区</p>
                 </div>
+
+                <!-- 右侧备案信息 -->
                 <div class="footer-right">
-                    <img src="" alt="Security" class="security-logo">
-                    <p>甘公网安备 235487154313号</p>
-                    <p>网站标识码：0000000000</p>
+                    <a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030702002386" target="_blank" class="record-link">
+                        <img src="@/assets/images/security.png" class="security-logo">
+                        <span>粤公网安备44030702002386号</span>
+                    </a>
+                    <p>甘A2-20044005号</p>
                 </div>
             </div>
         </el-footer>
@@ -55,17 +84,18 @@
         <el-footer class="mobile-footer" v-show="isMobile">
             <div class="mobile-footer-content">
                 <div class="">
-                    <img src="@/assets/images/icon.jpg" class="foot-img" alt="">
+<!--                    <img src="@/assets/images/icon.jpg" class="foot-img" alt="">-->
                 </div>
                 <div>
                     <p><a href="#">网站地图</a> | <a href="#">联系方式</a> | <a href="#">使用帮助</a> | <a href="#">隐私声明</a></p>
-                    <p>主办单位: 乡促会&nbsp;&nbsp;&nbsp; 备案号：</p>
-                    <p>地址: XX省XX市XXX区XXX</p>
+                    <p>主办单位: 乡促会&nbsp;&nbsp;&nbsp; </p>
+                    <p>地址:甘肃省兰州市七里河区 </p>
                 </div>
-                <div class="">
-                    <img src="" alt="Security" class="security-logo">
-                    <p>公网安备 235487154313号</p>
-                    <p>网站标识码：0000000000</p>
+                <div class="mobile-record-link">
+                    <a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030702002386" target="_blank" class="record-link">
+                        <span>粤公网安备44030702002386号</span>
+                    </a>
+                    <p>甘A2-20044005号</p>
                 </div>
             </div>
         </el-footer>
@@ -88,6 +118,7 @@ export default {
                 category: '',
                 views: ''
             },
+            selectedCategory: null, // 保存选择的分类
             isAdmin: false,
             isMobile: false,
             rules: {
@@ -111,6 +142,10 @@ export default {
         };
     },
     methods: {
+        handleCommand(command) {
+            this.selectedCategory = command; // 更新选中的分类
+            this.article.category = this.selectedCategory;
+        },
         submitForm() {
             this.article.content = this.editor.txt.html();
             this.$refs.form.validate(valid => {
@@ -215,15 +250,36 @@ export default {
 };
 </script>
 
+<!-- 全局样式，不使用 scoped -->
+<style>
+.el-dropdown-menu {
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 9999;
+    position: relative;
+}
+</style>
 
 <style scoped>
+.record-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+.mobile-record-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 .mobile-footer {
     background: linear-gradient(45deg, rgb(8, 13, 9), rgb(33, 54, 39));
     background-size: cover;
     color: #ffffff;
     padding: 20px 0;
     text-align: center;
-    min-height: 300px;
+    min-height: 200px;
 }
 
 .mobile-footer-content {
@@ -303,12 +359,13 @@ body {
 }
 
 .custom-footer {
-    background: linear-gradient(45deg, rgb(8, 13, 9), rgb(33, 54, 39));
+    background-image: url("@/assets/images/footer.png");
     background-size: cover;
     color: #ffffff;
     padding: 20px 0;
     text-align: center;
-    min-height: 200px;
+    min-height: 150px;
+    font-size: 14px;
 }
 
 .footer-content {
@@ -319,11 +376,9 @@ body {
     margin: 0 auto;
 }
 
-.footer-left, .footer-right {
+.footer-left {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-align: left;
 }
 
 .footer-center {
@@ -331,35 +386,35 @@ body {
     text-align: center;
 }
 
-.foot-img{
-    width: 300px;
-    height: 80px;
-    border-radius: 10px;
+.footer-right {
+    flex: 1;
+    text-align: center;
 }
 
-.footer-logo, .security-logo {
-    width: 80px;
-    margin-bottom: 10px;
-}
-
-.footer-center p {
-    margin: 5px 0;
-}
-
-.footer-center a {
+.footer-left a,
+.footer-right a {
     color: #ffffff;
     text-decoration: none;
-    margin: 0 10px;
+    padding: 0 10px;
+    transition: color 0.3s ease;
 }
 
-.footer-center a:hover {
+.footer-left a:hover,
+.footer-right a:hover {
+    color: rgb(88,157,126); /* 悬停效果 */
     text-decoration: none;
-    cursor: pointer;
+}
+
+.security-logo {
+    width: 20px;
+    height: auto;
+    border-radius: 50%;
+    margin-right: 10px;
 }
 
 @media (max-width: 992px) and (min-width: 768px) {
     .custom-footer{
-        min-height: 300px;
+        min-height: 240px;
     }
     .footer-content {
         flex-direction: column;

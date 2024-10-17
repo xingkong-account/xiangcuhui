@@ -23,6 +23,7 @@
 
     <select id="findByEmail" parameterType="java.lang.String" resultType="com.project.bean.Member">
         select * from members where email = #{email}
+        Limit 1
     </select>
 
     <select id="findAllUnChecked" parameterType="map" resultType="com.project.bean.Member">

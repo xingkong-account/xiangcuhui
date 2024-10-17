@@ -29,8 +29,17 @@ public class ArticleController {
 
     private static final String ROOT_PATH = System.getProperty("user.dir") + File.separator + "files";
 
-    // 获取所有文章
+    // 获取所有文章（已审核）
     @GetMapping("/articleList")
+    public PageResult<Article> getAllCheckedArticles(
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        return articleService.getAllCheckedArticles(pageNum, pageSize);
+    }
+
+    // 获取所有文章（全部状态的）
+    @GetMapping("/allArticles")
     public PageResult<Article> getAllArticles(
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize
@@ -82,7 +91,6 @@ public class ArticleController {
         if (articleService.findById(id) == null) {
             return ResponseEntity.notFound().build();
         }
-        imageService.deleteByArticleId(id); // 删除关联的图片
         articleService.deleteArticle(id);
         return ResponseEntity.noContent().build();
     }

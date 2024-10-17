@@ -29,6 +29,7 @@ import CheckedTeam from "@/components/CheckedTeam.vue";
 import MoreArticles from "@/components/MoreArticles.vue";
 import EditVideo from "@/components/EditVideo.vue";
 import TestMain from "@/components/TestMain.vue";
+import testImage from "@/components/testImage.vue";
 
 Vue.use(Router);
 
@@ -202,6 +203,11 @@ export default new Router({
             path: '/test',
             name: 'TestMain',
             component: TestMain
+        },
+        {
+            path: '/carousel',
+            name: 'testImage',
+            component: testImage
         }
     ]
 });

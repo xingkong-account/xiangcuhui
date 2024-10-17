@@ -1,111 +1,184 @@
 <template>
-    <div class="article-review" v-if="isAdmin">
-        <el-card class="box-card" style="width: 100%; overflow: auto;">
-            <div slot="header" class="header clearfix">
-                <el-button type="default" @click="goBack" class="back-button">
-                    <i class="el-icon-arrow-left"></i> 返回
-                </el-button>
-                <span class="header-title">文章审核</span>
-            </div>
-            <el-table :data="articles" class="article-table">
-                <el-table-column prop="title" label="标题" min-width="220"></el-table-column>
-                <el-table-column prop="category" label="分类" min-width="150"></el-table-column>
-                <el-table-column prop="author" label="作者" min-width="150"></el-table-column>
-                <el-table-column prop="source" label="来源" min-width="150"></el-table-column>
-                <el-table-column
-                    prop="created_at"
-                    label="创建日期"
-                    min-width="180"
-                    :formatter="(row, column, cellValue) => formatDate(cellValue)"
-                ></el-table-column>
-                <el-table-column
-                    prop="updated_at"
-                    label="修改日期"
-                    min-width="180"
-                    :formatter="(row, column, cellValue) => formatDate(cellValue)"
-                ></el-table-column>
-                <el-table-column prop="status" label="审核状态" min-width="120">
-                    <template slot-scope="scope">
-                        <el-tag :type="getStatusTagType(scope.row.status)">
-                            {{ scope.row.status }}
-                        </el-tag>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" min-width="250">
-                    <template slot-scope="scope">
-                        <el-button
-                            v-if="scope.row.status === '待审核'"
-                            size="small"
-                            type="primary"
-                            @click="approveArticle(scope.row)"
-                            class="approve-button"
-                        >
-                            通过
-                        </el-button>
-                        <el-button
-                            v-if="scope.row.status === '待审核'"
-                            size="small"
-                            type="danger"
-                            @click="confirmDeleteArticle(scope.row)"
-                            class="reject-button"
-                        >
-                            拒绝
-                        </el-button>
-                        <el-button
-                            v-if="scope.row.status === '待审核'"
-                            size="small"
-                            @click="viewDetails(scope.row)"
-                        >
-                            查看详情
-                        </el-button>
-                        <el-button
-                            v-else
-                            size="small"
-                            @click="viewDetails(scope.row)"
-                        >
-                            查看详情
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="pagination-container">
-                <el-col>
-                    <span class="page-size-label">请选择单页展示的记录条数:</span>
-                    <el-select style="width: 10%" v-model="pageSize" @change="handlePageSizeChange" class="page-size-selector">
-                        <el-option label="10条/页" value="10"></el-option>
-                        <el-option label="20条/页" value="20"></el-option>
-                        <el-option label="50条/页" value="50"></el-option>
-                    </el-select>
-                    <el-pagination
-                        class="pagination"
-                        background
-                        layout="prev, pager, next, total"
-                        :total="total"
-                        :page-size="pageSize"
-                        :current-page="currentPage"
-                        @current-change="handlePageChange"
-                    ></el-pagination>
-                </el-col>
-            </div>
-        </el-card>
-        <el-dialog
-            title="文章详情"
-            :visible.sync="dialogVisible"
-            :width="dialogWidth"
-            @close="resetDialog"
-            :before-close="resetDialog"
-            class="dialog-container"
-        >
-            <div v-html="dialogContent" class="dialog-content"></div>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="resetDialog">关闭</el-button>
-            </div>
-        </el-dialog>
-    </div>
-    <div class="no-access-container" v-else>
-        <el-image src="https://th.bing.com/th/id/R.43154c2eed5a578eb233439593ab8bb7?rik=Dpp%2fywekYckTzQ&pid=ImgRaw&r=0&sres=1&sresct=1"></el-image>
+    <div class="article-review">
+        <!-- 手机端布局 -->
+        <div class="mobile-layout" v-if="isMobile">
+            <el-card class="box-card" style="width: 100%; overflow: auto;">
+                <div slot="header" class="mobile-header clearfix">
+                    <el-button type="default" @click="goBack" class="back-button">
+                        <i class="el-icon-arrow-left"></i> 返回
+                    </el-button>
+                    <span class="header-title">文章审核</span>
+                </div>
+                <div class="mobile-article-list">
+                    <el-card
+                        v-for="article in articles"
+                        :key="article.id"
+                        class="mobile-article-card"
+                        style="margin-bottom: 15px;"
+                    >
+                        <h3>{{ article.title }}</h3>
+                        <p><strong>分类:</strong> {{ article.category }}</p>
+                        <p><strong>作者:</strong> {{ article.author }}</p>
+                        <p><strong>来源:</strong> {{ article.source }}</p>
+                        <p><strong>创建时间:</strong> {{ formatDate(article.created_at) }}</p>
+                        <p><strong>修改时间:</strong> {{ formatDate(article.updated_at) }}</p>
+                        <p>
+                            <strong>状态:</strong>
+                            <el-tag :type="getStatusTagType(article.status)">{{ article.status }}</el-tag>
+                        </p>
+                        <div class="mobile-actions">
+                            <el-button
+                                v-if="article.status === '待审核'"
+                                size="mini"
+                                type="primary"
+                                @click="approveArticle(article)"
+                            >
+                                通过
+                            </el-button>
+                            <el-button
+                                v-if="article.status === '待审核'"
+                                size="mini"
+                                type="danger"
+                                @click="confirmDeleteArticle(article)"
+                            >
+                                拒绝
+                            </el-button>
+                            <el-button
+                                size="mini"
+                                @click="viewDetails(article)"
+                            >
+                                查看详情
+                            </el-button>
+                        </div>
+                    </el-card>
+                    <el-dialog
+                        title="文章详情"
+                        :visible.sync="dialogVisible"
+                        :width="dialogWidth"
+                        @close="resetDialog"
+                        :before-close="resetDialog"
+                        class="dialog-container"
+                    >
+                        <div v-html="dialogContent" class="dialog-content"></div>
+                        <div slot="footer" class="dialog-footer">
+                            <el-button @click="resetDialog">关闭</el-button>
+                        </div>
+                    </el-dialog>
+                </div>
+                <el-pagination
+                    class="pagination"
+                    background
+                    layout="prev, pager, next, total"
+                    :total="total"
+                    :page-size="pageSize"
+                    :current-page="currentPage"
+                    @current-change="handlePageChange"
+                ></el-pagination>
+            </el-card>
+        </div>
 
-        <p>您没有权限访问此页面。</p>
+        <!-- 桌面端布局 -->
+        <div class="desktop-layout" v-else>
+            <div v-if="isAdmin">
+                <el-card class="box-card" style="width: 100%; overflow: auto;">
+                    <div slot="header" class="header clearfix">
+                        <el-button type="default" @click="goBack" class="back-button">
+                            <i class="el-icon-arrow-left"></i> 返回
+                        </el-button>
+                        <span class="header-title">文章审核</span>
+                    </div>
+                    <el-table :data="articles" class="article-table">
+                        <el-table-column prop="title" label="标题" min-width="220"></el-table-column>
+                        <el-table-column prop="category" label="分类" min-width="150"></el-table-column>
+                        <el-table-column prop="author" label="作者" min-width="150"></el-table-column>
+                        <el-table-column prop="source" label="来源" min-width="150"></el-table-column>
+                        <el-table-column
+                            prop="created_at"
+                            label="创建日期"
+                            min-width="180"
+                            :formatter="(row, column, cellValue) => formatDate(cellValue)"
+                        ></el-table-column>
+                        <el-table-column
+                            prop="updated_at"
+                            label="修改日期"
+                            min-width="180"
+                            :formatter="(row, column, cellValue) => formatDate(cellValue)"
+                        ></el-table-column>
+                        <el-table-column prop="status" label="审核状态" min-width="120">
+                            <template slot-scope="scope">
+                                <el-tag :type="getStatusTagType(scope.row.status)">
+                                    {{ scope.row.status }}
+                                </el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" min-width="250">
+                            <template slot-scope="scope">
+                                <el-button
+                                    v-if="scope.row.status === '待审核'"
+                                    size="small"
+                                    type="primary"
+                                    @click="approveArticle(scope.row)"
+                                    class="approve-button"
+                                >
+                                    通过
+                                </el-button>
+                                <el-button
+                                    v-if="scope.row.status === '待审核'"
+                                    size="small"
+                                    type="danger"
+                                    @click="confirmDeleteArticle(scope.row)"
+                                    class="reject-button"
+                                >
+                                    拒绝
+                                </el-button>
+                                <el-button
+                                    size="small"
+                                    @click="viewDetails(scope.row)"
+                                >
+                                    查看详情
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="pagination-container">
+                        <el-col>
+                            <span class="page-size-label">请选择单页展示的记录条数:</span>
+                            <el-select style="width: 10%" v-model="pageSize" @change="handlePageSizeChange" class="page-size-selector">
+                                <el-option label="10条/页" value="10"></el-option>
+                                <el-option label="20条/页" value="20"></el-option>
+                                <el-option label="50条/页" value="50"></el-option>
+                            </el-select>
+                            <el-pagination
+                                class="pagination"
+                                background
+                                layout="prev, pager, next, total"
+                                :total="total"
+                                :page-size="pageSize"
+                                :current-page="currentPage"
+                                @current-change="handlePageChange"
+                            ></el-pagination>
+                        </el-col>
+                    </div>
+                </el-card>
+                <el-dialog
+                    title="文章详情"
+                    :visible.sync="dialogVisible"
+                    :width="dialogWidth"
+                    @close="resetDialog"
+                    :before-close="resetDialog"
+                    class="dialog-container"
+                >
+                    <div v-html="dialogContent" class="dialog-content"></div>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="resetDialog">关闭</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+            <div class="no-access-container" v-else>
+                <el-image src="https://th.bing.com/th/id/R.43154c2eed5a578eb233439593ab8bb7?rik=Dpp%2fywekYckTzQ&pid=ImgRaw&r=0&sres=1&sresct=1"></el-image>
+                <p>您没有权限访问此页面。</p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -116,6 +189,7 @@ export default {
     data() {
         return {
             isAdmin: false,
+            isMobile: false,
             articles: [],
             dialogVisible: false,
             dialogContent: '',
@@ -129,10 +203,14 @@ export default {
         this.fetchArticles();
         this.checkIfAdmin();
     },
+    mounted() {
+        window.addEventListener('resize', this.checkIfMobile);
+    },
     beforeDestroy() {
         if (this.redirectTimer) {
             clearTimeout(this.redirectTimer);
         }
+        window.removeEventListener('resize', this.checkIfMobile);
     },
     watch: {
         dialogVisible(newVal) {
@@ -144,6 +222,9 @@ export default {
         }
     },
     methods: {
+        checkIfMobile(){
+            this.isMobile = window.innerWidth <= 768;
+        },
         goBack() {
             this.$router.go(-1);
         },
@@ -167,7 +248,7 @@ export default {
         },
         async fetchArticles() {
             try {
-                const response = await axios.get(this.$baseUrl + '/api/articles/articleList',
+                const response = await axios.get(this.$baseUrl + '/api/articles/allArticles',
                     {
                         params: {
                             pageNum: this.currentPage,
@@ -238,7 +319,7 @@ export default {
                 const dialogContentElement = this.$el.querySelector('.dialog-content');
                 if (dialogContentElement) {
                     const contentWidth = dialogContentElement.scrollWidth;
-                    const maxWidth = window.innerWidth * 0.75; // Maximum width (e.g., 75% of window width)
+                    const maxWidth = window.innerWidth * 0.75;
                     this.dialogWidth = Math.min(contentWidth, maxWidth) + 'px';
                 }
             });
@@ -271,7 +352,7 @@ export default {
 </script>
 
 <style scoped>
-.article-review {
+.desktop-layout {
     padding: 10px;
     width: 100%;
 }

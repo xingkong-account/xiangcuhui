@@ -47,7 +47,7 @@ export default {
             selectedTeam: {},
             total: 0,
             currentPage:1,
-            pageSoze: 100
+            pageSize: 10
         };
     },
     created() {
@@ -59,7 +59,7 @@ export default {
                 const response = await axios.get(this.$baseUrl + '/api/team-members', {
                     params: {
                         pageNum: this.currentPage,
-                        pageSize: this.pageSoze
+                        pageSize: this.pageSize
                     }
                 });
                 this.teamMembers = response.data.data;
@@ -95,7 +95,8 @@ export default {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    height: 100%;
+    height: auto;
+    min-height: 90vh;
     width: 100%;
 }
 

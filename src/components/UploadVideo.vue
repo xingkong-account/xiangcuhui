@@ -1,6 +1,7 @@
 <template>
-    <div class="upload-video-page">
-        <el-form :model="videoForm" :rules="rules" ref="videoForm" label-width="120px" class="video-form">
+    <div class="upload-video-page" :class="{ 'mobile-layout': isMobile }">
+        <!-- 电脑端布局 -->
+        <el-form v-if="!isMobile" :model="videoForm" :rules="rules" ref="videoForm" label-width="120px" class="video-form">
             <el-form-item label="视频标题" prop="title">
                 <el-input v-model="videoForm.title" placeholder="请输入视频标题"></el-input>
             </el-form-item>
@@ -47,6 +48,55 @@
                 <el-button plain @click="goBack">取消</el-button>
             </el-form-item>
         </el-form>
+
+        <!-- 手机端布局 -->
+        <el-form v-if="isMobile" :model="videoForm" :rules="rules" ref="videoForm" label-width="90px" class="video-form mobile-form">
+            <el-form-item label="标题" prop="title">
+                <el-input v-model="videoForm.title" placeholder="请输入视频标题"></el-input>
+            </el-form-item>
+            <el-form-item label="描述" prop="description">
+                <el-input type="textarea" v-model="videoForm.description" placeholder="请输入视频描述"></el-input>
+            </el-form-item>
+            <el-form-item label="缩略图" prop="thumbnail">
+                <el-upload
+                    class="upload-demo thumbnail-upload"
+                    drag
+                    :action="$baseUrl + '/api/upload'"
+                    list-type="picture"
+                    :show-file-list="false"
+                    :before-upload="beforeThumbnailUpload"
+                    :on-success="handleThumbnailSuccess"
+                    :on-error="handleError"
+                    :limit="1"
+                    accept="image/*"
+                >
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">拖到此处，或<em>点击上传</em></div>
+                    <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过1MB</div>
+                </el-upload>
+                <el-image v-if="videoForm.thumbnail" :src="videoForm.thumbnail" style="width: 80px; margin-top: 10px;"></el-image>
+            </el-form-item>
+            <el-form-item label="视频文件" prop="url">
+                <el-upload
+                    class="upload-demo"
+                    drag
+                    :action="$baseUrl + '/api/videos/upload'"
+                    :data="uploadData"
+                    :before-upload="beforeVideoUpload"
+                    :on-success="handleVideoSuccess"
+                    :on-error="handleError"
+                    :limit="1"
+                >
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">拖到此处，或<em>点击上传</em></div>
+                    <div class="el-upload__tip" slot="tip">只能上传mp4文件，且不超过500MB</div>
+                </el-upload>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="submitForm">提交</el-button>
+                <el-button plain @click="goBack">取消</el-button>
+            </el-form-item>
+        </el-form>
     </div>
 </template>
 
@@ -60,6 +110,7 @@ export default {
                 description: '',
                 thumbnail: ''  // 视频缩略图
             },
+            isMobile: false,
             uploadData: {},
             rules: {
                 title: [
@@ -77,7 +128,17 @@ export default {
             }
         };
     },
+    mounted() {
+        this.checkIfMobile();
+        window.addEventListener('resize', this.checkIfMobile);
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.checkIfMobile);
+    },
     methods: {
+        checkIfMobile(){
+            this.isMobile = window.innerWidth <= 768;
+        },
         beforeThumbnailUpload(file) {
             const isImage = file.type.startsWith('image/');
             if (!isImage) {
@@ -141,6 +202,7 @@ export default {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    max-height: 150vh;
     background-color: #f9f9f9;
 }
 
@@ -148,28 +210,25 @@ export default {
     background-color: #fff;
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 700px;
+    max-width: 1000px;
 }
 
-.upload-demo,
+.thumbnail-upload-item {
+    display: flex;
+    flex-direction: column;
+}
+
 .thumbnail-upload {
     width: 100%;
-    text-align: center;
+    min-height: 180px;
 }
 
 .el-upload__text {
-    font-size: 16px;
-    color: #409EFF;
+    margin-bottom: 10px;
 }
 
-.el-upload__tip {
-    font-size: 12px;
-    color: #606266;
-}
-
-.thumbnail-upload {
+.el-form-item {
     margin-bottom: 20px;
 }
 </style>

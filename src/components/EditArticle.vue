@@ -6,16 +6,23 @@
                 <el-button style="border-radius: 20px; width: 10%; height: auto" @click="navigateBack" type="default">返回</el-button>
             </div>
         </el-header>
-        <el-main>
+        <el-main class="custom-main">
             <el-form :model="article" :rules="rules" ref="form">
                 <el-form-item label="标题" prop="title">
                     <el-input v-model="article.title"></el-input>
                 </el-form-item>
+                <el-form-item label="来源" prop="source">
+                    <el-input v-model="article.source"></el-input>
+                </el-form-item>
+                <el-form-item label="浏览次数" prop="views" v-if="isAdmin">
+                    <el-input v-model="article.views"></el-input>
+                </el-form-item>
+                <br>
                 <el-form-item label="内容" prop="content">
                     <div ref="editorContainer" class="editor-container"></div>
                 </el-form-item>
                 <el-form-item label="分类" prop="category">
-                    <el-select v-model="article.category" placeholder="请选择分类">
+                    <el-select v-model="article.category" placeholder="请选择分类" popper-class="custom-dropdown">
                         <el-option label="农村党建" value="农村党建"></el-option>
                         <el-option label="集体经济" value="集体经济"></el-option>
                         <el-option label="产业发展" value="产业发展"></el-option>
@@ -25,10 +32,28 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="状态" prop="status" v-if="isAdmin">
-                    <el-select v-model="article.status">
+                    <el-select v-model="article.status" placeholder="选择审核状态" popper-class="custom-dropdown">
                         <el-option label="待审核" value="待审核"></el-option>
                         <el-option label="通过审核" value="已审核"></el-option>
                         <el-option label="拒绝" value="已拒绝"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item v-if="isAdmin">
+                    <el-select v-model="article.isTop" placeholder="选择置顶状态" popper-class="custom-dropdown">
+                        <el-option
+                            :label="article.isTop === 1 ? '置顶文章' : '取消置顶'"
+                            :value="article.isTop">
+                        </el-option>
+                        <el-option
+                            label="置顶文章"
+                            value="1"
+                            v-if="article.isTop !== 1">
+                        </el-option>
+                        <el-option
+                            label="取消置顶"
+                            value="0"
+                            v-if="article.isTop === 1">
+                        </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -40,6 +65,8 @@
     </el-container>
 </template>
 
+
+
 <script>
 import E from 'wangeditor';
 import hljs from 'highlight.js';
@@ -50,9 +77,11 @@ export default {
             article: {
                 id: null,
                 title: '',
+                views: '',
                 content: '',
                 category: '',
-                status: ''
+                status: '',
+                isTop: ''
             },
             isAdmin: false,
             author: '',
@@ -115,6 +144,7 @@ export default {
         this.$nextTick(() => {
             this.editor = new E(this.$refs.editorContainer);
             this.editor.highlight = hljs;
+            this.editor.config.height = '300px';
 
             // 配置图片上传
             this.editor.config.uploadImgServer = this.$baseUrl + '/api/articles/uploadImage';
@@ -173,58 +203,69 @@ export default {
 </script>
 
 <style scoped>
-.custom-footer {
-    background-color: #1b75bb;
-    color: #ffffff;
-    padding: 20px 0;
-    text-align: center;
-    min-height: 200px;
+.el-header {
+    background-color: #f5f7fa;
+    padding: 20px;
+    border-bottom: 1px solid #ebeef5;
 }
 
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
+.el-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
 }
 
-.footer-left, .footer-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.custom-main {
+    padding: 40px;
+    background-color: #ffffff;
 }
 
-.footer-center {
-    flex: 2;
-    text-align: center;
-}
-
-.footer-logo, .security-logo {
-    width: 80px;
-    margin-bottom: 10px;
-}
-
-.footer-center p {
-    margin: 5px 0;
-}
-
-.footer-center a {
-    color: #ffffff;
-    text-decoration: none;
-    margin: 0 10px;
-}
-
-.footer-center a:hover {
-    text-decoration: underline;
-}
 .el-form-item {
     margin-bottom: 20px;
 }
+
 .editor-container {
-    border: 1px solid #ddd;
-    min-height: 200px;
+    min-height: 300px;
+    border: 1px solid #dcdfe6;
     padding: 10px;
+    border-radius: 4px;
+    background-color: #fff;
 }
+
+.custom-dropdown .el-select-dropdown__item {
+    font-size: 14px;
+}
+
+.el-button {
+    padding: 10px 20px;
+}
+
+.el-button[type="primary"] {
+    background-color: #409eff;
+    border-color: #409eff;
+    color: #fff;
+}
+
+.el-button[type="default"] {
+    background-color: #fff;
+    border-color: #dcdfe6;
+    color: #606266;
+}
+
+.el-select {
+    width: 100%;
+}
+
+.el-form-item:last-child {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.el-form-item:last-child .el-button {
+    margin-left: 10px;
+}
+
 </style>
+
+
+

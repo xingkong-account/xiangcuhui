@@ -24,13 +24,7 @@ public class ArticleService {
     }
 
     public Article findById(Integer id) {
-        Article article = articleMapper.findById(id);
-        if (article != null) {
-            // 获取与文章关联的图片
-            List<Image> images = imageService.findByArticleId(id);
-            article.setImages(images);
-        }
-        return article;
+        return articleMapper.findById(id);
     }
 
     public Article insert(Article article) {
@@ -75,6 +69,13 @@ public class ArticleService {
 
     public List<Article> getPopularArticles() {
         return articleMapper.selectPopularArticles();
+    }
+
+    public PageResult<Article> getAllCheckedArticles(int pageNum, int pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        List<Article> articles = articleMapper.findAllChecked(offset, pageSize);
+        int total = articleMapper.countAllChecked();
+        return new PageResult<>(articles, total, pageNum, pageSize);
     }
 
     public PageResult<Article> getAllArticles(int pageNum, int pageSize) {

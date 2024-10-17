@@ -160,8 +160,8 @@ export default {
         };
         return {
             user: {
-                name: 'admin',
-                password: '1',
+                name: '',
+                password: '',
                 type: '',
                 code: ''  // 图形验证码
             },

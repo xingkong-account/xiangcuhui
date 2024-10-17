@@ -1,12 +1,16 @@
 package com.project.mapper;
 
+import com.project.bean.Advertisement;
 import com.project.bean.Image;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 @Mapper
 public interface ImageMapper {
-    List<Image> findByArticleId(Integer articleId);
-    void insert(Image image);
-    void deleteByArticleId(Integer articleId);
+    int insertAdvertisement(Advertisement advertisement);
+    List<Advertisement> selectAllAdvertisements();
+    void deleteAdvertisement(int adId);
+
 }

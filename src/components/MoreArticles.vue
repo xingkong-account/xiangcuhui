@@ -15,7 +15,7 @@
                         <div class="article-info">
                             <h2 class="article-title">{{ article.title }}</h2>
                             <p class="article-meta">发布于: {{ formatDate(article.created_at) }} 作者: {{ article.author }}</p>
-                            <p class="article-snippet">{{ getSnippet(article.content) }}</p>
+<!--                            <p class="article-snippet">{{ getSnippet(article.content) }}</p>-->
                         </div>
                     </div>
                 </router-link>

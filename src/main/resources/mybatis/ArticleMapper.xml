@@ -3,15 +3,28 @@
 
 <mapper namespace="com.project.mapper.ArticleMapper">
 
-    <select id="findAll" parameterType="map" resultType="com.project.bean.Article">
+    <select id="findAllChecked" parameterType="map" resultType="com.project.bean.Article">
         SELECT *
         FROM articles
+        where status = '已审核'
         LIMIT #{limit}
         OFFSET #{offset}
     </select>
 
     <select id="countAll" resultType="int">
         SELECT COUNT(*) FROM articles
+    </select>
+
+    <select id="findAll" parameterType="map" resultType="com.project.bean.Article">
+        SELECT *
+        FROM articles
+            LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="countAllChecked" resultType="int">
+        SELECT COUNT(*) FROM articles
+        where status = '已审核'
     </select>
 
     <!--分页获取指定作者的文章-->
@@ -37,6 +50,8 @@
         a.author,
         a.source,
         a.views,
+        a.status,
+        a.isTop,
         a.font_size AS fontSize,
         a.created_at,
         a.updated_at
@@ -59,7 +74,9 @@
             category = #{category},
             created_at = #{created_at},
             updated_at = #{updated_at},
-            status = #{status}
+            views = #{views},
+            status = #{status},
+            isTop = #{isTop}
         WHERE id = #{id}
     </update>
 
@@ -94,7 +111,8 @@
             author,
             source,
             views,
-            font_size
+            font_size,
+            isTop
         FROM articles
         WHERE category = #{category}
         ORDER BY created_at DESC
@@ -103,6 +121,7 @@
     <!-- 获取最新文章 -->
     <select id="selectLatestArticles" resultType="com.project.bean.Article">
         SELECT * FROM articles
+        WHERE status = '已审核'
         ORDER BY updated_at DESC
             LIMIT 10
     </select>
@@ -110,10 +129,12 @@
     <!-- 获取最热文章 -->
     <select id="selectPopularArticles" resultType="com.project.bean.Article">
         SELECT * FROM articles
+        WHERE status = '已审核'
         ORDER BY views DESC
             LIMIT 10
     </select>
 
+    <!--获取所有文章-->
     <select id="getAllArticles" parameterType="map" resultType="com.project.bean.Article">
         SELECT
         *

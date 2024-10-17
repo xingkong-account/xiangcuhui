@@ -18,7 +18,7 @@
         <div v-else class="video-container">
             <div v-if="videos.length > 0" class="video-item-large">
                 <div class="video-thumbnail" @click="playVideo(videos[0])">
-                    <img :src="videos[0].thumbnail" alt="视频缩略图" />
+                    <img :src="videos[0].thumbnail" class="video-thumbnail-img" alt="视频缩略图" />
                     <div class="video-play-button">▶</div>
                 </div>
             </div>
@@ -41,10 +41,12 @@
         </div>
 
         <el-dialog
+            :modal="false"
+            :close-on-click-modal="false"
             v-if="currentVideo"
+            width="70%"
+            style="height: auto; max-height: 100%"
             :visible.sync="videoDialogVisible"
-            width="80%"
-            center
             @close="closeVideoDialog"
         >
             <div class="video-player">
@@ -297,7 +299,7 @@ export default {
 
 .video-thumbnail img {
     width: 100%;
-    height: 300px;
+    height: 100%;
     object-fit: cover;
     border-radius: inherit;
 }
@@ -329,6 +331,14 @@ p {
 
 .video-player {
     text-align: center;
+}
+@media (max-width: 768px) {
+    .video-play-button {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+        scale: 1.2;
+    }
 }
 </style>
 

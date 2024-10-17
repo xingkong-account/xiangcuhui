@@ -81,6 +81,7 @@
                         <el-table-column type="selection" width="55"></el-table-column>
                         <el-table-column prop="id" label="ID" width="80"></el-table-column>
                         <el-table-column prop="name" label="团体名称" width="120"></el-table-column>
+                        <el-table-column prop="email" label="邮箱" width="150"></el-table-column>
                         <el-table-column prop="image_url" label="团体图片" width="120">
                             <template v-slot="scope">
                                 <div class="image-container">
@@ -103,7 +104,7 @@
                         <el-table-column label="操作" width="180">
                             <template slot-scope="scope">
                                 <el-button
-                                    size="mini"
+                                    size="medium"
                                     type="text"
                                     class="edit-btn"
                                     :disabled="!canEdit(scope.row)"
@@ -111,7 +112,7 @@
                                 >编辑
                                 </el-button>
                                 <el-button
-                                    size="mini"
+                                    size="medium"
                                     type="text"
                                     class="delete-btn"
                                     :disabled="!isAdmin"
@@ -139,22 +140,24 @@
                     title="编辑团体会员"
                     :visible.sync="dialogVisible"
                     width="50%"
+                    :modal="false"
+                    :close-on-click-modal="false"
                     @close="resetDialog"
                 >
-                    <el-form :model="currentMember" ref="editForm" label-width="100px" class="edit-form">
-                        <el-form-item label="团体名称">
+                    <el-form :model="currentMember" ref="editForm" label-width="100px" :rules="rules" class="edit-form">
+                        <el-form-item label="团体名称" prop="name">
                             <el-input v-model="currentMember.name" placeholder="请输入团体名称"></el-input>
                         </el-form-item>
-                        <el-form-item label="联系方式">
+                        <el-form-item label="联系方式" prop="phone">
                             <el-input v-model="currentMember.phone" placeholder="请输入联系方式"></el-input>
                         </el-form-item>
-                        <el-form-item label="邮箱">
+                        <el-form-item label="邮箱" prop="email">
                             <el-input v-model="currentMember.email" placeholder="请输入邮箱地址"></el-input>
                         </el-form-item>
-                        <el-form-item label="简介">
+                        <el-form-item label="简介" prop="description">
                             <el-input type="textarea" v-model="currentMember.description" placeholder="请输入团队简介"></el-input>
                         </el-form-item>
-                        <el-form-item label="官网">
+                        <el-form-item label="官网" prop="website">
                             <el-input v-model="currentMember.website" placeholder="请输入团队官网地址"></el-input>
                         </el-form-item>
                         <el-form-item label="上传图片" prop="image_url">
@@ -166,13 +169,14 @@
                                 :on-success="handleUploadSuccess"
                                 :on-error="handleUploadError"
                                 :limit="1"
-                                accept="image/*">
+                                accept="image/*"
+                            >
                                 <el-button size="small" type="primary">点击上传</el-button>
                                 <div slot="tip" class="el-upload__tip">只能上传图片文件</div>
                             </el-upload>
                             <el-image v-if="currentMember.image_url" :src="currentMember.image_url" style="width: 100px; margin-top: 10px;"></el-image>
                         </el-form-item>
-                        <el-form-item label="状态" v-if="isAdmin">
+                        <el-form-item label="状态" v-if="isAdmin" prop="status">
                             <el-select v-model="currentMember.status" placeholder="请选择状态">
                                 <el-option label="待审核" value="待审核"></el-option>
                                 <el-option label="已审核" value="已审核"></el-option>
@@ -254,13 +258,31 @@
             <el-card v-for="member in members" :key="member.id" class="mobile-member-card">
                 <div class="member-info">
                     <p>团体名称: {{ member.name }}</p>
-                    <p>电话: {{ member.phone }}</p>
+                    <p>团体简介: {{ member.description }}</p>
+                    <p><strong>官网:</strong> <a :href="member.website" target="_blank">{{ member.website }}</a></p>
+                    <p>邮箱: {{ member.email }}</p>
+                    <p>联系方式: {{ member.phone }}</p>
                     <p>状态: {{ member.status }}</p>
+                    <p>创建时间: {{ formatDate(member.created_at) }}</p>
+                    <p>修改时间: {{ formatDate(member.updated_at) }}</p>
                 </div>
                 <div class="member-actions">
-                    <el-button @click="openEditDialog(member)">编辑</el-button>
-                    <el-button type="danger" @click="deleteMember(member.id)">删除</el-button>
+                    <el-button
+                        size="mini"
+                        type="primary"
+                        :disabled="!canEdit(member)"
+                        @click="openEditDialog(member)">
+                        编辑
+                    </el-button>
+                    <el-button
+                        size="mini"
+                        type="danger"
+                        :disabled="!isAdmin"
+                        @click="deleteMember(member.id)">
+                        删除
+                    </el-button>
                 </div>
+
             </el-card>
         </div>
 
@@ -276,16 +298,42 @@
             ></el-pagination>
         </div>
 
-        <!-- 编辑团体会员对话框 -->
+        <!-- 手机端编辑团体会员对话框 -->
         <el-dialog title="编辑团体会员" :visible.sync="dialogVisible" width="90%">
-            <el-form :model="currentMember" ref="editForm" label-width="80px">
-                <el-form-item label="团体名称">
+            <el-form :model="currentMember" ref="editForm" label-width="80px" :rules="rules">
+                <el-form-item label="团体名称" prop="name">
                     <el-input v-model="currentMember.name" placeholder="请输入团体名称"></el-input>
                 </el-form-item>
-                <el-form-item label="电话">
-                    <el-input v-model="currentMember.phone" placeholder="请输入电话"></el-input>
+                <el-form-item label="联系方式" prop="phone">
+                    <el-input v-model="currentMember.phone" placeholder="请输入联系方式"></el-input>
                 </el-form-item>
-                <el-form-item label="状态">
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="currentMember.email" placeholder="请输入邮箱地址"></el-input>
+                </el-form-item>
+                <el-form-item label="简介" prop="description">
+                    <el-input type="textarea" v-model="currentMember.description" placeholder="请输入团队简介"></el-input>
+                </el-form-item>
+                <el-form-item label="官网" prop="website">
+                    <el-input v-model="currentMember.website" placeholder="请输入团队官网地址"></el-input>
+                </el-form-item>
+                <el-form-item label="上传图片" prop="image_url">
+                    <el-upload
+                        class="upload-button"
+                        :action="$baseUrl + '/api/upload'"
+                        list-type="picture"
+                        :show-file-list="false"
+                        :on-success="handleUploadSuccess"
+                        :on-error="handleUploadError"
+                        :limit="1"
+                        accept="image/*"
+                        :before-upload="beforeUpload"
+                    >
+                        <el-button size="small" type="primary">点击上传</el-button>
+                        <div slot="tip" class="el-upload__tip">只能上传图片文件</div>
+                    </el-upload>
+                    <el-image v-if="currentMember.image_url" :src="currentMember.image_url" style="width: 100px; margin-top: 10px;"></el-image>
+                </el-form-item>
+                <el-form-item label="状态" v-if="isAdmin" prop="status">
                     <el-select v-model="currentMember.status" placeholder="请选择状态">
                         <el-option label="待审核" value="待审核"></el-option>
                         <el-option label="已审核" value="已审核"></el-option>
@@ -342,6 +390,34 @@ export default {
             pageSize: 10,
             selectedMembers: [],
             selectAll: false,
+            rules: {
+                name: [
+                    { required: true, message: '请输入团体名称', trigger: 'blur' }
+                ],
+                phone: [
+                    { required: true, message: '请输入联系方式', trigger: 'blur' }
+                ],
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' },
+                    {
+                        pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: '邮箱格式不正确',
+                        trigger: 'blur'
+                    }
+                ],
+                description: [
+                    { required: true, message: '请输入团队简介', trigger: 'blur' }
+                ],
+                website: [
+                    { required: true, message: '请输入团队官网地址', trigger: 'blur' }
+                ],
+                image_url: [
+                    { required: true, message: '请上传图片', trigger: 'change' }
+                ],
+                status: [
+                    { required: true, message: '请选择状态', trigger: 'change' }
+                ]
+            }
         };
     },
     methods: {
@@ -373,15 +449,22 @@ export default {
             }
         },
         async submitEditForm() {
-            try {
-                await axios.post(this.$baseUrl + `/api/update-team/${this.currentMember.id}`, this.currentMember);
-                this.$message.success('团体会员信息更新成功');
-                this.dialogVisible = false;
-                await this.fetchMembers();
-            } catch (error) {
-                console.error('团体会员信息更新失败:', error);
-                this.$message.error('团体会员信息更新失败');
-            }
+            this.$refs.editForm.validate(async (valid) => {
+                if (valid) {
+                    try {
+                        await axios.post(this.$baseUrl + `/api/update-team/${this.currentMember.id}`, this.currentMember);
+                        this.$message.success('团体会员信息更新成功');
+                        this.dialogVisible = false;
+                        await this.fetchMembers();
+                    } catch (error) {
+                        console.error('更新失败:', error);
+                        this.$message.error('团体会员信息更新失败');
+                    }
+                } else {
+                    this.$message.error('请填写完整的表单');
+                    return false;
+                }
+            });
         },
         async handleSearch() {
             if (!this.searchType) {

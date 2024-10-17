@@ -9,6 +9,7 @@
             </div>
             <el-table :data="members" style="width: 100%">
                 <el-table-column prop="name" label="团队名称" width="150"></el-table-column>
+                <el-table-column prop="email" label="团队邮箱" width="150"></el-table-column>
                 <el-table-column prop="phone" label="联系电话" width="150"></el-table-column>
                 <el-table-column prop="image_url" label="团体图片" width="120">
                     <template v-slot="scope">
@@ -34,7 +35,7 @@
                         </el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="250">
                     <template slot-scope="scope">
                         <el-button
                             v-if="scope.row.status === '待审核'"

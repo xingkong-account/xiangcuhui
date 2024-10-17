@@ -9,6 +9,8 @@ import java.util.List;
 
 @Mapper
 public interface ArticleMapper {
+    List<Article> findAllChecked(@Param("offset") int offset, @Param("limit") int limit);
+    int countAllChecked();
     List<Article> findAll(@Param("offset") int offset, @Param("limit") int limit);
     int countAll();
     List<Article> findAllByName(@Param("author") String author, @Param("offset") int offset, @Param("limit") int limit);

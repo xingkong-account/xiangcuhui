@@ -85,6 +85,7 @@
                         <el-table-column prop="id" label="ID" width="80"></el-table-column>
                         <el-table-column prop="name" label="姓名" width="120"></el-table-column>
                         <el-table-column prop="type" label="类型" width="90"></el-table-column>
+                        <el-table-column prop="email" label="邮箱" width="170"></el-table-column>
                         <el-table-column prop="phone" label="电话" width="180"></el-table-column>
                         <el-table-column prop="status" label="状态" width="100"></el-table-column>
                         <el-table-column prop="created_at" label="创建时间" width="180">
@@ -102,7 +103,6 @@
                                 <el-button
                                     size="mini"
                                     type="text"
-                                    class="edit-btn"
                                     :disabled="!canEdit(scope.row)"
                                     @click="openEditDialog(scope.row)">
                                     编辑
@@ -110,7 +110,6 @@
                                 <el-button
                                     size="mini"
                                     type="text"
-                                    class="delete-btn"
                                     :disabled="!isAdmin"
                                     @click="deleteMember(scope.row.id)">
                                     删除
@@ -132,30 +131,33 @@
                     ></el-pagination>
                 </div>
 
+                <!--编辑对话框-->
                 <el-dialog
                     title="编辑个人会员"
                     :visible.sync="dialogVisible"
                     width="50%"
+                    :modal="false"
+                    :close-on-click-modal="false"
                     @close="resetDialog"
                 >
-                    <el-form :model="currentMember" ref="editForm" label-width="100px" class="edit-form">
-                        <el-form-item label="姓名">
+                    <el-form :model="currentMember" :rules="rules" ref="editForm" label-width="100px" class="edit-form">
+                        <el-form-item label="姓名" prop="name">
                             <el-input v-model="currentMember.name" placeholder="请输入姓名"></el-input>
                         </el-form-item>
-                        <el-form-item label="电话">
+                        <el-form-item label="电话" prop="phone">
                             <el-input v-model="currentMember.phone" placeholder="请输入电话"></el-input>
                         </el-form-item>
-                        <el-form-item label="QQ邮箱">
+                        <el-form-item label="QQ邮箱" prop="email">
                             <el-input v-model="currentMember.email" placeholder="请输入QQ邮箱"></el-input>
                         </el-form-item>
-                        <el-form-item label="状态" v-if="isAdmin">
+                        <el-form-item label="状态" v-if="isAdmin" prop="status">
                             <el-select v-model="currentMember.status" placeholder="请选择状态">
                                 <el-option label="待审核" value="待审核"></el-option>
                                 <el-option label="已审核" value="已审核"></el-option>
                                 <el-option label="已拒绝" value="已拒绝"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="身份类型" v-if="isAdmin">
+                        <el-form-item label="身份类型" v-if="isAdmin" prop="type">
                             <el-select v-model="currentMember.type" placeholder="请选择会员类型">
                                 <el-option label="个人会员" value="个人会员"></el-option>
                                 <el-option label="管理员" value="管理员"></el-option>
@@ -236,12 +238,32 @@
                 <div class="member-info">
                     <p>姓名: {{ member.name }}</p>
                     <p>电话: {{ member.phone }}</p>
+                    <p>邮箱: {{ member.email }}</p>
+                    <p>类型: {{ member.type }}</p>
+                    <p>创建时间: {{ formatDate(member.created_at) }}</p>
+                    <p>修改时间: {{ formatDate(member.updated_at) }}</p>
                     <p>状态: {{ member.status }}</p>
                 </div>
                 <div class="member-actions">
-                    <el-button @click="openEditDialog(member)">编辑</el-button>
-                    <el-button type="danger" @click="deleteMember(member.id)">删除</el-button>
+                    <el-button
+                        size="mini"
+                        type="primary"
+                        class="edit-btn"
+                        :disabled="!canEdit(member)"
+                        @click="openEditDialog(member)">
+                        编辑
+                    </el-button>
+
+                    <el-button
+                        size="mini"
+                        type="danger"
+                        class="delete-btn"
+                        :disabled="!isAdmin"
+                        @click="deleteMember(member.id)">
+                        删除
+                    </el-button>
                 </div>
+
             </el-card>
         </div>
 
@@ -259,18 +281,27 @@
 
         <!-- 编辑会员对话框 -->
         <el-dialog title="编辑个人会员" :visible.sync="dialogVisible" width="90%">
-            <el-form :model="currentMember" ref="editForm" label-width="80px">
-                <el-form-item label="姓名">
+            <el-form :model="currentMember" ref="editForm" label-width="80px" :rules="rules" status-icon>
+                <el-form-item label="姓名" prop="name">
                     <el-input v-model="currentMember.name" placeholder="请输入姓名"></el-input>
                 </el-form-item>
-                <el-form-item label="电话">
+                <el-form-item label="电话" prop="phone">
                     <el-input v-model="currentMember.phone" placeholder="请输入电话"></el-input>
                 </el-form-item>
-                <el-form-item label="状态">
+                <el-form-item label="QQ邮箱" prop="email">
+                    <el-input v-model="currentMember.email" placeholder="请输入QQ邮箱"></el-input>
+                </el-form-item>
+                <el-form-item label="状态" v-if="isAdmin" prop="status">
                     <el-select v-model="currentMember.status" placeholder="请选择状态">
                         <el-option label="待审核" value="待审核"></el-option>
                         <el-option label="已审核" value="已审核"></el-option>
                         <el-option label="已拒绝" value="已拒绝"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="身份类型" v-if="isAdmin" prop="type">
+                    <el-select v-model="currentMember.type" placeholder="请选择会员类型">
+                        <el-option label="个人会员" value="个人会员"></el-option>
+                        <el-option label="管理员" value="管理员"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -303,7 +334,7 @@ export default {
                 id: null,
                 name: '',
                 phone: '',
-                mail: '',
+                email: '',
                 status: '待审核',
                 type: '个人会员'
             },
@@ -319,6 +350,26 @@ export default {
             pageSize: 10,
             selectedMembers: [],
             selectAll: false,
+            rules: {
+                name: [
+                    { required: true, message: '请输入姓名', trigger: 'blur' },
+                    { min: 1, message: '姓名长度不能少于1个字符', trigger: 'blur' }
+                ],
+                phone: [
+                    { required: true, message: '请输入电话', trigger: 'blur' },
+                    { pattern: /^1[3-9]\d{9}$/, message: '电话格式不正确', trigger: 'blur' }
+                ],
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' },
+                    {
+                        pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: '邮箱格式不正确',
+                        trigger: 'blur'
+                    }
+                ],
+                status: [{ required: true, message: '请选择状态', trigger: 'change' }],
+                type: [{ required: true, message: '请选择会员类型', trigger: 'change' }]
+            }
         };
     },
     methods: {
@@ -334,10 +385,15 @@ export default {
         },
         async submitEditForm() {
             try {
-                await axios.post(this.$baseUrl + `/api/update-personal/${this.currentMember.id}`, this.currentMember);
-                this.$message.success('会员信息更新成功');
-                this.dialogVisible = false;
-                await this.fetchMembers();
+                const valid = await this.$refs.editForm.validate();
+                if (valid) {
+                    await axios.post(`${this.$baseUrl}/api/update-personal/${this.currentMember.id}`, this.currentMember);
+                    this.$message.success('会员信息更新成功');
+                    this.dialogVisible = false;
+                    await this.fetchMembers();
+                } else {
+                    this.$message.error('请检查表单内容');
+                }
             } catch (error) {
                 console.error('Failed to update member:', error);
                 this.$message.error('会员信息更新失败');
@@ -367,6 +423,7 @@ export default {
         resetDialog() {
             this.currentMember = {};
             this.dialogVisible = false;
+            this.$refs.editForm.clearValidate();
         },
         async deleteMember(id) {
             this.$confirm('确定要删除这个会员吗?', '警告', {
@@ -612,7 +669,7 @@ export default {
 
 .edit-btn,
 .delete-btn {
-    color: #67c23a;
+    color: white;
     margin-right: 10px;
 }
 

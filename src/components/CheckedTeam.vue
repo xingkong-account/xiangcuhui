@@ -9,7 +9,16 @@
 
         <div class="table-container">
             <el-table :data="members" style="width: 100%;" border>
-                <el-table-column prop="name" label="团体名称" width="150"></el-table-column>
+                <el-table-column
+                    prop="name"
+                    label="团体名称"
+                    width="150">
+                </el-table-column>
+                <el-table-column
+                    prop="email"
+                    label="团体邮箱"
+                    width="150">
+                </el-table-column>
                 <el-table-column
                         prop="type"
                         label="团体类型"
@@ -40,7 +49,7 @@
                         </el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="120">
                     <template slot-scope="scope">
                         <el-button
                                 size="small"

@@ -7,18 +7,23 @@
             <span class="header-title">个人会员审核</span>
         </div>
 
-<!--        <div>-->
-<!--            <h3>测试输出:</h3>-->
-<!--            <pre>{{ members }}</pre>-->
-<!--        </div>-->
-
-        <div class="table-container">
+        <!-- 桌面端表格布局 -->
+        <div class="table-container" v-show="!isMobile">
             <el-table :data="members" style="width: 100%;" border>
-                <el-table-column prop="name" label="姓名" width="150"></el-table-column>
+                <el-table-column
+                    prop="name"
+                    label="姓名"
+                    width="150">
+                </el-table-column>
+                <el-table-column
+                    prop="email"
+                    label="邮箱"
+                    width="180"
+                ></el-table-column>
                 <el-table-column
                     prop="type"
                     label="会员类型"
-                    width="180"
+                    width="100"
                 ></el-table-column>
                 <el-table-column prop="phone" label="联系方式" width="150"></el-table-column>
                 <el-table-column
@@ -40,7 +45,7 @@
                         </el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
                         <el-button
                             v-if="scope.row.status === '待审核'"
@@ -72,6 +77,53 @@
             </el-table>
         </div>
 
+        <!-- 手机端卡片布局 -->
+        <div v-show="isMobile" class="mobile-card-list">
+            <el-card
+                v-for="(member, index) in members"
+                :key="index"
+                class="mobile-card"
+                shadow="hover">
+                <div class="mobile-card-content">
+                    <h3 class="mobile-card-title">姓名：{{ member.name }}</h3>
+                    <p class="mobile-card-type">邮箱: {{ member.email }}</p>
+                    <p class="mobile-card-type">会员类型: {{ member.type }}</p>
+                    <p class="mobile-card-phone">联系方式: {{ member.phone }}</p>
+                    <p class="mobile-card-created-at">注册日期: {{ formatDate(member.created_at) }}</p>
+                    <p class="mobile-card-updated-at">修改日期: {{ formatDate(member.updated_at) }}</p>
+                    <el-tag :type="getStatusTagType(member.status)" class="status-tag">
+                       {{ member.status }}
+                    </el-tag>
+
+                    <div class="mobile-card-actions">
+                        <el-button
+                            v-if="member.status === '待审核'"
+                            size="small"
+                            type="primary"
+                            @click="approveMember(member)"
+                        >
+                            通过
+                        </el-button>
+                        <el-button
+                            v-if="member.status === '待审核'"
+                            size="small"
+                            type="danger"
+                            @click="confirmRejectMember(member)"
+                        >
+                            拒绝
+                        </el-button>
+                        <el-button
+                            v-else
+                            size="small"
+                            @click="viewDetails(member)"
+                        >
+                            查看详情
+                        </el-button>
+                    </div>
+                </div>
+            </el-card>
+        </div>
+
         <!-- 添加分页组件 -->
         <el-pagination
             @size-change="handlePageSizeChange"
@@ -98,12 +150,12 @@
             </div>
         </el-dialog>
     </div>
+
     <div class="image-container" v-else>
         <p>您没有权限访问此页面。</p>
         <img src="@/assets/images/403.png">
     </div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -113,6 +165,7 @@ export default {
         return {
             members: [],
             isAdmin: false,
+            isMobile: false,
             dialogVisible: false,
             dialogContent: '',
             redirectTimer: null,
@@ -125,12 +178,20 @@ export default {
         this.fetchMembers();
         this.checkIfAdmin();
     },
+    mounted() {
+        this.checkIfMobile();
+        window.addEventListener('resize', this.checkIfMobile);
+    },
     beforeDestroy() {
         if (this.redirectTimer) {
             clearTimeout(this.redirectTimer);
         }
+        window.removeEventListener('resize', this.checkIfMobile);
     },
     methods: {
+        checkIfMobile(){
+            this.isMobile = window.innerWidth <= 768;
+        },
         handlePageChange(page) {
             this.currentPage = page;
             this.fetchMembers();
@@ -250,6 +311,7 @@ export default {
     padding: 20px;
     background-color: #f5f7fa;
     min-height: 100vh;
+    width: 100%;
 }
 
 .header-container {

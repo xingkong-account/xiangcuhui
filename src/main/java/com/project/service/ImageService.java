@@ -1,5 +1,6 @@
 package com.project.service;
 
+import com.project.bean.Advertisement;
 import com.project.bean.Image;
 import com.project.mapper.ImageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +14,14 @@ public class ImageService {
     @Autowired
     private ImageMapper imageMapper;
 
-    public List<Image> findByArticleId(Integer articleId) {
-        return imageMapper.findByArticleId(articleId);
+    public void insertAdvertisement(Advertisement advertisement) {
+        imageMapper.insertAdvertisement(advertisement);
     }
 
-    public void insert(Image image) {
-        imageMapper.insert(image);
+    public List<Advertisement> getAllAdvertisements(){
+        return imageMapper.selectAllAdvertisements();
     }
-
-    public void deleteByArticleId(Integer articleId) {
-        imageMapper.deleteByArticleId(articleId);
+    public void deleteAdvertisement(int adId) {
+        imageMapper.deleteAdvertisement(adId);
     }
 }

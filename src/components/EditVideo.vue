@@ -96,6 +96,7 @@ export default {
         fetchVideoDetails(id) {
             axios.get(this.$baseUrl + `/api/videos/${id}`).then(response => {
                 this.video = response.data;
+                this.mobileVideo = response.data;
                 // this.$alert(this.video);
                 if (this.video.thumbnail) {
                     this.videoForm.thumbnail = response.data.thumbnail;
@@ -134,11 +135,13 @@ export default {
         handleThumbnailSuccess(response) {
             this.videoForm.thumbnail = response.url;
             this.video.thumbnail = response.url;
+            this.mobileVideo.thumbnail = response.url;
             this.$message.success('缩略图上传成功!');
         },
         handleVideoSuccess(response) {
             this.videoForm.url = response.url;
             this.video.url = response.url;
+            this.mobileVideo.url = response.url;
             this.$message.success('视频上传成功!');
         },
         handleError() {
