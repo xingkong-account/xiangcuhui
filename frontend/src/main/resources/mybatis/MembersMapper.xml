@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.mapper.MembersMapper">
+
+    <delete id="deleteAllByIdIn" parameterType="java.util.List">
+        DELETE FROM members
+        WHERE id IN
+        <foreach collection="memberIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="findByUsername" parameterType="java.lang.String" resultType="com.project.bean.Member">
+        select * from members where name = #{name}
+    </select>
+
+<!--    查找相同邮箱的用户，返回一个集合-->
+    <select id="findMemberByEmail" parameterType="java.lang.String" resultType="com.project.bean.Member">
+        select * from members where email = #{email}
+    </select>
+
+    <select id="findByEmail" parameterType="java.lang.String" resultType="com.project.bean.Member">
+        select * from members where email = #{email}
+        Limit 1
+    </select>
+
+    <select id="findAllUnChecked" parameterType="map" resultType="com.project.bean.Member">
+        SELECT *
+        FROM members
+        WHERE type = '个人会员'
+        AND status = '待审核'
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="findAll" parameterType="map" resultType="com.project.bean.Member">
+        SELECT *
+        FROM members
+        WHERE type = '个人会员'
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="findAllChecked" parameterType="map" resultType="com.project.bean.Member">
+        SELECT *
+        FROM members
+        WHERE type = '个人会员'
+        AND status = '已审核'
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="searchMembers" resultType="com.project.bean.Member">
+        SELECT * FROM members
+        WHERE 1 = 1
+        <if test="select == 'name' and query != null and query != ''">
+            AND name LIKE CONCAT('%', #{query}, '%')
+        </if>
+        <if test="select == 'phone' and query != null and query != ''">
+            AND phone LIKE CONCAT('%', #{query}, '%')
+        </if>
+        <if test="select == 'status' and query != null and query != ''">
+            AND status = #{query}
+        </if>
+        AND type = '个人会员'
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*)
+        FROM members
+        WHERE type = '个人会员'
+    </select>
+
+    <select id="countAllChecked" resultType="int">
+        SELECT COUNT(*)
+        FROM members
+        WHERE type = '个人会员'
+        AND status = '已审核'
+    </select>
+
+    <select id="countAllUnChecked" resultType="int">
+        SELECT COUNT(*)
+        FROM members
+        WHERE type = '个人会员'
+        AND status = '待审核'
+    </select>
+    <!-- 添加会员 -->
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO members
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="type != null">type,</if>
+            <if test="email != null">email,</if>
+            <if test="phone != null">phone,</if>
+            <if test="password != null">password,</if>
+            <if test="status != null">status,</if>
+            <if test="created_at != null">created_at,</if>
+            <if test="updated_at != null">updated_at,</if>
+            <if test="image_url != null">image_url,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="type != null">#{type},</if>
+            <if test="email != null">#{email},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="password != null">#{password},</if>
+            <if test="status != null">#{status},</if>
+            <if test="created_at != null">#{created_at},</if>
+            <if test="updated_at != null">#{updated_at},</if>
+            <if test="image_url != null">#{image_url},</if>
+        </trim>
+    </insert>
+
+    <!-- 查询个人会员 -->
+    <select id="findById" parameterType="int" resultType="com.project.bean.Member">
+        SELECT * FROM members
+        WHERE id = #{id};
+    </select>
+
+    <select id="listIndividuals" resultType="com.project.bean.Member">
+        SELECT * FROM members
+        WHERE type = '个人会员';
+    </select>
+
+    <select id="selectByName" parameterType="String" resultType="com.project.bean.Member">
+        SELECT * FROM members
+        WHERE name = #{name};
+    </select>
+
+    <select id="findByNameAndPassword" parameterType="map" resultType="com.project.bean.Member">
+        SELECT * FROM members
+        WHERE name = #{name} AND password = #{password} AND type = '个人会员';
+    </select>
+
+<!--    编辑个人会员信息，支持授权管理员-->
+    <update id="updateIndividual" parameterType="com.project.bean.Member">
+        UPDATE members
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updated_at != null">updated_at = #{updated_at},</if>
+        </set>
+        WHERE id = #{id} AND type = '个人会员';
+    </update>
+
+    <update id="update" parameterType="com.project.bean.Member">
+        UPDATE members
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updated_at != null">updated_at = #{updated_at},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+    <update id="changePwdByName" parameterType="com.project.bean.Member">
+        UPDATE members
+        SET password = #{password}
+        WHERE name = #{name}
+    </update>
+
+    <delete id="deleteIndividual" parameterType="int">
+        DELETE FROM members
+        WHERE id = #{id} AND type = '个人会员';
+    </delete>
+
+    <!-- 根据状态查询个人会员 -->
+    <select id="selectMembersByStatus" resultType="com.project.bean.Member">
+        SELECT
+        id,
+        name,
+        email,
+        type,
+        phone,
+        status,
+        created_at,
+        updated_at
+        FROM
+        members
+        WHERE
+        type = '个人会员'
+        AND status = #{status}
+    </select>
+
+<!--    改变状态：已审核 or 已拒绝-->
+    <update id="approveMember">
+        UPDATE members
+        SET status = #{status}, updated_at = #{updated_at}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 查询团体会员 -->
+    <select id="findGroupById" parameterType="int" resultType="com.project.bean.Member">
+        SELECT * FROM members
+        WHERE id = #{id} AND type = '团体会员';
+    </select>
+
+    <select id="listGroups" resultType="com.project.bean.Member">
+        SELECT * FROM members
+        WHERE type = '团体会员';
+    </select>
+
+    <select id="selectGroupByName" parameterType="String" resultType="com.project.bean.Member">
+        SELECT * FROM members
+        WHERE name = #{name} AND type = '团体会员';
+    </select>
+
+    <update id="updateGroup" parameterType="com.project.bean.Member">
+        UPDATE members
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updated_at != null">updated_at = #{updated_at},</if>
+            <if test="image_url != null">image_url = #{image_url},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="website != null">website = #{website},</if>
+        </set>
+        WHERE id = #{id} AND type = '团体会员';
+    </update>
+
+    <delete id="deleteGroup" parameterType="int">
+        DELETE FROM members
+        WHERE id = #{id} AND type = '团体会员';
+    </delete>
+
+    <select id="getMembersByType" resultType="com.project.bean.Member">
+        SELECT * FROM members
+        WHERE type = #{type};
+    </select>
+
+    <!-- 动态 SQL 插入团队会员 -->
+    <insert id="addTeamMember" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO members
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="type != null">type,</if>
+            <if test="email != null">email,</if>
+            <if test="phone != null">phone,</if>
+            <if test="password != null">password,</if>
+            <if test="status != null">status,</if>
+            <if test="description != null">description,</if>
+            <if test="website != null">website,</if>
+            <if test="image_url != null">image_url,</if>
+            <if test="created_at != null">created_at,</if>
+            <if test="updated_at != null">updated_at,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="type != null">#{type},</if>
+            <if test="email != null">#{email},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="password != null">#{password},</if>
+            <if test="status != null">#{status},</if>
+            <if test="description != null">#{description},</if>
+            <if test="website != null">#{website},</if>
+            <if test="image_url != null">#{image_url},</if>
+            <if test="created_at != null">#{created_at},</if>
+            <if test="updated_at != null">#{updated_at},</if>
+        </trim>
+    </insert>
+
+    <select id="findAllUnCheckedTeams" parameterType="map" resultType="com.project.bean.Member">
+        SELECT *
+        FROM members
+        WHERE type = '团体会员'
+        AND status = '待审核'
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="findAllTeams" parameterType="map" resultType="com.project.bean.Member">
+        SELECT *
+        FROM members
+        WHERE type = '团体会员'
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="findAllCheckedTeams" parameterType="map" resultType="com.project.bean.Member">
+        SELECT *
+        FROM members
+        WHERE type = '团体会员'
+        AND status = '已审核'
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="countAllTeams" resultType="int">
+        SELECT COUNT(*)
+        FROM members
+        WHERE type = '团体会员'
+    </select>
+
+    <select id="countAllCheckedTeams" resultType="int">
+        SELECT COUNT(*)
+        FROM members
+        WHERE type = '团体会员'
+        AND status = '已审核'
+    </select>
+
+    <select id="countAllUnCheckedTeams" resultType="int">
+        SELECT COUNT(*)
+        FROM members
+        WHERE type = '团体会员'
+        AND status = '待审核'
+    </select>
+
+    <delete id="deleteAllTeamByIdIn" parameterType="java.util.List">
+        DELETE FROM members
+        WHERE id IN
+        <foreach collection="memberIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="searchTeamMembers" resultType="com.project.bean.Member">
+        SELECT * FROM members
+        WHERE 1 = 1
+        <if test="select == 'name' and query != null and query != ''">
+            AND name LIKE CONCAT('%', #{query}, '%')
+        </if>
+        <if test="select == 'phone' and query != null and query != ''">
+            AND phone LIKE CONCAT('%', #{query}, '%')
+        </if>
+        <if test="select == 'status' and query != null and query != ''">
+            AND status = #{query}
+        </if>
+        AND type = '团体会员'
+    </select>
+</mapper>

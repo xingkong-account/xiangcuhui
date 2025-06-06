@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.mapper.VideoMapper">
+    <!-- 插入视频 -->
+    <insert id="insertVideo" parameterType="com.project.bean.Video">
+        INSERT INTO videos
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="url != null">url,</if>
+            <if test="description != null">description,</if>
+            <if test="thumbnail != null">thumbnail,</if>
+            <if test="status != null">status,</if>
+            <if test="created_at != null">created_at,</if>
+            <if test="updated_at != null">updated_at,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="url != null">#{url},</if>
+            <if test="description != null">#{description},</if>
+            <if test="thumbnail != null">#{thumbnail},</if>
+            <if test="status != null">#{status},</if>
+            <if test="created_at != null">#{created_at},</if>
+            <if test="updated_at != null">#{updated_at},</if>
+        </trim>
+    </insert>
+
+
+    <!-- 更新视频 -->
+    <update id="updateVideo" parameterType="com.project.bean.Video">
+        UPDATE videos
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="thumbnail != null">thumbnail = #{thumbnail},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updated_at != null">updated_at = #{updated_at},</if>
+            <if test="reviewed_at != null">reviewed_at = #{reviewed_at},</if>
+            <if test="reviewer != null">reviewer = #{reviewer},</if>
+            <if test="uploader != null">uploader = #{uploader},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID获取视频 -->
+    <select id="getVideoById" parameterType="Integer" resultType="com.project.bean.Video">
+        SELECT * FROM videos WHERE id = #{id}
+    </select>
+
+    <!-- 获取所有待审核的视频 -->
+    <select id="getVideosByStatus" parameterType="String" resultType="com.project.bean.Video">
+        SELECT * FROM videos WHERE status = #{status}
+    </select>
+
+    <!-- 获取所有视频 -->
+    <select id="getAllVideos" resultType="com.project.bean.Video">
+        SELECT * FROM videos
+    </select>
+
+    <!-- 获取所有已审核视频 -->
+    <select id="getAllCheckedVideos" resultType="com.project.bean.Video">
+        SELECT * FROM videos
+        WHERE status = '已审核'
+    </select>
+
+    <!-- 删除视频 -->
+    <delete id="deleteVideo" parameterType="Integer">
+        DELETE FROM videos WHERE id = #{id}
+    </delete>
+
+    <select id="getAllUnReviewVideos" resultType="com.project.bean.Video">
+        SELECT * FROM videos
+        WHERE status = '待审核'
+    </select>
+
+    <!-- 视频审核 -->
+    <update id="reviewVideo">
+        UPDATE videos
+        SET
+            status = #{status},
+            updated_at = #{updated_at},
+            reviewed_at = #{reviewed_at},
+            reviewer = #{reviewer}
+            WHERE id = #{id}
+    </update>
+
+    <!-- 根据输入的query参数搜索视频 -->
+    <select id="searchVideos" resultType="com.project.bean.Video">
+        SELECT * FROM videos
+        WHERE 1=1
+        <if test="query != null and query != ''">
+            AND (
+            title LIKE CONCAT('%', #{query}, '%') OR
+            description LIKE CONCAT('%', #{query}, '%') OR
+            status = #{query}
+            )
+        </if>
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="findVideosByUsername" resultType="com.project.bean.Video">
+        SELECT * FROM videos WHERE uploader = #{uploader}
+    </select>
+
+</mapper>
+
