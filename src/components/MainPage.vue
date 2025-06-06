@@ -913,7 +913,7 @@ export default {
                         }))
                         .filter(banner => banner.src)
                         .slice(0, 4);
-
+                    this.$alert(JSON.stringify(this.topBanners))
                     // 更新 middleBanners 数组，取views高的前四个
                     this.middleBanners = this.articleTitles
                         .map(article => ({

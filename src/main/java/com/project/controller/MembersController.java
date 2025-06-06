@@ -380,7 +380,6 @@ public class MembersController{
             response.put("message", "登录成功");
             response.put("id", existingMember.getId());
             response.put("usertype", existingMember.getType()); // 返回用户类型
-
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "用户名或密码错误"));

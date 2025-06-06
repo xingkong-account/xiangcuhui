@@ -12,5 +12,4 @@ public interface ImageMapper {
     int insertAdvertisement(Advertisement advertisement);
     List<Advertisement> selectAllAdvertisements();
     void deleteAdvertisement(int adId);
-
 }
